@@ -1,0 +1,49 @@
+<div class="pageWidth" fxLayout="column" fxLayoutAlign="start center">
+  <div fxLayout="row" fxFlexFill fxLayoutAlign="space-between start">
+    <div fxFlex></div>
+    <div fxFlex contenteditable="true" fxLayout="column" fxLayoutAlign="start end">
+      <div>Doklad.č........................</div>
+      <div>Ze dne {{todayDate}}</div>
+      <div>Jednotka........</div>
+    </div>
+  </div>
+  <div id="protocolHeader">
+    Předávací protokol
+  </div>
+
+  <table contenteditable="true">
+    <tr>
+      <th>#</th>
+      <th>Věc</th>
+      <th>Počet</th>
+      <th>Sériové číslo</th>
+    </tr>
+    <tr *ngFor="let asset of data; index as i;">
+      <td>{{i+1}}</td>
+      <td>{{asset.asset.name}}</td>
+      <td>{{asset.asset.quantity}}</td>
+      <td>{{asset.asset.serialNumber}}</td>
+    </tr>
+  </table>
+
+
+  <div fxLayout="row" fxLayoutAlign="space-evenly start" contenteditable="true" fxFlexFill>
+    <div fxLayout="column" fxLayoutAlign="start start">
+      <div style="width: 6cm;margin-bottom: 1cm;">Dne: {{todayDate}}</div>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="start start">
+      <div style="width: 8cm;margin-bottom: 1cm;">Dne: {{todayDate}}</div>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="space-evenly start" contenteditable="true" fxFlexFill>
+    <div fxLayout="column" fxLayoutAlign="center center">
+      <div>............................</div>
+      <div>Předávající</div>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="center center">
+      <div>............................</div>
+      <div>Přebírající</div>
+    </div>
+  </div>
+
+</div>

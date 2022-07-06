@@ -1,0 +1,25 @@
+<div fxFlex [@ngRowAnim]="animStart">
+<ag-grid-angular
+
+  style="height: 100%;width:100%"
+  class="ag-theme-alpine"
+  [columnDefs]="columnDefs"
+  [gridOptions]="gridOptions"
+  [rowData]="units"
+  [getContextMenuItems]="getContextMenuItems"
+  [context]="gridContext"
+  [getDataPath]="getDataPath"
+  [groupDefaultExpanded]="-1"
+  [autoGroupColumnDef]="autoGroupColumnDef"
+
+  (gridReady)="onGridReady($event)"
+  (gridSizeChanged)="onGridSizeChanged()"
+  (toolPanelVisibleChanged)="onGridSizeChanged()"
+  (gridColumnsChanged)="onGridSizeChanged()"
+  (rowDataChanged)="onGridSizeChanged()"
+  (filterModified)="filterSet()"
+>
+
+</ag-grid-angular>
+
+</div>

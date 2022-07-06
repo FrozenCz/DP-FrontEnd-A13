@@ -1,0 +1,23 @@
+<form [formGroup]="loginForm" (ngSubmit)="login()">
+<nb-card accent="primary" >
+  <nb-card-header fxFlex>
+    <nb-icon icon="person-outline"></nb-icon>Přihlášení
+    <div fxFlex fxLayoutAlign="end center" fxLayout="row">
+      <nb-icon style="cursor: pointer" [options]="{animation: {type: 'pulse'}}"  icon="close" (click)="dismiss()"></nb-icon>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <input nbInput fullWidth placeholder="Přihlašovací jméno" formControlName="username" autocomplete="username" >
+    <input nbInput type="password" fullWidth placeholder="heslo" formControlName="password" autocomplete="current-password">
+  </nb-card-body>
+  <nb-card-footer fxLayout="row" fxLayoutAlign="end center">
+    <button nbButton outline (click)="dismiss()" type="button">
+      <nb-icon icon="close"></nb-icon>
+      Zrušit</button>
+    <button nbButton status="primary" outline type="submit" [disabled]="!loginForm.valid" >
+      <nb-icon icon="checkmark"></nb-icon>Přihlásit</button>
+  </nb-card-footer>
+</nb-card>
+</form>
+
+

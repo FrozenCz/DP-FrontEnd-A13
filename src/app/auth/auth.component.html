@@ -1,0 +1,8 @@
+<ng-template [ngIf]="!logged">
+  <nb-icon icon="log-in" (click)="showLoginDialog()"></nb-icon>
+</ng-template>
+
+
+<ng-template [ngIf]="logged">
+  <nb-icon status="danger" icon="log-out" (click)="logOut()"></nb-icon>
+</ng-template>

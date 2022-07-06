@@ -1,0 +1,33 @@
+<form [formGroup]="editUnitForm" (ngSubmit)="onSubmit()">
+  <nb-card accent="primary">
+    <nb-card-header>
+      <nb-icon icon="layers">
+      </nb-icon>
+      Editace jednotky
+    </nb-card-header>
+
+    <nb-card-body fxLayoutGap="1em" fxLayout="column">
+      <nb-form-field>
+        <nb-icon nbPrefix icon="layers-outline"></nb-icon>
+        <input nbInput fullWidth placeholder="Název jednotky"
+               formControlName="unitName"
+               [status]="unitNameStatus"
+               nbTooltip="Tento název jednotky již existuje"
+               nbTooltipStatus="danger"
+               [nbTooltipTrigger]="trigger"
+               nbTooltipIcon="alert-triangle"
+               nbTooltipPlacement="right"
+        >
+      </nb-form-field>
+    </nb-card-body>
+    <nb-card-footer fxLayout="row" fxLayoutAlign="space-between center">
+      <button nbButton outline (click)="dismiss()" type="button">
+        <nb-icon icon="close"></nb-icon>Zrušit
+      </button>
+      <button nbButton status="primary" type="submit" outline [disabled]="!editUnitForm.valid || !editUnitForm.dirty">
+        <nb-icon icon="checkmark"></nb-icon>Uložit
+      </button>
+    </nb-card-footer>
+
+  </nb-card>
+</form>

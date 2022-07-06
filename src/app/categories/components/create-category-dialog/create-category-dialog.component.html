@@ -1,0 +1,51 @@
+<form [formGroup]="createCategoryForm" (ngSubmit)="submit()">
+<nb-card accent="primary" >
+  <nb-card-header>
+    <nb-icon icon="grid-outline"></nb-icon>
+      Tvorba kategorie
+  </nb-card-header>
+  <nb-card-body fxLayout="column" fxLayoutGap="1em">
+    <nb-form-field>
+      <nb-icon nbPrefix icon="grid"></nb-icon>
+    <input nbInput fullWidth placeholder="Název kategorie"
+           formControlName="name"
+           [status]="categoryNameStatus"
+           nbTooltip="Tento název kategorie již existuje"
+           nbTooltipStatus="danger"
+           [nbTooltipTrigger]="trigger"
+           nbTooltipIcon="alert-triangle"
+           nbTooltipPlacement="right"
+    >
+    </nb-form-field>
+
+    <nb-form-field>
+      <nb-icon nbPrefix icon="code-outline"></nb-icon>
+      <input fxFlex nbInput placeholder="Kód kategorie"
+             formControlName="code"
+             [status]="categoryCodeStatus"
+             nbTooltip="Volitelná položka"
+             nbTooltipStatus="info"
+             nbTooltipIcon="question-mark-circle-outline"
+             nbTooltipPlacement="right"
+      >
+    </nb-form-field>
+
+    <nb-form-field>
+      <nb-icon nbPrefix icon="grid-outline"></nb-icon>
+      <nb-select fullWidth [placeholder]="'Hlavní kategorie'" formControlName="parentCategory" [disabled]="!!parentCategoryId" >
+        <nb-option *ngFor="let category of categories" [value]="category">{{category.name}}</nb-option>
+      </nb-select>
+    </nb-form-field>
+
+  </nb-card-body>
+  <nb-card-footer fxLayout="row" fxLayoutAlign="space-between center">
+    <button nbButton outline (click)="dismiss()" type="button">
+      <nb-icon icon="close"></nb-icon>Zrušit
+    </button>
+    <button nbButton status="primary" type="submit" outline [disabled]="!createCategoryForm.valid">
+      <nb-icon icon="checkmark"></nb-icon>Přidat
+    </button>
+  </nb-card-footer>
+</nb-card>
+</form>
+

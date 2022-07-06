@@ -1,0 +1,49 @@
+<div  fxLayout="column" fxFlex>
+  <div fxLayout="row" fxLayoutAlign="end center" style="margin: .5em" fxLayoutGap="1em" *ngIf="editMode$ | async">
+    <div fxFlex fxLayoutAlign="start center">
+      <button nbButton outline status="danger" (click)="resetValues()">
+        <nb-icon icon="refresh">
+
+        </nb-icon>
+      </button>
+    </div>
+
+    <label for="unitSelect">Jednotka: </label><nb-select id="unitSelect" [(selected)]="unitForSelect">
+      <nb-option *ngFor="let unit of units$ | async" [value]="unit">{{unit.name}}</nb-option>
+    </nb-select>
+    <button nbButton status="primary" outline (click)="setUnitForAll(true, unitForSelect)">
+      <nb-icon icon="globe-outline">
+      </nb-icon>
+      Vyplnit všem</button>
+    <button nbButton status="info" outline (click)="setUnitForAll(false, unitForSelect)">
+      <nb-icon icon="globe-2-outline">
+      </nb-icon>Vyplnit pouze prázdné</button>
+  </div>
+<div fxFlex>
+<ag-grid-angular style="height: 100%;width:100%"
+                 class="ag-theme-alpine"
+                 [columnDefs]="columnDefs"
+                 [gridOptions]="gridOptions"
+                 [rowData]="usersList$ | async"
+                 [getContextMenuItems]="getContextMenuItems"
+                 [context]="gridContext"
+
+
+                 (gridReady)="onGridReady($event)"
+                 (rowSelected)="rowSelected($event)"
+                 (gridSizeChanged)="onGridSizeChanged()"
+                 (toolPanelVisibleChanged)="onGridSizeChanged()"
+                 (gridColumnsChanged)="onGridSizeChanged()"
+                 (rowDataChanged)="onGridSizeChanged()"
+                 (filterModified)="filterSet()"
+                 (rowDoubleClicked)="openDetailDirect($event)"
+>
+</ag-grid-angular>
+</div>
+<div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em" style="margin:0.5em" *ngIf="editMode$ | async">
+  <button nbButton outline (click)="cancelChanges()">
+    <nb-icon icon="close"></nb-icon>Zrušit</button>
+  <button nbButton outline status="primary" (click)="saveChanges()">
+    <nb-icon icon="save"></nb-icon>Uložit</button>
+</div>
+</div>

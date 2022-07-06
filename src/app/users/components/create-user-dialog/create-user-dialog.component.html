@@ -1,0 +1,80 @@
+<form [formGroup]="createUserForm" (ngSubmit)="submit(createUserForm)">
+<nb-card accent="primary">
+  <nb-card-header>
+    <nb-icon icon="person">
+    </nb-icon>
+    Tvorba uživatele
+  </nb-card-header>
+
+  <nb-card-body fxLayoutGap="1em" fxLayout="column">
+    <nb-form-field>
+      <nb-icon nbPrefix icon="person"></nb-icon>
+      <input nbInput fullWidth placeholder="Uživatelské jméno" autocomplete="username"
+             formControlName="username"
+             [nbTooltip]="toastMessages.username.message ? toastMessages.username.message : toastMessages.username.defaultMessage"
+             nbTooltipStatus="{{toastMessages.username.message ? 'danger':'warning'}}"
+             nbTooltipIcon="{{toastMessages.username.message ? 'alert-triangle':'question-mark-outline'}}"
+             [status]="status(this.createUserForm.controls['username'])"
+             nbTooltipPlacement="right"
+      >
+    </nb-form-field>
+    <nb-form-field>
+      <nb-icon nbPrefix icon="lock"></nb-icon>
+      <input nbInput type="password" autocomplete="new-password" fullWidth placeholder="Heslo"
+             formControlName="password"
+             [nbTooltip]="toastMessages.password.defaultMessage"
+             nbTooltipStatus="warning"
+             nbTooltipIcon="question-mark-outline"
+             [status]="status(this.createUserForm.controls['password'])"
+             nbTooltipPlacement="right"
+      >
+    </nb-form-field>
+    <nb-form-field>
+      <nb-icon nbPrefix icon="lock"></nb-icon>
+      <input nbInput type="password" autocomplete="new-password" fullWidth placeholder="Heslo znovu"
+             formControlName="password2"
+             [nbTooltip]="toastMessages.password2.message ? toastMessages.password2.message : toastMessages.password2.defaultMessage"
+             nbTooltipStatus="{{toastMessages.password2.message ? 'danger' : 'success'}}"
+             nbTooltipIcon="{{toastMessages.password2.message ? 'alert-triangle' : 'checkmark-outline'}}"
+             [status]="status(this.createUserForm.controls['password2'])"
+             nbTooltipPlacement="right"
+      >
+    </nb-form-field>
+    <nb-form-field>
+      <nb-icon nbPrefix icon="edit-2"></nb-icon>
+      <input nbInput fullWidth placeholder="Jméno" autocomplete="name" formControlName="name"
+             [nbTooltip]="toastMessages.name.defaultMessage"
+             nbTooltipStatus="warning"
+             nbTooltipIcon="checkmark-outline"
+             [status]="status(this.createUserForm.controls['name'])"
+             nbTooltipPlacement="right"
+      >
+    </nb-form-field>
+    <nb-form-field>
+      <nb-icon nbPrefix icon="edit-2"></nb-icon>
+      <input nbInput fullWidth placeholder="Příjmení" autocomplete="surname" formControlName="surname"
+             [nbTooltip]="toastMessages.surname.defaultMessage"
+             nbTooltipStatus="warning"
+             nbTooltipIcon="checkmark-outline"
+             [status]="status(this.createUserForm.controls['surname'])"
+             nbTooltipPlacement="right"
+      >
+    </nb-form-field>
+    <nb-form-field>
+      <nb-icon nbPrefix icon="layers-outline"></nb-icon>
+      <nb-select fullWidth formControlName="unit">
+        <nb-option *ngFor="let unit of units" [value]="unit">{{unit?.name}}</nb-option>
+      </nb-select>
+    </nb-form-field>
+
+  </nb-card-body>
+  <nb-card-footer fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">
+    <button nbButton outline type="button" (click)="dismiss()">
+      <nb-icon icon="close"></nb-icon>Zrušit
+    </button>
+    <button nbButton status="primary" type="submit" outline [disabled]="!createUserForm.valid" >
+      <nb-icon icon="checkmark"></nb-icon>Přidat
+    </button>
+  </nb-card-footer>
+</nb-card>
+</form>

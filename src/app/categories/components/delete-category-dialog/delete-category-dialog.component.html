@@ -1,0 +1,30 @@
+<nb-card size="tiny" style="width: 30em" accent="danger" [nbSpinner]="!checkComplete"
+         nbSpinnerSize="large"
+         nbSpinnerStatus="info"
+         nbSpinnerMessage="Kontroluji možnost smazání" >
+  <nb-card-header>
+    <nb-icon icon="grid-outline"></nb-icon>
+    Smazání kategorie
+  </nb-card-header>
+  <nb-card-body>
+
+      <div *ngIf="!ableToDelete && checkComplete">
+        Kategorie obsahuje majetek a tak není možné ji smazat
+      </div>
+      <div *ngIf="ableToDelete && checkComplete">
+        Opravu chcete smazat kategorii {{deletedCategoryId}} ?
+      </div>
+
+  </nb-card-body>
+  <nb-card-footer fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">
+    <button nbButton outline status="basic" (click)="dismiss()">
+      <nb-icon icon="close-outline"></nb-icon>
+      Zrušit
+    </button>
+    <button nbButton outline status="danger" (click)="deleteCategory(deletedCategoryId)"  [disabled]="!ableToDelete">
+      <nb-icon icon="trash-2-outline"></nb-icon>
+      Smaž!
+    </button>
+  </nb-card-footer>
+</nb-card>
+

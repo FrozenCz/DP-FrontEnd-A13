@@ -1,0 +1,213 @@
+$nb-themes: nb-register-theme((
+background-basic-color-1: #fcfcff,
+background-basic-color-2: #ffffff,
+background-basic-color-3: #e4e9ef,
+background-basic-color-4: #30353a,
+background-basic-color-5: #3b3d40,
+text-basic-color: #2f2f2f,
+
+   color-primary-100: #D1F5FD,
+    color-primary-200: #A4E7FB,
+    color-primary-300: #75D0F5,
+    color-primary-400: #51B6EB,
+    color-primary-500: #1D90DF,
+    color-primary-600: #1570BF,
+    color-primary-700: #0E54A0,
+    color-primary-800: #093B81,
+    color-primary-900: #052A6B,
+    color-primary-transparent-100: rgba(29, 144, 223, 0.08),
+    color-primary-transparent-200: rgba(29, 144, 223, 0.16),
+    color-primary-transparent-300: rgba(29, 144, 223, 0.24),
+    color-primary-transparent-400: rgba(29, 144, 223, 0.32),
+    color-primary-transparent-500: rgba(29, 144, 223, 0.4),
+    color-primary-transparent-600: rgba(29, 144, 223, 0.48),
+    color-success-100: #E4F9D2,
+    color-success-200: #C4F4A7,
+    color-success-300: #95DE76,
+    color-success-400: #66BD4E,
+    color-success-500: #309220,
+    color-success-600: #1D7D17,
+    color-success-700: #106911,
+    color-success-800: #0A5411,
+    color-success-900: #064611,
+    color-success-transparent-100: rgba(48, 146, 32, 0.08),
+    color-success-transparent-200: rgba(48, 146, 32, 0.16),
+    color-success-transparent-300: rgba(48, 146, 32, 0.24),
+    color-success-transparent-400: rgba(48, 146, 32, 0.32),
+    color-success-transparent-500: rgba(48, 146, 32, 0.4),
+    color-success-transparent-600: rgba(48, 146, 32, 0.48),
+    color-info-100: #E1FCF8,
+    color-info-200: #C4FAF5,
+    color-info-300: #A3F0EF,
+    color-info-400: #87DCE2,
+    color-info-500: #60bfcf,
+    color-info-600: #469AB2,
+    color-info-700: #307695,
+    color-info-800: #1E5678,
+    color-info-900: #123E63,
+    color-info-transparent-100: rgba(96, 191, 207, 0.08),
+    color-info-transparent-200: rgba(96, 191, 207, 0.16),
+    color-info-transparent-300: rgba(96, 191, 207, 0.24),
+    color-info-transparent-400: rgba(96, 191, 207, 0.32),
+    color-info-transparent-500: rgba(96, 191, 207, 0.4),
+    color-info-transparent-600: rgba(96, 191, 207, 0.48),
+    color-warning-100: #FCF3CF,
+    color-warning-200: #FAE4A1,
+    color-warning-300: #F1CC71,
+    color-warning-400: #E3B24C,
+    color-warning-500: #d28e18,
+    color-warning-600: #B47211,
+    color-warning-700: #97590C,
+    color-warning-800: #794307,
+    color-warning-900: #643304,
+    color-warning-transparent-100: rgba(210, 142, 24, 0.08),
+    color-warning-transparent-200: rgba(210, 142, 24, 0.16),
+    color-warning-transparent-300: rgba(210, 142, 24, 0.24),
+    color-warning-transparent-400: rgba(210, 142, 24, 0.32),
+    color-warning-transparent-500: rgba(210, 142, 24, 0.4),
+    color-warning-transparent-600: rgba(210, 142, 24, 0.48),
+    color-danger-100: #FBE6DB,
+    color-danger-200: #F8C9B9,
+    color-danger-300: #EAA191,
+    color-danger-400: #D67970,
+    color-danger-500: #bb4545,
+    color-danger-600: #A0323B,
+    color-danger-700: #862234,
+    color-danger-800: #6C162C,
+    color-danger-900: #590D27,
+    color-danger-transparent-100: rgba(187, 69, 69, 0.08),
+    color-danger-transparent-200: rgba(187, 69, 69, 0.16),
+    color-danger-transparent-300: rgba(187, 69, 69, 0.24),
+    color-danger-transparent-400: rgba(187, 69, 69, 0.32),
+    color-danger-transparent-500: rgba(187, 69, 69, 0.4),
+    color-danger-transparent-600: rgba(187, 69, 69, 0.48)
+
+), light-bp, default);
+
+.nb-theme-light-bp {
+  .viewsAsButton {
+    color: var(--text-hint-color);
+
+    nb-actions nb-action {
+      color: var(--text-hint-color);
+
+      &:hover {
+        background: var(--background-basic-color-5) !important;
+      }
+    }
+  }
+
+  #assetQuickFilter {
+    border: 1px solid var(--background-basic-color-4);
+    background: var(--background-basic-color-4);
+  }
+}
+
+/* -- MAT-BP --*/
+$nb-themes: nb-register-theme((
+  background-basic-color-1: #d7d7d7,
+  background-basic-color-2: #eaeaea,
+  background-basic-color-3: #939393,
+  background-basic-color-4: #30353a,
+  background-basic-color-5: #3b3d40,
+  text-basic-color: #2f2f2f,
+  text-alternate-color: #d7d7d7,
+
+  color-primary-100: #D1F5FD,
+  color-primary-200: #A4E7FB,
+  color-primary-300: #75D0F5,
+  color-primary-400: #51B6EB,
+  color-primary-500: #1D90DF,
+  color-primary-600: #1570BF,
+  color-primary-700: #0E54A0,
+  color-primary-800: #093B81,
+  color-primary-900: #052A6B,
+  color-primary-transparent-100: rgba(29, 144, 223, 0.08),
+  color-primary-transparent-200: rgba(29, 144, 223, 0.16),
+  color-primary-transparent-300: rgba(29, 144, 223, 0.24),
+  color-primary-transparent-400: rgba(29, 144, 223, 0.32),
+  color-primary-transparent-500: rgba(29, 144, 223, 0.4),
+  color-primary-transparent-600: rgba(29, 144, 223, 0.48),
+  color-success-100: #E4F9D2,
+  color-success-200: #C4F4A7,
+  color-success-300: #95DE76,
+  color-success-400: #66BD4E,
+  color-success-500: #309220,
+  color-success-600: #1D7D17,
+  color-success-700: #106911,
+  color-success-800: #0A5411,
+  color-success-900: #064611,
+  color-success-transparent-100: rgba(48, 146, 32, 0.08),
+  color-success-transparent-200: rgba(48, 146, 32, 0.16),
+  color-success-transparent-300: rgba(48, 146, 32, 0.24),
+  color-success-transparent-400: rgba(48, 146, 32, 0.32),
+  color-success-transparent-500: rgba(48, 146, 32, 0.4),
+  color-success-transparent-600: rgba(48, 146, 32, 0.48),
+  color-info-100: #C5F6E1,
+  color-info-200: #8FEECE,
+  color-info-300: #52CEAF,
+  color-info-400: #279D8A,
+  color-info-500: #005c56,
+  color-info-600: #004D4F,
+  color-info-700: #003A42,
+  color-info-800: #002A35,
+  color-info-900: #001F2C,
+  color-info-transparent-100: rgba(0, 92, 86, 0.08),
+  color-info-transparent-200: rgba(0, 92, 86, 0.16),
+  color-info-transparent-300: rgba(0, 92, 86, 0.24),
+  color-info-transparent-400: rgba(0, 92, 86, 0.32),
+  color-info-transparent-500: rgba(0, 92, 86, 0.4),
+  color-info-transparent-600: rgba(0, 92, 86, 0.48),
+  color-warning-100: #FCF3CF,
+  color-warning-200: #FAE4A1,
+  color-warning-300: #F1CC71,
+  color-warning-400: #E3B24C,
+  color-warning-500: #d28e18,
+  color-warning-600: #B47211,
+  color-warning-700: #97590C,
+  color-warning-800: #794307,
+  color-warning-900: #643304,
+  color-warning-transparent-100: rgba(210, 142, 24, 0.08),
+  color-warning-transparent-200: rgba(210, 142, 24, 0.16),
+  color-warning-transparent-300: rgba(210, 142, 24, 0.24),
+  color-warning-transparent-400: rgba(210, 142, 24, 0.32),
+  color-warning-transparent-500: rgba(210, 142, 24, 0.4),
+  color-warning-transparent-600: rgba(210, 142, 24, 0.48),
+  color-danger-100: #FBE6DB,
+  color-danger-200: #F8C9B9,
+  color-danger-300: #EAA191,
+  color-danger-400: #D67970,
+  color-danger-500: #bb4545,
+  color-danger-600: #A0323B,
+  color-danger-700: #862234,
+  color-danger-800: #6C162C,
+  color-danger-900: #590D27,
+  color-danger-transparent-100: rgba(187, 69, 69, 0.08),
+  color-danger-transparent-200: rgba(187, 69, 69, 0.16),
+  color-danger-transparent-300: rgba(187, 69, 69, 0.24),
+  color-danger-transparent-400: rgba(187, 69, 69, 0.32),
+  color-danger-transparent-500: rgba(187, 69, 69, 0.4),
+  color-danger-transparent-600: rgba(187, 69, 69, 0.48),
+
+  button-ghost-basic-disabled-background-color: transparent,
+  tabset-tab-text-color: background-basic-color-5,
+  tabset-tab-active-text-color: color-primary-800,
+  text-hint-color: #41525c,
+  button-ghost-basic-text-color: text-hint-color,
+
+), mat-bp, default);
+
+.nb-theme-mat-bp {
+  nb-sidebar .caption {
+    color: #5a8ba5;
+  }
+  .barUnderAgGrid nb-icon.status-info, .ag-popup .text-info-color {
+    color: var(--color-info-300);
+  }
+  .barUnderAgGrid nb-icon.status-basic {
+    color: var(--background-basic-color-3);
+  }
+}
+
+/* -- END MAT-BP --*/
+

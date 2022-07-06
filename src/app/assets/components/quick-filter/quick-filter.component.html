@@ -1,0 +1,9 @@
+<nb-actions size="small" style="height: 2em">
+  <nb-action>
+<!--    <nb-icon icon="search-outline" style="font-size: 100%"-->
+<!--             (click)="switchMode()"-->
+<!--             [status]="(this.gridService?.getAssetsSearchMode() | async) === 1 ? 'success' : 'basic'"    ></nb-icon>    -->
+    <nb-icon icon="search-outline" style="font-size: 100%"></nb-icon>
+    <input nbInput type="text" fieldSize="tiny" (keyup)="quickFilterChanged($event)" value="">
+  </nb-action>
+</nb-actions>

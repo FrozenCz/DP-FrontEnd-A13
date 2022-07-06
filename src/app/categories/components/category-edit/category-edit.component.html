@@ -1,0 +1,43 @@
+<form [formGroup]="editCategoryForm" (ngSubmit)="submit()">
+  <nb-card accent="warning" >
+    <nb-card-header>
+      <nb-icon icon="grid-outline"></nb-icon>
+      Editace kategorie
+    </nb-card-header>
+    <nb-card-body fxLayout="column" fxLayoutGap="1em">
+      <nb-form-field>
+        <nb-icon nbPrefix icon="grid"></nb-icon>
+        <input nbInput fullWidth placeholder="Název kategorie"
+               formControlName="name"
+               [status]="categoryNameStatus"
+               nbTooltip="Tento název kategorie již existuje"
+               nbTooltipStatus="danger"
+               [nbTooltipTrigger]="triggerNoop"
+               nbTooltipIcon="alert-triangle"
+               nbTooltipPlacement="right"
+        >
+      </nb-form-field>
+
+      <nb-form-field>
+        <nb-icon nbPrefix icon="code-outline"></nb-icon>
+        <input fxFlex nbInput placeholder="Kód kategorie"
+               formControlName="code"
+               [status]="categoryCodeStatus"
+               nbTooltip="Volitelná položka"
+               nbTooltipStatus="info"
+               nbTooltipIcon="question-mark-circle-outline"
+               nbTooltipPlacement="right"
+        >
+      </nb-form-field>
+    </nb-card-body>
+    <nb-card-footer fxLayout="row" fxLayoutAlign="space-between center">
+      <button nbButton outline (click)="dismiss()" type="button">
+        <nb-icon icon="close"></nb-icon>Zrušit
+      </button>
+      <button nbButton status="warning" type="submit" outline [disabled]="!editCategoryForm.valid || !editCategoryForm.dirty">
+        <nb-icon icon="checkmark"></nb-icon>Změnit
+      </button>
+    </nb-card-footer>
+  </nb-card>
+</form>
+

@@ -1,0 +1,35 @@
+:host{
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+h4{
+  font-size: 0.8em;
+}
+label {
+  width: 8em;
+  max-width: 8em;
+  min-width: 8em;
+}
+
+nb-card-body {
+  height: 70vh;
+  min-height: 70vh;
+  max-height: 70vh;
+  display: flex;
+  min-width: 60em;
+}
+img {
+  border: 1px solid black;
+  border-radius: 4px;
+}
+.smallImages img {
+  max-width: calc(25% - .4em);
+  margin: .25em;
+  &:nth-child(4n+1) {
+    margin-left: 0;
+  }
+  &:nth-child(4n) {
+    margin-right: 0;
+  }
+}

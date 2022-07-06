@@ -1,0 +1,32 @@
+<nb-card accent="primary" size="large" [nbSpinner]="!(loaded$ | async)" nbSpinnerStatus="info" nbSpinnerSize="large">
+  <nb-card-header>
+    <nb-icon icon="settings-2-outline"></nb-icon>
+    Nastavování práv uživatele
+  </nb-card-header>
+  <nb-card-body>
+    <nb-tabset>
+      <nb-tab [tabIcon]=category.icon [tabTitle]=category.name *ngFor="let category of rightsCategory">
+        <div fxLayout="column" fxLayoutGap="1em">
+          <nb-toggle [(checked)]="right.selected" (click)="changeRights(right)"
+                     *ngFor="let right of rights | exactFilter: category.relatedTo:'relatedTo' ">
+            {{right.name}}
+          </nb-toggle>
+        </div>
+      </nb-tab>
+    </nb-tabset>
+
+  </nb-card-body>
+  <nb-card-footer fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">
+    <button nbButton type="button" outline (click)="dismiss()">
+      <nb-icon icon="close"></nb-icon>
+      {{!rightsToAdd.length && !rightsToRemove.length ? 'Zavřít' : 'Zrušit'}}
+    </button>
+    <button nbButton type="button" status="primary" outline (click)="OnSaveRightsButtonClicked()" [disabled]="!rightsToAdd.length && !rightsToRemove.length">
+      <nb-icon icon="save">
+      </nb-icon>
+      Uložit
+    </button>
+  </nb-card-footer>
+
+
+</nb-card>

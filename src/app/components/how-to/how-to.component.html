@@ -1,0 +1,18 @@
+<div fxLayout="column" fxLayoutGap="1em" fxFlex fxLayoutAlign="start stretch" class="howTo">
+  <input nbInput fullWidth [(ngModel)]="searchedFor" placeholder="Hledej návod..." autofocus >
+  <dix fxLayout="row wrap" fxLayoutAlign="space-between start" fxFlex style="overflow-y:auto; ">
+    <nb-card *ngFor="let tutorial of tutorials| filter: searchedFor?.split(' '): 'title'" style="height: 15em; width: 19.5em; ">
+      <nb-card-header fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".25em">
+        <nb-icon [icon]="tutorial.icon"></nb-icon>
+        <span>{{tutorial.title}}</span>
+      </nb-card-header>
+      <nb-card-body>
+        <vg-player style="height: 100%;width: 100%">
+<!--          <video [vgMedia]="media" #media preload="auto" controls>-->
+<!--            <source src="{{tutorial.movie}}" type="video/mp4">-->
+<!--          </video>-->
+        </vg-player>
+      </nb-card-body>
+    </nb-card>
+  </dix>
+</div>

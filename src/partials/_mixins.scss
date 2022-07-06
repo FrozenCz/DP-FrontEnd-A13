@@ -1,0 +1,70 @@
+@mixin primaryButton{
+  background-color: var(--button-primary-background-color);
+  border-color: var(--button-primary-border-color);
+  color: var(--button-primary-text-color);
+}
+
+@mixin primaryButtonHover{
+  background-color: var(--button-primary-hover-background-color);
+  border-color: var(--button-primary-hover-border-color);
+  color: var(--button-primary-hover-text-color);
+}
+
+@mixin warningDiv{
+  background-color: var(--color-warning-default);
+  color: var(--button-filled-control-text-color	);
+}
+
+@mixin dangerDiv{
+  background-color: var(--color-danger-default);
+  color: var(--button-filled-danger-text-color);
+}
+
+@mixin primaryButtonOutline{
+  background-color: var(--button-outline-primary-background-color);
+  border-color: var(--button-outline-primary-border-color);
+  color: var(--button-outline-primary-text-color);
+}
+
+@mixin primaryButtonOutlineHover{
+  background-color: var(--button-outline-primary-hover-background-color);
+  border-color: var(--button-outline-primary-hover-border-color);
+  color: var(--button-outline-primary-hover-text-color);
+}
+
+@mixin successButtonOutline{
+  background-color: var(--button-outline-success-background-color);
+  border-color: var(--button-outline-success-border-color);
+  color: var(--button-outline-success-text-color);
+}
+
+@mixin successButtonOutlineHover{
+  background-color: var(--button-outline-success-hover-background-color);
+  border-color: var(--button-outline-success-hover-border-color);
+  color: var(--button-outline-success-hover-text-color);
+}
+
+
+@mixin warningButtonOutline{
+  background-color: var(--button-outline-warning-background-color);
+  border-color: var(--button-outline-warning-border-color);
+  color: var(--button-outline-warning-text-color);
+}
+
+@mixin warningButtonOutlineHover{
+  background-color: var(--button-outline-warning-hover-background-color);
+  border-color: var(--button-outline-warning-hover-border-color);
+  color: var(--button-outline-warning-hover-text-color);
+}
+
+@mixin basicButtonOutline {
+  background-color: var(--button-outline-basic-background-color);
+  border-color: var(--button-outline-basic-border-color);
+  color: var(--button-outline-basic-text-color);
+}
+
+@mixin basicButtonOutlineHover {
+  background-color: var(--button-outline-basic-hover-background-color);
+  border-color: var(--button-outline-basic-hover-border-color);
+  color: var(--button-outline-basic-hover-text-color);
+}

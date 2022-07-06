@@ -1,0 +1,51 @@
+<div fxLayout="column" fxFlex>
+  <ag-grid-angular
+    fxFlex
+    class="ag-theme-alpine"
+    [ngClass]="{'ag-filterActive':filterActive}"
+    [columnDefs]="columnDefs"
+    [gridOptions]="gridOptions"
+    [getContextMenuItems]="getContextMenuItems"
+    [context]="gridContext"
+    [allowContextMenuWithControlKey]="true"
+
+
+    (gridColumnsChanged)="onGridColumnsChanged()"
+    (gridSizeChanged)="onGridSizeChanged()"
+    (columnResized)="onColumnResized()"
+    (displayedColumnsChanged)="onDisplayedColumnsChanged()"
+    (filterModified)="onFilterModified($event)"
+    (rowSelected)="onRowSelected($event)"
+    (rowDataChanged)="onRowDataChanged($event)"
+    (rowDataUpdated)="onRowDataUpdated($event)"
+    (cellValueChanged)="onCellValueChanged($event)"
+    (cellEditingStarted)="onCellEditingStarted($event)"
+    (cellEditingStopped)="onCellEditingStopped($event)"
+    (toolPanelVisibleChanged)="onPanelVisibilityChanged($event)"
+    (rangeSelectionChanged)="onRangeSelectionChanged($event)"
+
+    (mousedown)="onMouseDown($event)"
+    (cellKeyPress)="onCellKeyPress($event)"
+    (rowDoubleClicked)="onRowDoubleClicked($event)"
+    (gridReady)="onGridReady($event)"
+  >
+  </ag-grid-angular>
+  <app-bar-under-ag-grid
+    [rows]="this.gridService?.getDisplayedRowCount() ? this.gridService.getDisplayedRowCount() : 0"
+    [selectedRow]="this.gridService?.getSelectedNodes() ? this.gridService.getSelectedNodes().length : 0"
+    [gridUid]="gridUid"
+  >
+  </app-bar-under-ag-grid>
+</div>
+<!--[getContextMenuItems]="getContextMenuItems"-->
+<!--[context]="gridContext"-->
+<!--[getDataPath]="getDataPath"-->
+<!--[groupDefaultExpanded]="-1"-->
+<!--[autoGroupColumnDef]="autoGroupColumnDef"-->
+
+<!--(gridSizeChanged)="onGridSizeChanged()"-->
+<!--(toolPanelVisibleChanged)="onGridSizeChanged()"-->
+<!--(gridColumnsChanged)="onGridSizeChanged()"-->
+<!--(rowDataChanged)="onGridSizeChanged()"-->
+<!--(filterModified)="filterSet()"-->
+<!--(rowDoubleClicked)="openDetailDirect($event)"-->

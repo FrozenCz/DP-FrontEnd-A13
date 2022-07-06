@@ -1,0 +1,44 @@
+<form [formGroup]="editColumnNamesForm" (ngSubmit)="submit(editColumnNamesForm)">
+  <div formArrayName="column" fxLayoutGap="1em" fxLayout="column">
+    <div [formGroupName]="i" fxLayout="row" fxLayoutAlign="center center" *ngFor="let column of getControls('column');let i = index;"
+         fxLayoutGap="1em">
+      <label for="columnName_{{i}}">
+        {{i+1}}. Úroveň
+      </label>
+      <nb-form-field>
+        <nb-icon nbPrefix icon="grid-outline"></nb-icon>
+        <input nbInput formControlName="name" id="columnName_{{i}}"
+               nbTooltip="Název sloupce"
+               nbTooltipStatus="info"
+               placeholder="Název "
+        >
+      </nb-form-field>
+      <nb-form-field>
+        <nb-icon nbPrefix icon="code-outline"></nb-icon>
+        <input nbInput formControlName="codeName"
+               nbTooltip="Název sloupce s kódovým označením"
+               nbTooltipStatus="info"
+        >
+        <nb-icon nbSuffix
+                 style="cursor: pointer"
+                 [icon]="column.get('useCodeAsColumn')?.value ? 'checkmark-square-outline' : 'square-outline'"
+                 [status]="column.get('useCodeAsColumn')?.value ? 'success' : 'basic'"
+                 (click)="setValueForColumn(column)"
+                 nbTooltip="Použít kód jako samostatný sloupec"
+                 nbTooltipStatus="info"
+                 nbTooltipPlacement="end"
+        ></nb-icon>
+      </nb-form-field>
+    </div>
+    <div fxLayout="row" fxLayoutGap="1em" fxLayoutAlign="end center">
+      <button nbButton status="basic" outline type="button" (click)="dismiss()">
+        <nb-icon icon="close-outline"></nb-icon>
+        Zrušit
+      </button>
+      <button nbButton status="primary" outline type="submit">
+        <nb-icon icon="save"></nb-icon>
+        Uložit
+      </button>
+    </div>
+  </div>
+</form>

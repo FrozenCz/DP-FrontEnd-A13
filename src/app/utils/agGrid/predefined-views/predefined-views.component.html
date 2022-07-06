@@ -1,0 +1,90 @@
+<div fxLayout="column" fxLayoutGap="1em" id="predefinedViews">
+
+  <div fxLayoutAlign="start center" fxLayoutGap=".25em">
+    <nb-icon icon="save-outline"></nb-icon>
+    <span>Uložení pohledu</span>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="1em" fxLayoutAlign="start center">
+
+    <input type="text" class="ag-input-field-input ag-text-field-input" fxFlex [(ngModel)]="viewToSaveName">
+
+    <button nbButton status="primary" outline (click)="saveView(viewToSaveName)" title="Uložit">
+      <nb-icon icon="save-outline"></nb-icon>
+    </button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div fxLayoutAlign="start center" fxLayoutGap=".25em">
+    <nb-icon icon="browser"></nb-icon>
+    <span>Výběr pohledu</span>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="1em" fxLayoutAlign="start center">
+
+    <select class="ag-filter-select ag-labeled ag-label-align-left ag-select" fxFlex (change)="loadView(selectedView)"
+            [(ngModel)]="selectedView">
+      <option *ngFor="let view of gridViews" [ngValue]="view">{{view.viewName}}</option>
+    </select>
+
+    <button nbButton status="danger" outline (click)="deleteView(selectedView)" [disabled]="!selectedView"
+            title="Smazat">
+      <nb-icon icon="trash-2-outline"></nb-icon>
+    </button>
+  </div>
+
+
+  <ng-template [ngIf]="selectedView">
+    <div fxLayoutAlign="start center" fxLayoutGap=".25em">
+      <nb-icon icon="settings"></nb-icon>
+      <span>Nastavení vybraného pohledu</span>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
+      <nb-checkbox status="primary" id="predefinedViewsCheckBox"
+                   [(checked)]="showAsButton"
+                   (checkedChange)="saveShowAsButton(selectedView, showAsButton)"></nb-checkbox>
+      <label for="predefinedViewsCheckBox"
+             (click)="showAsButton=!showAsButton;saveShowAsButton(selectedView, showAsButton)">Jako tlačítko nad
+        tabulkou</label>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
+      <nb-checkbox status="primary" id="predefinedViewsCheckBoxFitColumns"
+                   [(checked)]="fitColumns"
+                   (checkedChange)="saveFitColumns(selectedView, fitColumns)"></nb-checkbox>
+      <label for="predefinedViewsCheckBox"
+             (click)="fitColumns=!fitColumns;saveFitColumns(selectedView, fitColumns)">Automaticky upravovat šíři sloupců</label>
+    </div>
+  </ng-template>
+  <div class="divider"></div>
+  <div fxLayoutAlign="start center" style="cursor: pointer" fxLayoutGap=".25em" (click)="resetView()">
+    <nb-icon icon="refresh" status="warning"></nb-icon>
+    <span>Vyresetovat veškeré nastavení</span>
+  </div>
+</div>
+
+
+<ng-template #confirmDialog let-context>
+  <nb-card status="{{context.status}}">
+    <nb-card-header>
+      <nb-icon icon="alert-triangle-outline"></nb-icon>
+      {{context.title}}
+    </nb-card-header>
+    <nb-card-body>
+      {{context.message}}
+    </nb-card-body>
+    <nb-card-footer fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">
+      <button nbButton status="basic" (click)="dialogRef.close(false)">
+        <nb-icon icon="close"></nb-icon>
+        Zrušit
+      </button>
+      <button nbButton status="{{context.status}}" (click)="dialogRef.close(true)">
+        <nb-icon icon="{{context.confirmButton.icon}}"></nb-icon>
+        {{context.confirmButton.text}}
+      </button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+

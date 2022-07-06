@@ -1,0 +1,17 @@
+<div class="selectedThemeWrapper themeWrapper" (click)="this.paletteSelectorOpen=!this.paletteSelectorOpen">
+  <nb-icon icon="color-palette"></nb-icon>
+</div>
+
+<div id="paletteSelection" *ngIf="paletteSelectorOpen" fxLayout="column wrap">
+  <div class="themeWrapper" *ngFor="let theme of themes" (click)="selectTheme(theme);this.paletteSelectorOpen=false">
+    <div
+      style="
+      border-radius: 10px;
+      border: 1px solid {{theme.color}};
+      padding:1px;
+      width: 20px;height: 20px;background: linear-gradient(135deg, {{theme.background}} 50%, {{theme.background}} 50%, {{theme.color}} 50%, {{theme.color}} 50%);"
+      ></div>
+  </div>
+</div>
+
+

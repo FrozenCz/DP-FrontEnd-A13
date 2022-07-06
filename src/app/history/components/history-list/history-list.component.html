@@ -1,0 +1,31 @@
+<div fxFlex fxLayout="column">
+  <app-views-bar [gridUid]="gridUid"></app-views-bar>
+  <ag-grid-angular
+    fxFlex
+    class="ag-theme-alpine"
+    [ngClass]="{'ag-filterActive':filterActive}"
+    [columnDefs]="columnDefs"
+    [gridOptions]="gridOptions"
+    [getContextMenuItems]="getContextMenuItems"
+    [context]="gridContext"
+
+    (gridColumnsChanged)="onGridColumnsChanged()"
+    (gridSizeChanged)="onGridSizeChanged()"
+    (columnResized)="onColumnResized()"
+    (displayedColumnsChanged)="onDisplayedColumnsChanged()"
+    (filterModified)="onFilterModified($event)"
+    (gridReady)="onGridReady($event)"
+    (rowDoubleClicked)="onRowDoubleClicked($event)"
+    (toolPanelVisibleChanged)="onPanelVisibilityChanged($event)"
+
+    (mousedown)="onMouseDown($event)"
+  >
+  </ag-grid-angular>
+  <app-bar-under-ag-grid
+    [rows]="this.gridService?.getDisplayedRowCount() ? this.gridService.getDisplayedRowCount() : 0"
+    [selectedRow]="this.gridService?.getSelectedNodes() ? this.gridService.getSelectedNodes().length : 0"
+    [gridUid]="gridUid"
+  >
+  </app-bar-under-ag-grid>
+</div>
+

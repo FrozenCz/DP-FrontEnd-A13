@@ -1,0 +1,18 @@
+<nb-card status="danger">
+  <nb-card-header>
+    <nb-icon icon="list-outline">
+    </nb-icon>
+    Smazání sestavy
+  </nb-card-header>
+  <nb-card-body>
+    Opravdu chcete smazat sestavu? <i>(bude smazána jen sestava, nikoli majetek, který obsahuje)</i>
+  </nb-card-body>
+  <nb-card-footer fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">
+    <button nbButton outline type="button" (click)="dismiss()">
+      <nb-icon icon="close"></nb-icon>Zrušit
+    </button>
+    <button nbButton status="danger" (click)="deleteList(listId)" >
+      <nb-icon icon="trash-outline"></nb-icon>Smazat
+    </button>
+  </nb-card-footer>
+</nb-card>

@@ -1,0 +1,50 @@
+<div fxLayout="column" fxLayoutGap="1em" style="width: 90vw; height: 80vh">
+  <form [formGroup]="userEditForm" (ngSubmit)="onSubmit()" fxLayout="row" fxLayoutGap="1em">
+    <div fxFlex fxLayout="column" fxLayoutGap="1em"
+         [ngClass]="{'editMode': !editMode}">
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
+        <label for="name">Jméno</label>
+        <input nbInput id="name" value="Milan" formControlName="name">
+        <label for="surname">Příjmení</label>
+        <input nbInput id="surname" value="Knop" formControlName="surname">
+      </div>
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
+        <label for="unit">Jednotka</label>
+        <nb-select id="unit" formControlName="unitId">
+          <nb-option *ngFor="let unit of units$ | async" [value]="unit.id">{{unit.name}}</nb-option>
+        </nb-select>
+      </div>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="start end" fxLayoutGap="1em" [hidden]="!updateUsersInformationAllowed">
+      <div fxFlex *ngIf="setPermissionsAllowed && (this.user?.reachable || !this.token?.unitId)">
+        <button nbButton [size]="buttonSize" outline type="button" nbTooltip="Editace práv uživatele" status="danger" (click)="showRightsSettingDialog()">
+          <nb-icon icon="settings-2-outline"></nb-icon>
+        </button>
+      </div>
+      <ng-template [ngIf]="!editMode && updateUsersInformationAllowed && (this.user?.reachable || !this.token?.unitId)">
+        <button nbButton [size]="buttonSize" outline status="info" (click)="setEditModeTo(true)" nbTooltip="Editovat uživatele">
+          <nb-icon icon="edit"></nb-icon>
+        </button>
+      </ng-template>
+      <ng-template [ngIf]="editMode && updateUsersInformationAllowed">
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">
+          <button nbButton [size]="buttonSize" outline type='button'
+                  nbTooltip="Zrušit"
+                  (click)="setEditModeTo(false); resetValues(this.user)">
+            <nb-icon icon="close"></nb-icon>
+          </button>
+          <button nbButton [size]="buttonSize" outline status="primary" type='submit' nbTooltip="Uložit"
+                  [disabled]="!this.userEditForm.valid || !this.userEditForm.dirty">
+            <nb-icon icon="save"></nb-icon>
+          </button>
+        </div>
+      </ng-template>
+
+    </div>
+
+  </form>
+  <div fxFlex fxLayoutAlign="center center">
+    <app-assets-list [filter]="{userId: user.id}">
+    </app-assets-list>
+  </div>
+</div>

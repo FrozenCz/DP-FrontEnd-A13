@@ -1,0 +1,72 @@
+<form class="listDetailWrapper likeAgGrid" [formGroup]="listForm" fxLayout="column" fxLayoutGap="1em" [ngClass]="{'editMode': !editMode}">
+  <div id="listDetailHeader" fxLayout="column" fxLayoutGap="1em">
+    <div class="caption-2">Sestava: {{assetList?.name}}</div>
+    <div fxLayout="row" fxLayoutGap="1em">
+      <div fxLayout="row" fxLayoutGap="1em" fxFlex>
+        <nb-form-field fxFlex>
+          <nb-icon nbPrefix icon="list-outline"></nb-icon>
+          <input formControlName="listName" nbInput fieldSize="tiny" placeholder="Název sestavy" fullWidth>
+        </nb-form-field>
+        <nb-form-field fxFlex>
+          <nb-icon nbPrefix icon="npm-outline"></nb-icon>
+          <input formControlName="category" nbInput fieldSize="tiny" placeholder="Kategorie" fullWidth>
+        </nb-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <div fxFlex>
+          <nb-icon icon="link-2-outline"></nb-icon>
+          Svázaná sestava
+        </div>
+        <nb-toggle formControlName="connected" class="size-tiny" status="danger"></nb-toggle>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <div fxFlex>
+          <nb-icon icon="archive-outline"></nb-icon>
+          Archivovaná
+        </div>
+        <nb-toggle formControlName="archived" class="size-tiny"  status="primary"></nb-toggle>
+      </div>
+    </div>
+    <div fxFlex>
+      <textarea formControlName="description" nbInput fxFlex fullWidth placeholder="Popis" fieldSize="tiny"></textarea>
+    </div>
+  </div>
+  <app-assets-grid [assets]="assetsInList" [gridUid]="gridUid"></app-assets-grid>
+  <div id="listDetailFooter" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">
+      <button nbButton status="info" outline (click)="onRefreshClicked()">
+        <nb-icon icon="refresh"></nb-icon>
+      </button>
+      <button nbTooltip="Přidat celou sestavu do pracovní sestavy" nbButton status="success" outline (click)="onToWorkingListClicked(assetsInList)">
+        <nb-icon icon="share"></nb-icon>
+      </button>
+      <button nbTooltip="Vyber protokol pro položky z pracovní sestavy" nbButton status="success" outline (click)="onShowProtocolSelectList(2)">
+        <nb-icon icon="file-text-outline"></nb-icon>
+      </button>
+      <button nbTooltip="Vyber protokol pro položky z vybraných položek" nbButton status="primary" outline (click)="onShowProtocolSelectList(1)">
+        <nb-icon icon="file-text-outline"></nb-icon>
+      </button>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">
+      <button nbButton status="info" outline *ngIf="!this.editMode; else editButtons" (click)="setEditModeTo(true)">
+        <nb-icon icon="edit-outline"></nb-icon>
+        Editovat
+      </button>
+      <ng-template #editButtons>
+      <button nbButton status="basic" outline (click)="setEditModeTo(false)">
+        <nb-icon icon="close-outline"></nb-icon>
+        Zrušit
+      </button>
+      <button nbButton status="primary" outline>
+        <nb-icon icon="save-outline">
+        </nb-icon>
+        Uložit
+      </button>
+      </ng-template>
+    </div>
+  </div>
+</form>
+
+
+
+

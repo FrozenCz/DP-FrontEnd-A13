@@ -1,0 +1,44 @@
+<div class="barUnderAgGrid" fxLayout="row" fxLayoutAlign="space-between center">
+  <div id="barUnderAgGridLeftSide" fxLayout="row" fxFlex fxLayoutAlign="start center">
+    <div nbTooltip="Počet položek celkem">
+      <nb-icon icon="search-outline"></nb-icon>
+      {{rows}}
+    </div>
+    <div>
+      <nb-icon icon="checkmark-square-2-outline" status="primary" nbTooltip="Počet vybraných položek"></nb-icon>
+      {{selectedRow}}
+      <nb-icon icon="close" status="danger" style="cursor: pointer;" (click)="deselectRows()" *ngIf="selectedRow">
+      </nb-icon>
+    </div>
+    <div nbTooltip="Zobrazit pouze vybrané položky" (click)="changeSelectedRows()" *ngIf="!(gridService?.showOnlySelectedRows() | async)" style="cursor: pointer;">
+      <nb-icon icon="arrowhead-up-outline" status="primary"></nb-icon>
+      Vybrané
+    </div>
+    <div (click)="changeSelectedRows()" *ngIf="gridService?.showOnlySelectedRows() | async" style="cursor: pointer;">
+      <nb-icon icon="arrowhead-down-outline" status="success"></nb-icon>
+      Všechny
+    </div>
+    <div fxFlex></div>
+    <div (click)="setColumnFit(!columnFit)" *ngIf="columnFit" style="cursor: pointer;">
+      <nb-icon icon="checkmark-square" status="success"></nb-icon>
+      Šířka auto podle okna
+    </div>
+    <div (click)="setColumnFit(!columnFit)" *ngIf="!columnFit" style="cursor: pointer;">
+      <nb-icon icon="square" status="basic"></nb-icon>
+      Šířka auto
+    </div>
+    <div (click)="flexGrid()" style="cursor: pointer;">
+      <nb-icon icon="layout-outline" status="info"></nb-icon>
+      Šíře podle okna
+    </div>
+    <div (click)="setColumnWithAuto()" style="cursor: pointer;">
+      <nb-icon icon="map-outline" status="info"></nb-icon>
+      Šíře podle buňěk
+    </div>
+    <div (click)="resetView()" style="cursor: pointer;">
+      <nb-icon icon="refresh" status="warning"></nb-icon>
+      Reset
+    </div>
+  </div>
+
+</div>

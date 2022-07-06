@@ -1,0 +1,72 @@
+<nb-card size="large" style="width: 90vw" [formGroup]="removeAssetForm" (ngSubmit)="onRemoveClicked()"
+         [nbSpinner]="removing"
+         nbSpinnerMessage='Čekám na odpověď'>
+  <nb-card-header fxLayout="row" fxLayoutAlign="space-between center">
+    <div fxLayoutGap="1em">
+      <nb-icon icon="trash-2-outline"></nb-icon>
+      <span>Vyřazení majetku</span>
+    </div>
+    <div>
+      <nb-icon (click)="close()" style="cursor: pointer" icon="close-outline"></nb-icon>
+    </div>
+  </nb-card-header>
+  <nb-card-body fxLayout="column" fxLayoutGap="1em">
+    <div fxLayout="column" fxLayoutGap="1em" fxLayoutAlign="start start">
+      <div fxLayout="row" fxLayoutGap="1em">
+        <div fxLayout="column" fxLayoutGap="1em">
+          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
+            <label for="removingDocumentIdentification">Vyřazeno dokladem č.</label>
+            <input formControlName="removingDocumentIdentification"
+                   [status]="status(this.removeAssetForm.controls['removingDocumentIdentification'])"
+                   id="removingDocumentIdentification" nbInput fieldSize="small">
+          </div>
+          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em" fxFlex="50">
+            <label for="documentDate">
+              Ze dne
+            </label>
+            <nb-form-field fxFlex>
+              <input nbInput readonly autocomplete="off" fieldSize="small" id="documentDate"
+                     formControlName="documentDate"
+                     [nbDatepicker]="documentDate" fullWidth>
+              <nb-datepicker #documentDate format="dd.MM.yyyy"></nb-datepicker>
+            </nb-form-field>
+          </div>
+        </div>
+        <div fxLayout="column" fxLayoutGap="1em">
+          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em" fxFlex="50">
+            <label for="possibleRemovingDate">
+              Datum možného úplného smazání
+            </label>
+            <nb-form-field fxFlex>
+              <input nbInput readonly autocomplete="off" fieldSize="small" id="possibleRemovingDate"
+                     formControlName="possibleRemovingDate"
+                     [nbDatepicker]="datepicker" fullWidth>
+              <nb-datepicker #datepicker format="dd.MM.yyyy"></nb-datepicker>
+            </nb-form-field>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <app-assets-grid [gridUid]="gridUid"
+                     [customColDefs]="customColDefs"
+                     [customGridOptions]="customGridOptions"
+                     [assets]="assetsList"
+                     [innerSelectionMode]="true"
+    >
+    </app-assets-grid>
+  </nb-card-body>
+  <nb-card-footer fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">
+    <button nbButton status="basic" outline (click)="close()">
+      <nb-icon icon="close-outline"></nb-icon>
+      Zrušit
+    </button>
+    <button nbButton status="danger" outline (click)="onRemoveClicked()" [disabled]="!this.removeAssetForm.valid">
+      <nb-icon icon="trash-2-outline">
+      </nb-icon>
+      Vyřadit
+    </button>
+  </nb-card-footer>
+</nb-card>

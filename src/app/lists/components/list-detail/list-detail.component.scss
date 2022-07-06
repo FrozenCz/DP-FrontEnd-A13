@@ -1,0 +1,27 @@
+:host {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.listDetailWrapper {
+  height: 100%;
+  width: 100%;
+  min-height: 80vh;
+  min-width: 80vw;
+  app-assets-grid {
+    flex: 1;
+  }
+  padding: 1em;
+}
+
+textarea {
+  padding: 1em !important;
+}
+
+#listDetailHeader nb-toggle {
+  margin-left: 1em !important;
+}
+
+
+

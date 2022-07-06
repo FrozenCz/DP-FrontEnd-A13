@@ -1,0 +1,23 @@
+html, body, app-root, nb-layout {
+  all: unset;
+  display: block;
+}
+
+app-protocols-component {
+  color: black;
+  background: white;
+  width: 19cm;
+  display: block;
+  padding-left:1em;
+}
+
+@media print {
+  html, body, app-root, nb-layout {
+    overflow: auto !important;
+  }
+  app-protocols-component {
+    padding-left: 0;
+    table { page-break-inside:auto; }
+    tr    { page-break-inside:avoid; page-break-after:auto }
+  }
+}

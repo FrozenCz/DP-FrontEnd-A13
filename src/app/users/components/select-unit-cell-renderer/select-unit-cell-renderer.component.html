@@ -1,0 +1,4 @@
+<div fxLayout="row" style="height: 100%;width: 100%" fxLayoutAlign="start center" >
+  <div fxFlex (click)="selectionOpen=true">{{selected?.name}}</div> <nb-icon  icon="chevron-down-outline" *ngIf="editMode && !selectionOpen"></nb-icon>
+</div>
+

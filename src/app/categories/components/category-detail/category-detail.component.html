@@ -1,0 +1,14 @@
+<div fxLayout="column" fxLayoutGap="1em">
+<div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em" *ngIf="assetsCreateAllowed">
+  <button nbButton ghost (click)="onNewClicked()" size="tiny" *ngIf="assetsCreateAllowed">
+    <nb-icon icon="plus" ></nb-icon>
+    Přidat nový majetek do dané kategorie
+  </button>
+
+</div>
+
+<div style="width: 70em;height: 40em;"  fxLayoutAlign="center center">
+  <app-assets-list [filter]="{parentCategoryId: this.category?.id}">
+  </app-assets-list>
+</div>
+</div>

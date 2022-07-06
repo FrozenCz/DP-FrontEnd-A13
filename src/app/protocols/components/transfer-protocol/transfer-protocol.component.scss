@@ -1,0 +1,35 @@
+$pageWidth: 18.9cm;
+
+:host {
+  color: black;
+  background: white;
+  width: $pageWidth;
+  display: block;
+}
+p{
+  color:black;
+}
+
+#protocolHeader{
+  font-size: 150%;
+  font-weight: bold;
+  margin-bottom: 1cm;
+}
+
+.pageWidth {
+  width: $pageWidth;
+}
+
+table, tr, td, th {
+  width: $pageWidth;
+  border:1px solid black;
+  border-collapse: collapse;
+}
+
+table {
+  margin-bottom: 2cm;
+}
+
+td{
+  padding-left:1em;
+}

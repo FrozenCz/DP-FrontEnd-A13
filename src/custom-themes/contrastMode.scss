@@ -1,0 +1,70 @@
+.contrastMode {
+  .ag-theme-alpine {
+    .ag-body-viewport .ag-row {
+      color: $text-basic-color;
+    }
+
+    .ag-side-bar {
+      background: $background-basic-color-4;
+      color: $text-alternate-color;
+    }
+
+    input[class^=ag-][type=text] {
+      color: $text-basic-color;
+    }
+    &.ag-filterActive div.ag-header-cell input  {
+      color: $text-alternate-color;
+    }
+  }
+
+  app-bar-under-ag-grid {
+    background: $background-basic-color-4;
+    color: $text-alternate-color;
+  }
+
+  #assetQuickFilter {
+    nb-action nb-icon {
+      color: $text-alternate-color;
+    }
+
+    border-bottom: 1px solid var(--background-basic-color-4);
+    background: var(--background-basic-color-4);
+  }
+
+  .viewsAsButton {
+    nb-action {
+      color: $text-alternate-color;
+
+      &:hover {
+        background: var(--background-basic-color-4);
+        color: $text-primary-color;
+      }
+    }
+
+    color: $text-alternate-color;
+    background: var(--background-basic-color-4);
+  }
+
+  .ribbon-menu .fullHeightControl, .ribbon-menu ul {
+    li, li a {
+      color: $text-alternate-color;
+    }
+
+    color: $text-alternate-color;
+    background: var(--background-basic-color-4);
+  }
+
+  app-category-detail app-assets-list ag-grid-angular, app-user-detail app-assets-list ag-grid-angular,
+  app-removed-assets-list ag-grid-angular, app-create-assets-dialog app-history-list ag-grid-angular {
+    border-left: 1px solid var(--background-basic-color-4);
+  }
+
+  .selectedThemeWrapper nb-icon {
+    color: $text-alternate-color;
+  }
+
+  nb-sidebar, nb-sidebar.compacted .toggleButton {
+    color: $text-alternate-color;
+    background: var(--background-basic-color-4);
+  }
+}

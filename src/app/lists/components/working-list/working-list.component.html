@@ -1,0 +1,20 @@
+<div fxLayout="column" [ngClass]="{'ng-sidebar-overlay-fix':ref.compacted}" style="height: 100%">
+  <app-views-bar [gridUid]="gridUid"></app-views-bar>
+  <div style="display: flex; flex-grow: 1; overflow: hidden">
+    <nb-sidebar tag="saveListForm" state="compacted" #ref containerFixed="false" style="height: 100%">
+      <div class="toggleButton" (click)="ref.toggle(true)" *ngIf="ref.compacted">
+        <nb-icon icon="list-outline"></nb-icon>
+        Uložení sestavy
+      </div>
+      <div style="margin-top: 15px;" fxFlex>
+        <div class="caption" fxLayout="row" fxLayoutAlign="start center" (click)="ref.toggle(true)"
+             *ngIf="!ref.compacted">
+          <nb-icon icon="arrowhead-left-outline"></nb-icon>
+          Zavřít
+        </div>
+        <app-save-list *ngIf="!ref.compacted"></app-save-list>
+      </div>
+    </nb-sidebar>
+    <app-assets-grid [assets]="assetsWorkingList" [gridUid]="gridUid"></app-assets-grid>
+  </div>
+</div>

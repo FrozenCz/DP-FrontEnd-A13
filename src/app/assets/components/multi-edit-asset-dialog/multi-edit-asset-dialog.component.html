@@ -1,0 +1,123 @@
+<nb-flip-card [showToggleButton]="false" [flipped]="flipped">
+  <nb-card-front>
+    <nb-card size="giant" style="width: 95vw; height: 90vh">
+      <nb-card-header fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayoutGap="1em">
+          <i class="fas fa-hammer"></i><span>Hromadné úpravy</span>
+        </div>
+        <div>
+            <nb-icon (click)="close()" style="cursor: pointer" icon="close-outline"></nb-icon>
+        </div>
+      </nb-card-header>
+      <nb-card-body fxLayout="column" fxLayoutGap="1em">
+
+        <div class="caption-2">
+          Hromadné změny probíhájí pouze u vybraných položek
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+          <div>
+
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+            <div fxLayout="row" fxLayoutGap=".5em" fxLayoutAlign="start center">
+              <nb-icon icon="people" status="warning"></nb-icon>
+              <span>Změna uživatele</span>
+            </div>
+            <div fxLayout="row" fxLayoutGap="1em" fxLayoutAlign="end center">
+              <nb-select [(selected)]="selectedUser" [disabled]="!ableToChangeUser" >
+                <nb-option *ngFor="let user of users" [value]="user">
+                  {{user.surname}} {{user.name}}
+                </nb-option>
+              </nb-select>
+              <button nbButton   nbTooltip="Změň uživatele" status="primary" (click)="changeUser(selectedUser)" [disabled]="!ableToChangeUser">
+                <nb-icon icon="corner-right-down-outline"></nb-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+          <div>
+
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+            <div fxLayout="row" fxLayoutGap=".5em" fxLayoutAlign="start center">
+              <nb-icon icon="edit-2-outline" status="primary"></nb-icon>
+              <span>Poznámka</span>
+            </div>
+            <div fxLayout="row" fxLayoutGap="1em" fxLayoutAlign="end center">
+              <button  nbTooltip="Přidat na začátek poznámky" nbButton status="info" (click)="setNoteToSelected(note, 0)" [disabled]="!ableToEditInformation">
+                <nb-icon icon="corner-left-down-outline"></nb-icon>
+              </button>
+              <input nbInput [(ngModel)]="note" [disabled]="!ableToEditInformation">
+              <button   nbTooltip="Přidat na konec poznámky" nbButton status="success" (click)="setNoteToSelected(note, 1)" [disabled]="!ableToEditInformation">
+                <nb-icon icon="corner-right-down-outline"></nb-icon>
+              </button>
+              <button  nbButton status="danger" nbTooltip="Nahradit poznámku" (click)="setNoteToSelected(note, 2)" [disabled]="!ableToEditInformation">
+                <nb-icon icon="corner-right-down-outline"></nb-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <app-assets-grid [gridUid]="gridUid"
+                         [customColDefs]="customColDefs"
+                         [customGridOptions]="customGridOptions"
+                         [assets]="assets" [innerSelectionMode]="true"
+
+                         (cellValueChanged)="onCellValueChanged($event)"
+                         (cellEditingStopped)="onCellEditingStopped($event)"
+        >
+        </app-assets-grid>
+      </nb-card-body>
+      <nb-card-footer fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">
+          <button  nbButton status="info" outline (click)="onRefreshClicked()">
+            <nb-icon icon="refresh"></nb-icon>
+          </button>
+          <button  nbButton status="success" (click)="flip()">
+            <nb-icon icon="image"></nb-icon>
+          </button>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">
+          <button  nbButton status="basic" outline (click)="close()">
+            <nb-icon icon="close-outline"></nb-icon>
+            Zrušit
+          </button>
+          <button  nbButton status="primary" outline (click)="onSaveClicked()" [disabled]="!this.isAnyChangePresent()">
+            <nb-icon icon="save-outline">
+            </nb-icon>
+            Uložit
+          </button>
+        </div>
+      </nb-card-footer>
+    </nb-card>
+  </nb-card-front>
+  <nb-card-back>
+    <nb-card style="height: 100%;width: 100%">
+      <!--      <nb-card-footer fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">-->
+      <!--        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">-->
+      <!--          <button nbButton status="info" outline (click)="onRefreshClicked()">-->
+      <!--            <nb-icon icon="refresh"></nb-icon>-->
+      <!--          </button>-->
+      <!--          <button nbButton status="success" (click)="flip()">-->
+      <!--            <nb-icon icon="image"></nb-icon>-->
+      <!--          </button>-->
+      <!--        </div>-->
+      <!--        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em">-->
+      <!--          <button nbButton status="basic" outline>-->
+      <!--            <nb-icon icon="close-outline"></nb-icon>-->
+      <!--            Zrušit-->
+      <!--          </button>-->
+      <!--          <button nbButton status="primary" outline>-->
+      <!--            <nb-icon icon="save-outline">-->
+      <!--            </nb-icon>-->
+      <!--            Uložit-->
+      <!--          </button>-->
+      <!--        </div>-->
+      <!--      </nb-card-footer>-->
+    </nb-card>
+  </nb-card-back>
+</nb-flip-card>
+

@@ -1,0 +1,25 @@
+
+<div class="section-body" fxFlex fxLayout="row" fxLayoutAlign="" fxLayoutGap="0.2em">
+  <div fxLayout="column" fxLayoutGap="0.2em">
+    <button nbButton size="tiny" ghost [disabled]="!itemsInWorkingList"
+            fullWidth (click)="showWorkingListEmit()"
+            style="position: relative">
+      <nb-icon icon="share">
+      </nb-icon>
+      Zobrazit
+      <nb-badge position="center right" text="{{itemsInWorkingList}}" status="{{itemsInWorkingList ? 'success' : 'basic'}}"
+                style="margin-right: -1em;"></nb-badge>
+    </button>
+    <button nbButton size="tiny" ghost [disabled]="!itemsInWorkingList"
+            fullWidth (click)="onClearWorkingListEmit();"
+            style="position: relative">
+      <nb-icon icon="trash-outline">
+      </nb-icon>
+      Vyprázdnit
+    </button>
+  </div>
+</div>
+<div class="section-footer" fxLayout="row" fxLayoutAlign="center center">
+  <nb-icon icon="share-outline"></nb-icon>
+  <span style="flex:none;">pracovní sestava</span>
+</div>

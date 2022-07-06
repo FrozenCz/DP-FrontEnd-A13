@@ -1,0 +1,43 @@
+<form [formGroup]="listForm" (ngSubmit)="submit(listForm)" class="likeAgGrid" fxFlex fxLayout="column" fxLayoutGap="1em">
+  <nb-form-field>
+    <nb-icon nbPrefix icon="list-outline"></nb-icon>
+    <input formControlName="listName" nbInput fieldSize="tiny" placeholder="Název sestavy" fullWidth>
+  </nb-form-field>
+  <nb-form-field>
+    <nb-icon nbPrefix icon="npm-outline"></nb-icon>
+    <input formControlName="category" nbInput fieldSize="tiny" placeholder="Kategorie" fullWidth>
+  </nb-form-field>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div fxFlex>
+      <nb-icon icon="link-2-outline"></nb-icon>
+      Svázaná sestava
+    </div>
+    <nb-toggle formControlName="connected" class="size-tiny" status="danger"></nb-toggle>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div fxFlex>
+      <nb-icon icon="archive-outline"></nb-icon>
+      Archivovaná
+    </div>
+    <nb-toggle formControlName="archived" class="size-tiny" status="primary"></nb-toggle>
+  </div>
+  <div fxFlex>
+    <textarea formControlName="description" nbInput fxFlex fullWidth placeholder="Popis" fieldSize="tiny"></textarea>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1em" >
+    <button nbButton type="button" status="basic" outline (click)="close()">
+      <nb-icon icon="close-outline"></nb-icon>
+      Zavřít
+    </button>
+    <button nbButton *ngIf="!editedListId; else rewrite" status="primary" outline [disabled]="!listForm.valid || !(assetsWorkingList.length > 0)">
+      <nb-icon icon="save-outline"></nb-icon>
+      Uložit
+    </button>
+    <ng-template #rewrite>
+      <button nbButton status="warning" outline [disabled]="!listForm.valid || !(assetsWorkingList.length > 0)">
+        <nb-icon icon="edit-2-outline"></nb-icon>
+        Přepsat
+      </button>
+    </ng-template>
+  </div>
+</form>
