@@ -16,7 +16,7 @@
   @include ag-theme-alpine((
     // COLOURS
     // main colours (overridden by alpine-dark)
-    alpine-active-color: $color-primary-default,
+    alpine-active-color: #a6c1ff,
     background-color: $background-basic-color-1,
     foreground-color: $text-basic-color,
     secondary-border-color: $border-basic-color-4,
@@ -89,7 +89,8 @@
   @include ag-theme-alpine((
     // COLOURS
     // main colours (overridden by alpine-dark)
-    alpine-active-color: $color-primary-default,
+    alpine-active-color: #a6c1ff,
+    //alpine-active-color: $color-primary-default,
     background-color: $background-basic-color-1,
     // font color
     foreground-color: $text-alternate-color,

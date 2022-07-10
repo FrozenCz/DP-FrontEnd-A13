@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {AssetsService, IAssetsExt, IAssetsExtFilter} from '../../assets.service';
-import {Observable, Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {takeUntil, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-assets-list',
@@ -19,7 +19,10 @@ export class AssetsListComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit(): void {
-    this.assetsService.getAssets(this.filter).pipe(takeUntil(this.unsubscribe))
+    this.assetsService.getAssets(this.filter)
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
       .subscribe(assets => this.assets = assets);
   }
 

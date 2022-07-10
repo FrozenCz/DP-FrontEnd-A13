@@ -146,6 +146,9 @@ export class AssetsService {
    * @param reachableUnitsIds units on same position in tree or below
    */
   private static extendAssetModel(assetModel: AssetsModelDto, allUnits: Unit[], reachableUnitsIds: number[]): AssetModelExt {
+    if (allUnits.length < 1) {
+      throw new Error('must be provided some units');
+    }
     const unit = allUnits.find(u => u.id === assetModel.user?.unit?.id);
     if (!unit) {
       throw new Error('unit muss be specified')
@@ -208,6 +211,7 @@ export class AssetsService {
       }
       this.enhanceAssetsWithCategories();
     } catch (e: any) {
+      console.log(e);
       if ([401, 403].includes(e.error.statusCode)) {
         this.assets$.next([]);
       }
@@ -217,10 +221,14 @@ export class AssetsService {
   fetchAssets(): Observable<AssetModelExt[]> {
     return this.http.get<AssetsModelDto[]>('/rest/assets')
       .pipe(
+        tap((asets) => console.log('před', asets)),
         map(assets => {
             return assets.map(asset => AssetsService.extendAssetModel(asset, this.allUnits, this.reachableUnitsIds));
-          }
-        ));
+          },
+          tap((asets) => console.log(asets)),
+        ),
+        tap((asets) => console.log('po', asets)),
+      );
   }
 
   changeAssetUser(assetId: number, user: IAssetUser): Observable<AssetModelExt> {
@@ -290,7 +298,9 @@ export class AssetsService {
     if (assetFilter) {
       if (assetFilter.parentCategoryId) {
         return combineLatest([this.assetsList$, this.categoriesService.getDescendants(assetFilter.parentCategoryId)])
-          .pipe(shareReplay(), filter(([, categories]) => !!categories))
+          .pipe(
+            shareReplay(),
+            filter(([, categories]) => !!categories))
           .pipe(
             map(([assets, onlyCategories]) => assets.filter(asset => onlyCategories.map(cat => cat.id).includes(asset.asset.category.id)))
           );
