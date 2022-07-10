@@ -23,7 +23,12 @@ export class AssetsListComponent implements OnInit, OnDestroy{
       .pipe(
         takeUntil(this.unsubscribe)
       )
-      .subscribe(assets => this.assets = assets);
+      .subscribe(assets => {
+        this.assets = assets;
+          // console.log(assets);
+        }
+
+      );
   }
 
   ngOnDestroy(): void {

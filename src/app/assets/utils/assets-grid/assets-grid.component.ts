@@ -535,7 +535,7 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
   }
 
   onRowDataChanged($event: any): void {
-    console.log('onRowDataChanged', $event);
+    // console.log('onRowDataChanged', $event);
   }
 
   onRowDataUpdated($event: any): void {

@@ -221,13 +221,13 @@ export class AssetsService {
   fetchAssets(): Observable<AssetModelExt[]> {
     return this.http.get<AssetsModelDto[]>('/rest/assets')
       .pipe(
-        tap((asets) => console.log('před', asets)),
+        // tap((asets) => console.log('před', asets)),
         map(assets => {
             return assets.map(asset => AssetsService.extendAssetModel(asset, this.allUnits, this.reachableUnitsIds));
           },
-          tap((asets) => console.log(asets)),
+          // tap((asets) => console.log(asets)),
         ),
-        tap((asets) => console.log('po', asets)),
+        // tap((asets) => console.log('po', asets)),
       );
   }
 
