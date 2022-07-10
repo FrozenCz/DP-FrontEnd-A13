@@ -1,4 +1,4 @@
-<div fxLayout="column" fxFlex>
+<div fxLayout="column" fxFlex [nbSpinner]="!(gridReady$ | async)">
   <ag-grid-angular
     fxFlex
     class="ag-theme-alpine"

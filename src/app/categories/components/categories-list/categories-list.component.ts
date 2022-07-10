@@ -24,7 +24,7 @@ import {RightsTag} from '../../../shared/rights.list';
 
 export class CategoriesListComponent implements OnInit, OnDestroy {
   categoriesWithColumnNames: ICategoryWithColumnNames[] = [];
-  unsubscribe: Subject<boolean> = new Subject<boolean>();
+  unsubscribe: Subject<void> = new Subject<void>();
 
   storedFilterModel: any;
   columnDefs: ColDef[] = [
@@ -237,6 +237,7 @@ export class CategoriesListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.unsubscribe.next(true);
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 }

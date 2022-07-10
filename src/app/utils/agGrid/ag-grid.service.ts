@@ -30,9 +30,9 @@ export class AgGridService {
       .pipe(filter(([showOnly, data]) => !!data))
       .subscribe(([showOnlySelectedRows, data]) => {
         if (showOnlySelectedRows) {
-          this.grid.api.setRowData(data.filter(d => this.getSelectedIds().includes(getIdFromDataForRows(d))));
+          // this.grid.api.setRowData(data.filter(d => this.getSelectedIds().includes(getIdFromDataForRows(d))));
         } else {
-          this.grid.api.setRowData(data);
+          // this.grid.api.setRowData(data);
         }
       });
   }
@@ -153,7 +153,7 @@ export class AgGridService {
   }
 
   setColumnState(columnState: ColumnState[]): void {
-    this.grid.columnApi.setColumnState(columnState);
+    // this.grid.columnApi.setColumnState(columnState);
   }
 
   setInitialFilterModel(filterModel: any): void {

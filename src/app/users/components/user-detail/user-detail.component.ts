@@ -9,7 +9,8 @@ import {Observable, Subject} from 'rxjs';
 import {Unit} from '../../../units/models/unit.model';
 import {NbComponentSize, NbDialogService, NbToastrService, NbWindowRef} from '@nebular/theme';
 import {ShowRightsSettingDialogComponent} from '../show-rights-setting-dialog/show-rights-setting-dialog.component';
-import {take, takeUntil} from 'rxjs/operators';
+import {map, take, takeUntil} from 'rxjs/operators';
+import {AssetsService, IAssetsExt} from '../../../assets/assets.service';
 
 
 @Component({
@@ -31,11 +32,13 @@ export class UserDetailComponent implements OnInit, OnDestroy {
 
   userEditForm: FormGroup;
   buttonSize: NbComponentSize = 'medium';
+  assetsFilteredByUser: IAssetsExt[] = [];
 
   constructor(
     private tokenService: TokenService,
     private unitsService: UnitsService,
     private usersService: UsersService,
+    private assetsService: AssetsService,
     private nbToastrService: NbToastrService,
     private nbWindowRef: NbWindowRef,
     private nbDialogService: NbDialogService
@@ -57,6 +60,15 @@ export class UserDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+    this.assetsService.getAssets()
+      .pipe(
+        map(assets => assets.filter(a => a.asset.user.id === this.userId)),
+        takeUntil(this.unsubscribe)
+      ).subscribe(assets => {
+        this.assetsFilteredByUser = [...assets];
+    })
+
     this.units$ = this.unitsService.getUnits();
     this.usersService.getUser(this.userId).pipe(takeUntil(this.unsubscribe)).subscribe(
       (user) => {

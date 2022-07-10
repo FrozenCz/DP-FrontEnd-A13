@@ -219,7 +219,7 @@ export class CategoriesService {
     return columnConfig[depth].useCodeAsColumn;
   }
 
-  getDescendants(categoryId: number): Observable<Unit[]> {
+  getDescendants(categoryId: number): Observable<ICategory[]> {
     return this.httpClient.get<ICategory[]>('rest/categories/' + categoryId + '/descendants');
   }
 

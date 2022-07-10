@@ -29,10 +29,11 @@ import { RemovedAssetsListComponent } from './components/removed-assets-list/rem
 import {HistoryModule} from '../history/history.module';
 import { AssetDetailComponent } from './components/asset-detail/asset-detail.component';
 import { AssetDetailSinglePageWrapperComponent } from './components/asset-detail-single-page-wrapper/asset-detail-single-page-wrapper.component';
+import { AssetsDashboardComponent } from './dashboards/assets-dashboard/assets-dashboard.component';
 
 @NgModule({
   declarations: [AssetsComponent, AssetDetailDialogComponent, AssetsListComponent, QuickFilterComponent, ActionButtonsForAgGridComponent,
-    AssetsGridComponent, MultiEditAssetDialogComponent, RemoveAssetDialogComponent, RemovedAssetsListComponent, AssetDetailComponent, AssetDetailSinglePageWrapperComponent],
+    AssetsGridComponent, MultiEditAssetDialogComponent, RemoveAssetDialogComponent, RemovedAssetsListComponent, AssetDetailComponent, AssetDetailSinglePageWrapperComponent, AssetsDashboardComponent],
     imports: [
         AssetsRoutingModule,
         CommonModule,

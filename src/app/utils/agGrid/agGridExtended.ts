@@ -13,7 +13,7 @@ import {AgGridService} from './ag-grid.service';
 export abstract class AgGridExtended {
   protected fitColumns = false;
   protected updateStateTimeout: any = null;
-  protected gridReady$: Subject<boolean> = new Subject<boolean>();
+  public gridReady$: Subject<boolean> = new Subject<boolean>();
   protected gridState$: ReplaySubject<GridState> = new ReplaySubject<GridState>(1);
   protected firstLoad = true;
   public gridUid: string = '';
