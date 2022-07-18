@@ -292,6 +292,7 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
               colId: 'akce',
               headerName: 'akce', pinned: 'right', checkboxSelection: false,
               cellRenderer: 'actionButtonsForAgGrid', width: 100,
+              valueGetter: '',
               floatingFilter: false,
               suppressMenu: true,
             },

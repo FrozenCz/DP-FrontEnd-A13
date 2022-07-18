@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {combineLatest, noop, Observable, of, Subject} from 'rxjs';
+import {combineLatest, first, firstValueFrom, noop, Observable, of, Subject, switchMap, tap} from 'rxjs';
 import {AssetModelExt, ASSETS_INFORMATION, AssetsModelDto, ICreateAsset} from '../../models/assets.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {IUserExt} from '../../../users/model/user.model';
@@ -9,7 +9,7 @@ import {UsersService} from '../../../users/users.service';
 import {AssetsService} from '../../assets.service';
 import {NbToastrService} from '@nebular/theme';
 import {HistoryService} from '../../../history/history.service';
-import {filter, take, takeUntil} from 'rxjs/operators';
+import {filter, map, take, takeUntil, withLatestFrom} from 'rxjs/operators';
 import {RightsTag} from '../../../shared/rights.list';
 import {CategoriesService} from '../../../categories/categories.service';
 
@@ -35,11 +35,11 @@ interface IControlsByRights {
   templateUrl: './asset-detail.component.html',
   styleUrls: ['./asset-detail.component.scss']
 })
-export class AssetDetailComponent implements OnInit, OnDestroy {
+export class AssetDetailComponent implements OnDestroy, OnInit {
   @Input() selectedCategory!: Observable<ICategory>;
   @Input() assetId!: number;
   @Output() onClose: EventEmitter<undefined> = new EventEmitter<undefined>();
-  loading = false;
+  loading: boolean = false;
   categoryTree = '';
 
   editedAsset!: AssetModelExt;
@@ -48,11 +48,11 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
   rtCreateAsset = false;
   unsubscribe = new Subject();
 
-  private editorUserId!: number;
+  private editorUserId: number | undefined;
   assetForm: FormGroup;
   noteForm: FormGroup;
   editMode = false;
-  users: IUserExt[] = [];
+  users$: Observable<IUserExt[]>;
 
   showTemplate: AssetDetailTabEnum = AssetDetailTabEnum.detail;
   reachToUser = false;
@@ -67,6 +67,18 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     private historyService: HistoryService,
     private categoriesService: CategoriesService
   ) {
+    this.users$ = this.tokenService.getToken()
+      .pipe(
+        switchMap((token) => {
+          this.editorUserId = token?.userId;
+          return this.usersService.getUsers$()
+        }),
+        tap(() => {
+          this.rtChangeAssetsUser = this.tokenService.getPermission(RightsTag.changeAssetsUser);
+          this.rtChangeAssetsInformation = this.tokenService.getPermission(RightsTag.changeAssetsInformation);
+          this.rtCreateAsset = this.tokenService.getPermission(RightsTag.createAssets);
+        }))
+
     this.assetForm = this.formBuilder.group({
       quantity: [1, [Validators.required, Validators.min(1), Validators.max(100000)]],
       name: [null],
@@ -88,51 +100,39 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnInit(): void {
+    if (this.assetId) {
+      this.loading = true;
+      this.getAsset(this.assetId)
+        .pipe(
+          withLatestFrom(this.usersService.getUsers$().pipe(take(1))),
+          tap(([asset, users]) => {
+            this.editedAsset = asset;
+            this.insertAssetDataIntoDetailForm(asset, users);
+            this.reachToUser = !!this.editedAsset?.user?.reachable;
+            this.setEditModeTo(false);
+            const catTree = this.categoriesService.getCategoryTreeForDetail(asset.category.id);
+            this.categoryTree = catTree ? catTree : '';
+            this.loading = false;
+          }),
+          map((rel) => !rel),
+          takeUntil(this.unsubscribe))
+        .subscribe()
+    } else {
+      this.setEditModeTo(true);
+    }
+  }
+
   ngOnDestroy(): void {
     this.unsubscribe.next(true);
   }
 
-  ngOnInit(): void {
-
-    combineLatest([this.tokenService.getToken(), this.usersService.getUsers$()])
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(([token, users]) => {
-        if (token) {
-          this.editorUserId = token.userId;
-
-        }
-        this.users = users;
-        this.rtChangeAssetsUser = this.tokenService.getPermission(RightsTag.changeAssetsUser);
-        this.rtChangeAssetsInformation = this.tokenService.getPermission(RightsTag.changeAssetsInformation);
-        this.rtCreateAsset = this.tokenService.getPermission(RightsTag.createAssets);
-      });
-
-
-    if (this.assetId) {
-      this.loading = true;
-      this.getAsset(this.assetId).pipe(filter((rel => !!rel)), takeUntil(this.unsubscribe))
-        .subscribe((assetFind) => {
-          this.editedAsset = assetFind;
-          this.insertAssetDataIntoDetailForm(assetFind);
-          this.loading = false;
-          this.reachToUser = !!this.editedAsset?.user?.reachable;
-          this.setEditModeTo(false);
-          const catTree = this.categoriesService.getCategoryTreeForDetail(assetFind.category.id);
-          this.categoryTree = catTree ? catTree : '' ;
-        }, error => {}, () => {
-        });
-    } else {
-      this.setEditModeTo(true);
-    }
-
-
-  }
 
   setEditModeTo(bool: boolean): void {
     this.editMode = bool;
 
     if (!this.editedAsset && !this.assetId && this.rtCreateAsset) {
-      this.users = this.users.filter(user => user.reachable);
+      this.users$ = this.usersService.getUsers$().pipe(map(users => users.filter(user => user.reachable)));
     }
 
     if (!this.editedAsset) {
@@ -141,7 +141,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
 
     if (bool) {
       if (this.rtChangeAssetsUser && this.editedAsset.user.reachable) {
-        this.users = this.users.filter(user => user.reachable);
+        this.users$ = this.usersService.getUsers$().pipe(map(users => users.filter(user => user.reachable)));
       }
 
       for (const controlsKey of Object.keys(this.assetForm.controls)) {
@@ -195,7 +195,10 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
                 icon: 'alert-triangle-outline'
               });
             } else {
-              this.toastrService.danger('nebyl vložen, došlo k chybě', 'Majetek', {duration: 10000, icon: 'alert-triangle-outline'});
+              this.toastrService.danger('nebyl vložen, došlo k chybě', 'Majetek', {
+                duration: 10000,
+                icon: 'alert-triangle-outline'
+              });
             }
           });
       }
@@ -248,7 +251,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     // this.assetsService.updateAsset(changes, this.assetId).subscribe(console.log);
   }
 
-  insertAssetDataIntoDetailForm(asset: AssetModelExt): void {
+  insertAssetDataIntoDetailForm(asset: AssetModelExt, users: IUserExt[]): void {
     this.assetForm.patchValue(
       {
         ...asset,
@@ -257,7 +260,7 @@ export class AssetDetailComponent implements OnInit, OnDestroy {
     );
     const preselectedUserId = this.editedAsset ? this.editedAsset.user.id : this.editorUserId;
     this.assetForm.patchValue({
-      user: this.users.find(u => u.id === preselectedUserId)
+      user: users.find(u => u.id === preselectedUserId)
     });
 
     // this.usersService.users$.pipe(take(1)).subscribe(

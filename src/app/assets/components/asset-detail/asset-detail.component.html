@@ -1,5 +1,4 @@
-<div style="min-width: 110em" [nbSpinner]="loading" nbSpinnerMessage="nahrávám data" nbSpinnerSize="large">
-
+<div style="min-width: 110em" [nbSpinner]="loading" nbSpinnerMessage="nahrávám data" nbSpinnerSize="large" *ngIf="(this.users$ | async) as users">
   <form [formGroup]="assetForm" (ngSubmit)="submit()" class="editMode"
         *ngIf="this.showTemplate === 0"
         style="height: 100%; width: 100%;">
@@ -23,7 +22,7 @@
             </label>
             <nb-form-field fxFlex>
               <nb-select id="user" formControlName="user" fullWidth>
-                <nb-option *ngFor="let user of this.users" [value]="user">{{user.surname}} {{user.name}}</nb-option>
+                <nb-option *ngFor="let user of users" [value]="user">{{user.surname}} {{user.name}}</nb-option>
               </nb-select>
             </nb-form-field>
           </div>
@@ -178,7 +177,7 @@
         </div>
         <div *ngIf="editMode && editedAsset" fxLayoutGap="1em">
           <button nbButton status="basic" outline type="button"
-                  (click)="setEditModeTo(false);insertAssetDataIntoDetailForm(this.editedAsset)">
+                  (click)="setEditModeTo(false);insertAssetDataIntoDetailForm(this.editedAsset, users)">
             <nb-icon icon="close"></nb-icon>
             Zrušit
           </button>
