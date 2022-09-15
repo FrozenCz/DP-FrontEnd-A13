@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-import {WebSocketSubject, WebSocketSubjectConfig} from 'rxjs/internal-compatibility';
-import {webSocket} from 'rxjs/webSocket';
+import {webSocket, WebSocketSubjectConfig} from 'rxjs/webSocket';
 import {AssetsWs} from '../assets/models/assets.ws.model';
 import {webSocketUrl} from '../../environments/environment';
 import {interval, Observable, Subject} from 'rxjs';

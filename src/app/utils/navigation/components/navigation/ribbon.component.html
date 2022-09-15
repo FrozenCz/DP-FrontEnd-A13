@@ -1,0 +1,99 @@
+<nb-icon icon="chevron-up-outline"
+         *ngIf="!subMenuHidden"
+         status="basic"
+         style="position: absolute; right: 0; bottom: 0;cursor: pointer" (click)="subMenuHidden = true"></nb-icon>
+
+<nb-tabset class="ribbon-menu"
+           [ngClass]="{'ribbonSubmenuHidden':subMenuHidden}"
+           (changeTab)="menuChange($event)">
+  <nb-tab *ngFor="let navTab of navigation.navTabs;"
+          responsive
+          [tabTitle]="navTab.name"
+          [tabIcon]="navTab.nbIcon"
+          [active]="navTab.id===activeTab"
+          [ngClass]="{'ribbonSubmenuHidden' : !navTab.sections.length}"
+  >
+    <div fxLayout="row" *ngIf="navTab.sections.length">
+      <section class="homeLink" [routerLink]="['/']"  ></section>
+      <section fxLayout="column"
+               *ngFor="let navSection of navTab.sections;"
+               [id]="navSection.id"
+      >
+
+        <div class="section-body" fxFlex fxLayout="row" fxLayoutGap="0.2em">
+          <div *ngFor="let subSection of navSection.subSections;">
+
+            <!--BUTTONS-->
+            <div fxLayout="column wrap" fxLayoutGap="0.2em" *ngIf="subSection.type===0">
+              <div *ngFor="let navButton of subSection.buttons">
+                <a nbButton size="tiny"
+                   ghost
+                   fullWidth
+                   [id]="navButton.id"
+                   [target]="navButton.target"
+                   [routerLink]="navButton.url"
+                   [routerLinkActive]="navButton.url ? navigation.activeLinkClass : ''"
+                   [routerLinkActiveOptions]="{exact: !!navButton.routerLinkActiveExactOptions}"
+                   (click)="actionEmitted.emit({id: navButton.id})"
+                   [disabled]="navButton.disabled"
+                >
+                  <nb-icon *ngIf="navButton.icon && navButton.iconType === navIconType.eva" [icon]="navButton.icon"></nb-icon>
+                  <i [class]="navButton.icon" *ngIf="navButton.iconType === navIconType.fontawesome && navButton.icon"></i>
+                  {{navButton.name}}
+                  <nb-badge position="center right" *ngIf="navButton.badge" style="margin-right: -1em"
+                            [status]="navButton.disabled ? 'basic' : navButton.badge.status"
+                            [text]="navButton.badge.text"></nb-badge>
+                </a>
+              </div>
+            </div>
+
+            <!--SELECT-->
+            <div fxLayout="column" style="height: 100%" fxLayoutAlign="center center" *ngIf="subSection.type===1">
+              <nb-select
+                [selected]="subSection.select.selected"
+                (selectedChange)="actionEmitted.emit({id: subSection.select.id, context: {event: $event}});">
+                <nb-option [value]="null">---</nb-option>
+                <nb-option [value]="plan.identifier" *ngFor="let plan of subSection.select.options" >{{plan.value}}</nb-option>
+              </nb-select>
+            </div>
+
+            <!--INPUT-->
+            <div fxLayout="column" style="height: 100%; padding-left: 1em"
+                 fxLayoutAlign="center center" *ngIf="subSection.type === 2">
+              <div fxLayout="row" fxLayoutAlign="start center">
+                {{subSection.input.value | currency: 'CZK'}}
+                <a nbButton type="button" status="primary" nbSuffix
+                   ghost (click)="actionEmitted.emit({id: subSection.input.identifier})">
+                  <nb-icon icon="edit-2-outline"></nb-icon>
+                </a>
+              </div>
+            </div>
+
+            <!--TOGGLE-->
+            <div fxLayout="column" style="height: 100%" fxLayoutAlign="center center" *ngIf="subSection.type === 3">
+              <nb-toggle *ngIf="subSection.type === 3" [(checked)]="subSection.toggle.selected" (checkedChange)="actionEmitted.emit({id: subSection.toggle.identifier, context: {event: $event}})"></nb-toggle>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="section-footer">
+          <nb-icon *ngIf="navSection.icon && navIconType.eva === navSection.iconType" [icon]="navSection.icon"></nb-icon>
+          <i *ngIf="navSection.iconType === navIconType.fontawesome  && navSection.icon" [class]="navSection.icon" ></i>
+          {{navSection.name}}
+        </div>
+      </section>
+      <section fxFlex></section>
+    </div>
+  </nb-tab>
+</nb-tabset>
+
+<div class="login" fxLayout="row" fxLayoutGap="1em" fxLayoutAlign="start center">
+  <i class="fas fa-bug" style="cursor: pointer" (click)="actionEmitted.emit({id: navButtonsEnum.showBugDialog})"></i>
+  <nb-icon style="cursor: pointer" icon="swap-outline" (click)="actionEmitted.emit({id: navButtonsEnum.switchNav})"></nb-icon>
+  <nb-icon icon="chevron-down-outline" status="warning" *ngIf="subMenuHidden"
+           id="chevron-for-open-ribbon"
+           style="cursor: pointer" (click)="subMenuHidden=false"></nb-icon>
+  <app-theme-selector style="margin-right: .5em"></app-theme-selector>
+  <app-auth></app-auth>
+</div>

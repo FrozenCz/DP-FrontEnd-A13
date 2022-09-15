@@ -1,0 +1,87 @@
+<div class="sidenav">
+  <div class="sidenav__header" fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center">
+    <span>{{navTab?.name}}</span>
+  </div>
+  <div fxLayout="column"
+       *ngFor="let navSection of navTab?.sections "
+       [id]="navSection.id"
+       class="sidenav__section"
+  >
+
+    <div class="section-header" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+      <div style="width: 20px;" *ngIf="navSection.icon">
+        <nb-icon *ngIf="navSection.iconType === navIconType.eva" [icon]="navSection.icon"></nb-icon>
+        <i *ngIf="navSection.iconType===navIconType.fontawesome" [class]="navSection.icon" style="font-size: 90%"></i>
+      </div>
+
+      <span>{{navSection.name}}</span>
+    </div>
+
+    <div class="section-body" fxFlex fxLayout="column" fxLayoutAlign="start start">
+      <div *ngFor="let subSection of navSection.subSections">
+
+        <!--BUTTONS-->
+        <div fxLayout="column" fxLayoutGap="0.2em" *ngIf="subSection.type===subsectionEnum.buttons"
+             fxLayoutAlign="start start">
+          <div *ngFor="let navButton of subSection.buttons">
+            <a nbButton size="tiny"
+               ghost
+               fullWidth
+               [id]="navButton.id"
+               [target]="navButton.target"
+               [routerLink]="navButton.url"
+               [routerLinkActive]="navButton.url ? navigation.activeLinkClass : ''"
+               [routerLinkActiveOptions]="{exact: !!navButton.routerLinkActiveExactOptions}"
+               (click)="actionEmitted.emit({id: navButton.id})"
+               [disabled]="navButton.disabled"
+            >
+              <nb-icon *ngIf="navButton.icon && navButton.iconType === navIconType.eva" [icon]="navButton.icon"></nb-icon>
+              <i [class]="navButton.icon"
+                 *ngIf="navButton.icon && navButton.iconType === navIconType.fontawesome"></i>
+              {{navButton.name}}
+              <nb-badge position="center right" *ngIf="navButton.badge" style="margin-right: -1em"
+                        [status]="navButton.disabled ? 'basic' : navButton.badge.status"
+                        [text]="navButton.badge.text"></nb-badge>
+            </a>
+          </div>
+        </div>
+
+        <!--SELECT-->
+        <div fxLayout="column" style="height: 100%" fxLayoutAlign="center center"
+             *ngIf="subSection.type===subsectionEnum.select">
+          <nb-select
+            [selected]="subSection.select.selected"
+            (selectedChange)="actionEmitted.emit({id: subSection.select.id, context: {event: $event}});">
+            <nb-option [value]="null">---</nb-option>
+            <nb-option [value]="plan.identifier"
+                       *ngFor="let plan of subSection.select.options">{{plan.value}}</nb-option>
+          </nb-select>
+        </div>
+
+        <!--INPUT-->
+        <div fxLayout="column" style="height: 100%; padding-left: 2rem"
+             fxLayoutAlign="center center" *ngIf="subSection.type === subsectionEnum.input">
+          <div fxLayout="row" fxLayoutAlign="start center">
+            {{subSection.input.value | currency: 'CZK'}}
+            <a nbButton type="button" status="primary" nbSuffix
+               ghost (click)="actionEmitted.emit({id: subSection.input.identifier})">
+              <nb-icon icon="edit-2-outline"></nb-icon>
+            </a>
+          </div>
+        </div>
+
+        <!--TOGGLE-->
+        <div fxLayout="column" style="margin-left:2rem; height: 100%" fxLayoutAlign="center center"
+             *ngIf="subSection.type === subsectionEnum.toggle">
+          <nb-toggle
+            [(checked)]="subSection.toggle.selected"
+            (checkedChange)="actionEmitted.emit({id: subSection.toggle.identifier, context: {event: $event}})"></nb-toggle>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+</div>
+

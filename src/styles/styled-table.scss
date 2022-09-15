@@ -1,0 +1,43 @@
+.styled-table {
+  border-collapse: collapse;
+  margin: 0;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.styled-table thead tr {
+  background-color: var(--input-basic-background-color);
+  border-color: var(--input-basic-border-color);
+  color: var(--input-basic-text-color);
+  border-radius: var(--input-rectangle-border-radius);
+  border-style: var(--input-border-style);
+  border-width: var(--input-border-width);
+  text-align: left;
+}
+.styled-table th,
+.styled-table td {
+  padding: 12px 15px;
+}
+
+
+.styled-table tbody tr {
+  td {
+    border-color: var(--input-basic-border-color);
+    border-style: var(--input-border-style);
+    border-width: var(--input-border-width);
+  }
+  border-bottom: 1px solid $border-basic-color-1;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+  background-color: $background-basic-color-2;
+}
+
+.styled-table tbody tr:last-of-type {
+  border-bottom: 1px solid $background-primary-color-2;
+}
+.styled-table tbody tr.active-row {
+  font-weight: bold;
+  color: $background-primary-color-2;
+}

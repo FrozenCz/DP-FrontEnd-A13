@@ -1,0 +1,23 @@
+.topNav {
+  position: relative;
+  z-index: 1;
+  margin-left: .5rem;
+  a {
+    text-decoration: none;
+    color: var(--text-hint-color);
+    padding: 0 1rem;
+    position: relative;
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 1px;
+      height: 60%;
+      top: 20%;
+      background: var(--color-basic-transparent-300)
+    }
+    &.text-primary-color {
+      color: var(--text-primary-color);
+    }
+  }
+}

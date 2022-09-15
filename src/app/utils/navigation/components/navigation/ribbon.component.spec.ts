@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NavigationComponent } from './navigation.component';
+import { RibbonComponent } from './ribbon.component';
 
 // describe('NavigationComponent', () => {
 //   let component: NavigationComponent;

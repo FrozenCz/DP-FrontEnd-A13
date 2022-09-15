@@ -1,0 +1,26 @@
+<div fxLayout="row" fxLayoutAlign="start center" class="myBoard">
+  <div class="myBoard__header" fxFlex fxLayout="row" fxLayoutAlign="start center">
+    <button (click)="expand.emit()" nbButton ghost>
+      <nb-icon icon="menu-outline"></nb-icon>
+    </button>
+
+    <div class="topNav" fxLayout="row" fxLayoutAlign="start center">
+      <a
+        fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem"
+        *ngFor="let nav of navigation" [routerLink]="nav.url" routerLinkActive="text-primary-color"
+        [routerLinkActiveOptions]="{exact: nav.exact}">
+        <nb-icon [icon]="nav.nbIcon"></nb-icon>
+        <span>{{nav.name}}</span>
+      </a>
+    </div>
+
+    <div class="login" style="height: auto" fxLayout="row" fxLayoutGap="1em" fxLayoutAlign="end center">
+      <i class="fas fa-bug" style="cursor: pointer" (click)="actionEmitted.emit({id: navButtonsIds.showBugDialog})"></i>
+      <nb-icon style="cursor: pointer" icon="swap-outline" (click)="actionEmitted.emit({id: navButtonsIds.switchNav})"></nb-icon>
+      <app-theme-selector style="margin-right: .5em; margin-bottom: -5px"></app-theme-selector>
+      <app-auth></app-auth>
+    </div>
+
+
+  </div>
+</div>

@@ -1,0 +1,22 @@
+.custom-tabset {
+  height: 100%;
+  .content-active {
+    height: calc(100% - 48px - 3.5rem);
+    padding: 1rem;
+  }
+  ul.tabset {
+    li {
+      a {
+        font-size: .8rem;
+        font-weight: normal;
+        text-transform: lowercase;
+        border-bottom: 1px;
+      }
+    }
+    .tab-link::before {
+      height: 1px;
+      bottom: 0px !important;
+    }
+  }
+
+}

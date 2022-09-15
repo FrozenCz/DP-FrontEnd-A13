@@ -1,0 +1,96 @@
+.u-text-line-through {
+  text-decoration: line-through;
+}
+.u-text-opacity-0 {
+  opacity: 0;
+}
+.u-opacity-0 {
+  opacity: 0;
+}
+
+.u-opacity-1 {
+  opacity: 1;
+}
+
+.u-display-none {
+  display: none;
+}
+
+.u-opacity-0, .u-opacity-1 {
+  transition: all .5s;
+}
+
+.u-text-align-left {
+  text-align: left;
+}
+
+
+.u-text-align-right {
+  text-align: right;
+}
+
+
+.u-text-bold {
+  font-weight: bold;
+}
+
+.u-italic {
+  font-style: italic;
+}
+
+
+//.u-shine, app-ag-extended-header *[nbButton]:not(.u-crossed-out):not(.badgetButton) {
+//  position: relative;
+//  overflow: hidden;
+//  &::before {
+//    background: linear-gradient(
+//        to right,
+//        fade_out(white, 0.1) 0%,
+//        fade_out(white, 0.7) 100%
+//    );
+//    content: "";
+//    display: block;
+//    height: 100%;
+//    left: -75%;
+//    position: absolute;
+//    top: 0;
+//    transform: skewX(-25deg);
+//    width: 50%;
+//    z-index: 2;
+//    opacity: 0;
+//  }
+//
+//  &:hover,
+//  &:focus {
+//    &::before {
+//      animation: shine 0.4s;
+//    }
+//  }
+//
+//  @keyframes shine {
+//    100% {
+//      left: 125%;
+//    }
+//  }
+//}
+
+.u-crossed-out {
+  position: relative;
+  &:before {
+    content: '';
+    height: 1px;
+    width: 80%;
+    left: 10%;
+    top: 50%;
+    transform: rotateZ(45deg);
+    background: $color-danger-600;
+    position: absolute;
+    z-index: 1;
+  }
+}
+
+
+
+//* {
+//  transition: all .5s;
+//}

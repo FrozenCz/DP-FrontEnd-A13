@@ -25,6 +25,8 @@
     "@nebular/date-fns": "^9.0.3",
     "@nebular/eva-icons": "^9.0.3",
     "@nebular/theme": "^9.0.3",
+    "@ngrx/store": "^13.2.0",
+    "@ngrx/store-devtools": "^13.2.0",
     "ag-grid-angular": "^27.3.0",
     "ag-grid-community": "^27.3.0",
     "ag-grid-enterprise": "^27.3.0",

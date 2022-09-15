@@ -1,12 +1,27 @@
 <nb-layout fxLayout="column" fxFill *ngIf="!protocolsTemplate; else protocols">
+  <nb-sidebar tag="left" *ngIf="!ribbon" [state]="sideNavCollapsed ? 'collapsed' : 'expanded' " #sideBarRef>
+    <app-side-nav
+      [sideBarRef]="sideBarRef"
+      [activeTab]="activeTab"
+      [navigation]="navigation"
+      (actionEmitted)="navActionEmitted($event)">
+    </app-side-nav>
+  </nb-sidebar>
   <nb-layout-column style="padding: 0; height: 100%; max-height: 100%; min-height: 100%;" fxLayout="column">
-      <app-navigation fxLayout="row" fxLayoutAlign="start start"
-                      [usersSelected]="usersSelected"
-                      [activeTab]="activeTab"
-                      (navigationButtonClicked)="navigationButtonClicked($event)"
-                      (protocolEmit)="onProtocolEmit($event)"
-      >
-      </app-navigation>
+    <app-toolbar
+      *ngIf="!ribbon"
+      [navigation]="topNav"
+      (expand)="sideNavCollapsed=!sideNavCollapsed"
+      (actionEmitted)="navActionEmitted($event)"
+    >
+    </app-toolbar>
+    <app-ribbon fxLayout="row" fxLayoutAlign="start start"
+                *ngIf="ribbon"
+                [activeTab]="activeTab"
+                [navigation]="navigation"
+                (actionEmitted)="navActionEmitted($event)"
+    >
+    </app-ribbon>
     <div fxLayout="row" fxFlex fxLayoutAlign="start start" style="overflow: hidden">
       <router-outlet></router-outlet>
       <div id="assetQuickFilter">

@@ -20,6 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": ["ag-grid-enterprise", "date-fns/locale", "big.js"],
             "outputPath": "dist/bp-13",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -31,7 +32,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/enwstyles.scss"
             ],
             "scripts": []
           },
@@ -99,7 +100,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/enwstyles.scss"
             ],
             "scripts": []
           }

@@ -1,0 +1,52 @@
+.sidenav {
+  [nbButton].size-tiny {
+    font-size: .72rem;
+  }
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% + 2.5rem);
+    position: relative;
+    left:-1.25rem;
+    margin-bottom: .75rem;
+    font-size: 120%;
+    height: 33px;
+    background: linear-gradient(var(--color-primary-transparent-500) 0%, var(--background-basic-color-1) 4%, var(--background-basic-color-2) 60%, var(--background-basic-color-2) 100%);
+    box-sizing: border-box;
+
+    span {
+      //font-family: "Times New Roman";
+      color: var(--background-basic-color-4);
+      letter-spacing: .2rem;
+      text-shadow: 0px 0px 3px var(--background-basic-color-1);
+    }
+
+
+  }
+  &__section {
+    margin-bottom: 2rem;
+    a {
+      position: relative;
+    }
+  }
+  .section-header {
+
+  }
+}
+
+
+
+nb-sidebar {
+  .main-container {
+    &>div:first-of-type {
+    padding-top: 0;
+  }
+  }
+  border: 1px solid var(--border-basic-color-5);
+  box-shadow: 0 4px 4px -3px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(
+    var(--background-basic-color-2) 0%,
+    var(--background-basic-color-2) 60%,
+    var(--background-basic-color-1) 100%);
+}

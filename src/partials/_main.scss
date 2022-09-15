@@ -1,0 +1,24 @@
+.u-heartbeat {
+  animation-duration: 3s;
+  animation-name: heartbeat;
+  animation-iteration-count: infinite;
+}
+
+.u-came-from-left {
+  animation: came-from-left .5s ease-out 1s;
+  animation-fill-mode: backwards;
+  backface-visibility: hidden;
+}
+
+.u-highlight {
+  animation-duration: 2s;
+  animation-name: backgroundChange;
+  animation-iteration-count: infinite;
+}
+
+.u-attention {
+  animation-duration: 1s;
+  animation-name: attention;
+  animation-iteration-count: 3;
+}
+

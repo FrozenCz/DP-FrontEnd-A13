@@ -1,0 +1,27 @@
+.myDialog {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &__shade {
+    z-index: 101;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.5);
+    &-fail {
+      background: black !important;
+    }
+  }
+  nb-card, nb-flip-card {
+    position: relative;
+    z-index: 102;
+  }
+}
