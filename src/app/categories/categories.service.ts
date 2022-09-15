@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, ReplaySubject, throwError} from 'rxjs';
-import {ICategory, ICategoryGet, ICategoryGetObject, IColumnName} from './models/category.model';
+import {BehaviorSubject, noop, Observable, switchMap, throwError} from 'rxjs';
+import {Category, ICategoryGet, CategoryGetDTO, IColumnName} from './models/category.model';
 import {HttpClient} from '@angular/common/http';
 import {TokenService} from '../auth/token.service';
 import {catchError, map, take, tap} from 'rxjs/operators';
 import {ColDef} from 'ag-grid-community';
-import {Unit} from '../units/models/unit.model';
+import {Store} from '../store/store';
 
 export enum CategorySettingsEnum {
   categoryColumnNames = 'categoryColumnNames'
@@ -27,10 +27,15 @@ interface ColDefExt {
   providedIn: 'root'
 })
 export class CategoriesService {
-  private categories$: BehaviorSubject<ICategory[]> = new BehaviorSubject<ICategory[]>([]);
+  categoriesStore$: Store<Category> = new Store<Category>({identifierName: 'id'});
+  private categories$: BehaviorSubject<Category[]> = new BehaviorSubject<Category[]>([]);
 
-  //todo: podivej se poradne co to dela
-  private categoriesSettingsStore: BehaviorSubject<IColumnSettings> = new BehaviorSubject<IColumnSettings>({config: '', name: CategorySettingsEnum.categoryColumnNames});
+
+  //todo: config na sloupce.... super vyreseno... facku bych si dal
+  private categoriesSettingsStore: BehaviorSubject<IColumnSettings> = new BehaviorSubject<IColumnSettings>({
+    config: '',
+    name: CategorySettingsEnum.categoryColumnNames
+  });
   private catSettings$: Observable<IColumnSettings> = this.categoriesSettingsStore.asObservable();
 
   private categoriesColDefsStore: BehaviorSubject<ColDefExt[]> = new BehaviorSubject<ColDefExt[]>([]);
@@ -40,6 +45,7 @@ export class CategoriesService {
     private httpClient: HttpClient,
     private tokenService: TokenService
   ) {
+
 
     this.getColumnSettings(CategorySettingsEnum.categoryColumnNames).pipe(take(1)).subscribe((columnSettings) => {
       const newColDefs: ColDefExt[] = [];
@@ -65,37 +71,43 @@ export class CategoriesService {
       this.categoriesColDefsStore.next(newColDefs);
     });
 
-    this.tokenService.getToken().subscribe(() => {
-      this.init();
-    });
+    this.tokenService.getToken()
+      .pipe(switchMap(() => {
+        return this.fetchCategories()
+      }))
+      .subscribe((categories) => {
+        this.categoriesStore$.putData(categories);
+      });
 
   }
 
-  getCategoryById(id: number): ICategory | undefined {
-    return this.categories$.getValue().find(category => category.id === id);
+  public static getCategoryTreeForDetail(category: Category): string {
+    return category.tree?.join(' > ');
+  }
+
+  getCategoryById(id: number): Observable<Category> {
+    return this.categoriesStore$.getOne$(id);
   }
 
 
-  private init(): void {
-    this.httpClient.get<ICategoryGetObject[]>('/rest/categories').pipe(
+  private fetchCategories(): Observable<Category[]> {
+    return this.httpClient.get<CategoryGetDTO[]>('/rest/categories').pipe(
       map((rawCategories) => {
-        let categories: ICategory[] = [];
+        let categories: Category[] = [];
 
         if (Array.isArray(rawCategories)) {
-          categories = this.deepSearch(rawCategories);
+          categories = this.deepSearchAndConvertDTOtoCategory(rawCategories);
         } else {
-          categories = this.deepSearch([rawCategories]);
+          categories = this.deepSearchAndConvertDTOtoCategory([rawCategories]);
         }
         return categories;
       })
-    ).subscribe((categories) => {
-      this.categories$.next(categories);
-    });
+    )
   }
 
-  deepSearch(iCategoryGets: ICategoryGetObject[]): ICategory[] {
+  deepSearchAndConvertDTOtoCategory(iCategoryGets: CategoryGetDTO[]): Category[] {
     const queue: any = [...iCategoryGets];
-    const result: any[] = [];
+    const result: Category[] = [];
     let tree: any[] = [];
     let treeIds = [];
     let columnValues: IColumnName[] = [];
@@ -135,21 +147,20 @@ export class CategoriesService {
           treeIds = [];
         }
       }
-      result.push({
-        id: category.id,
+      const newCategory = new Category(category.id, category.name);
+      newCategory.code = category.code;
+      newCategory.parent = result.find(u => u.name === tree[tree.length - 1])?.id;
+      newCategory.children = [...category.children.map((u: any) => u.id)]
+      newCategory.tree = [...tree, category.name];
+      newCategory.treeIds = [...treeIds, category.id];
+      newCategory.columnValues = [...columnValues, {
         name: category.name,
-        code: category.code,
-        parent: result.find(u => u.name === tree[tree.length - 1])?.id,
-        children: [...category.children.map((u:any) => u.id)],
-        tree: [...tree, category.name],
-        treeIds: [...treeIds, category.id],
-        columnValues: [...columnValues, {
-          name: category.name,
-          codeName: category.code,
-          useCodeAsColumn: this.isCodeAsColumnOnThisDepth(tree.length)
-        }]
-      });
+        codeName: category.code,
+        useCodeAsColumn: this.isCodeAsColumnOnThisDepth(tree.length)
+      }]
+      result.push(newCategory);
     }
+
     return result.sort((a, b) => {
       return a.name.localeCompare(b.name);
     });
@@ -159,8 +170,8 @@ export class CategoriesService {
     return this.httpClient.post<ICategoryGet>('/rest/categories', {name, code, parent});
   }
 
-  public getCategories(): Observable<ICategory[]> {
-    return this.categories$.asObservable();
+  public getCategories(): Observable<Category[]> {
+    return this.categoriesStore$.getAll$();
   }
 
   public saveColumnSettings(columnSettings: IColumnSettings): Observable<void> {
@@ -212,15 +223,19 @@ export class CategoriesService {
     if (!this.categoriesSettingsStore) {
       return false;
     }
-    const columnConfig = JSON.parse(this.categoriesSettingsStore.getValue().config);
+    const configVal = this.categoriesSettingsStore.getValue().config;
+    if (!configVal) {
+      return false;
+    }
+    const columnConfig = JSON.parse(configVal);
     if (columnConfig && depth + 1 > columnConfig.length) {
       return false;
     }
     return columnConfig[depth].useCodeAsColumn;
   }
 
-  getDescendants(categoryId: number): Observable<ICategory[]> {
-    return this.httpClient.get<ICategory[]>('rest/categories/' + categoryId + '/descendants');
+  getDescendants(categoryId: number): Observable<Category[]> {
+    return this.httpClient.get<Category[]>('rest/categories/' + categoryId + '/descendants');
   }
 
   isAbleToDelete(deletedCategoryId: number): Observable<boolean> {
@@ -240,55 +255,15 @@ export class CategoriesService {
   }
 
   wsCategoryUpdate(changes: ICategoryGet): void {
-    const responseCategory = changes;
-    const updatedCategories = [...this.categories$.getValue()];
-    const categoryIndexFound = updatedCategories.findIndex(category => category.id === responseCategory.id);
-
-    if (categoryIndexFound === -1) {
-      const nCategory: ICategory = {
-        ...responseCategory,
-        tree: [],
-        treeIds: [],
-        parent: responseCategory.parent?.id,
-        parentName: responseCategory.parent?.name,
-        children: [],
-        columnValues: []
-      };
-
-      let ancestorPath: any[] = [];
-      let ancestorTreeIds: any[] = [];
-      let ancestorColumnValues: any[] = [];
-      if (responseCategory.parent) {
-        const parentCategory = updatedCategories.find(category => category.id === responseCategory.parent.id);
-        if (parentCategory) {
-          ancestorPath = parentCategory.tree;
-          ancestorTreeIds = parentCategory.treeIds;
-          ancestorColumnValues = parentCategory.columnValues;
-        }
-      }
-      nCategory.tree = [...ancestorPath, nCategory.name];
-      nCategory.treeIds = [...ancestorTreeIds, nCategory.id];
-      nCategory.columnValues = [
-        ...ancestorColumnValues,
-        {
-          name: nCategory.name,
-          codeName: nCategory.code,
-          useCodeAsColumn: this.isCodeAsColumnOnThisDepth(nCategory.tree.length)
-        }];
-      updatedCategories.push(nCategory);
-      this.categories$.next(updatedCategories);
-    } else {
-      this.init();
-    }
+    this.fetchCategories();
   }
 
   wsCategoryDelete(deletedCategoryId: number): void {
-    const updatedCategories = this.categories$.getValue().filter(category => !category.treeIds.includes(deletedCategoryId));
-    this.categories$.next(updatedCategories);
+    this.categoriesStore$.remove(deletedCategoryId).then(noop)
+      .catch(err => {
+        alert(err);
+      });
   }
 
-  getCategoryTreeForDetail(id: number): string | undefined {
-    const category = this.getCategoryById(id);
-    return category?.tree?.join(' > ');
-  }
+
 }

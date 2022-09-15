@@ -4,7 +4,7 @@
     class="ag-theme-alpine"
     [columnDefs]="columnDefs"
     [gridOptions]="gridOptions"
-    [rowData]="categoriesWithColumnNames"
+    [rowData]="(categoriesWithColumnNames$ | async)"
     [getContextMenuItems]="getContextMenuItems"
     [context]="gridContext"
     [getDataPath]="getDataPath"

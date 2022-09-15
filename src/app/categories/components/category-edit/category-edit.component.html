@@ -1,4 +1,4 @@
-<form [formGroup]="editCategoryForm" (ngSubmit)="submit()">
+<form [formGroup]="editCategoryForm" (ngSubmit)="submit()" *ngIf="(category$ | async)">
   <nb-card accent="warning" >
     <nb-card-header>
       <nb-icon icon="grid-outline"></nb-icon>

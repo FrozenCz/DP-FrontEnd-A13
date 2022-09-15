@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {CategoriesService, CategorySettingsEnum} from '../../categories.service';
 import {Observable} from 'rxjs';
-import {ICategory} from '../../models/category.model';
+import {Category} from '../../models/category.model';
 import {tap, withLatestFrom} from 'rxjs/operators';
 import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {NbToastrService, NbWindowRef} from '@nebular/theme';
@@ -14,7 +14,7 @@ import {NbToastrService, NbWindowRef} from '@nebular/theme';
 })
 
 export class EditCategoryColumnsDialogComponent implements OnInit {
-  categories$!: Observable<ICategory[]>;
+  categories$!: Observable<Category[]>;
   treeLength = 0;
   editColumnNamesForm!: FormGroup;
   column = new FormArray([]);

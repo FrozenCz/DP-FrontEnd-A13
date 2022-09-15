@@ -2,9 +2,9 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CategoriesService} from '../../categories.service';
 import {NbComponentStatus, NbDialogRef, NbToastrService, NbTrigger} from '@nebular/theme';
-import { withLatestFrom} from 'rxjs/operators';
-import {ICategory} from '../../models/category.model';
-import {Subject} from 'rxjs';
+import {tap, withLatestFrom} from 'rxjs/operators';
+import {Category} from '../../models/category.model';
+import {Observable, Subject} from 'rxjs';
 
 
 @Component({
@@ -14,8 +14,8 @@ import {Subject} from 'rxjs';
 })
 export class CategoryEditComponent implements OnInit, OnDestroy {
   @Input() categoryId!: number;
-  category: ICategory;
-  categories: ICategory[] = [];
+  category$: Observable<Category>;
+  categories: Category[] = [];
   editCategoryForm: FormGroup;
   categoryNameStatus: NbComponentStatus = 'basic';
   categoryCodeStatus: NbComponentStatus = 'info';
@@ -29,15 +29,15 @@ export class CategoryEditComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private nbToastrService: NbToastrService
   ) {
-     const category = this.categoriesService.getCategoryById(this.categoryId);
-    if (!category) {
-      throw new Error('');
-    } else {
-      this.category = category;
-    }
+    this.category$ = this.categoriesService.getCategoryById(this.categoryId).pipe(
+      tap(category => {
+        this.setForm(category);
+      })
+    )
+
     this.editCategoryForm = this.formBuilder.group({
-      name: [this.category.name, [Validators.required, Validators.maxLength(50), Validators.pattern(/^[A-zÁ-ž0-9 ]*$/)]],
-      code: [this.category.code, [Validators.maxLength(20), Validators.pattern(/^[A-zÁ-ž0-9 ]*$/)]],
+      name: [null, [Validators.required, Validators.maxLength(50), Validators.pattern(/^[A-zÁ-ž0-9 ]*$/)]],
+      code: [null, [Validators.maxLength(20), Validators.pattern(/^[A-zÁ-ž0-9 ]*$/)]],
     });
 
   }
@@ -50,13 +50,14 @@ export class CategoryEditComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    if(!this.category) {
+    if(!this.category$) {
       this.nbDialogRef.close();
       this.nbToastrService.danger('nenalezena', 'Kategorie');
     }
 
     this.editCategoryForm.controls['name'].valueChanges
-      .pipe(withLatestFrom(this.categoriesService.getCategories()))
+      .pipe(
+        withLatestFrom(this.categoriesService.getCategories()))
       .subscribe(
         ([value, categories]) => {
           if (categories.find(category => category.name.toLowerCase() === value.toLowerCase().trim())) {
@@ -94,4 +95,11 @@ export class CategoryEditComponent implements OnInit, OnDestroy {
     this.nbDialogRef.close();
   }
 
+  private setForm(category: Category): void {
+    this.editCategoryForm.setValue({
+      name: category.name,
+      code: category.code
+    })
+
+  }
 }

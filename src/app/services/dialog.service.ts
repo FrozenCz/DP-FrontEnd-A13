@@ -6,7 +6,7 @@ import {CreateUserDialogComponent} from '../users/components/create-user-dialog/
 import {DeleteSelectedUsersDialogComponent} from '../users/components/delete-selected-users-dialog/delete-selected-users-dialog.component';
 import {EditCategoryColumnsDialogComponent} from '../categories/components/edit-category-columns-dialog/edit-category-columns-dialog.component';
 import {AssetDetailDialogComponent} from '../assets/components/asset-detail-dialog/asset-detail-dialog.component';
-import {ICategory} from '../categories/models/category.model';
+import {Category} from '../categories/models/category.model';
 import {Observable} from 'rxjs';
 import {DeleteListDialogComponent} from '../lists/components/delete-list-dialog/delete-list-dialog.component';
 import {ListDetailComponent} from '../lists/components/list-detail/list-detail.component';
@@ -52,7 +52,7 @@ export class DialogService {
     this.nbWindowService.open(EditCategoryColumnsDialogComponent, {title: 'Editace názvů sloupců kategorií'});
   }
 
-  showCreateAssetsDialog(category?: ICategory): void {
+  showCreateAssetsDialog(category?: Category): void {
     this.nbWindowService.open(AssetDetailDialogComponent, {
       title: 'Vložení nového majetku', context: {
         selectedCategory: category

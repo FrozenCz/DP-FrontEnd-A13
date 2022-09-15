@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {DialogService} from '../../../services/dialog.service';
 import {combineLatest, Subject, switchMap, tap} from 'rxjs';
-import {ICategory} from '../../models/category.model';
+import {Category} from '../../models/category.model';
 import {CategoriesService} from '../../categories.service';
 import {map, takeUntil} from 'rxjs/operators';
 import {TokenService} from '../../../auth/token.service';
@@ -15,7 +15,7 @@ import {AssetsService, IAssetsExt} from '../../../assets/assets.service';
 })
 export class CategoryDetailComponent implements OnInit, OnDestroy {
   @Input() categoryId!: number;
-  category: ICategory | undefined = undefined;
+  category: Category | undefined = undefined;
   assetsCreateAllowed = false;
   unsubscribe = new Subject<void>();
   assetsFilteredByCategory: IAssetsExt[] = [];

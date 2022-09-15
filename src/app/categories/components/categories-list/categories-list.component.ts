@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CategoriesService} from '../../categories.service';
-import {combineLatest, Observable, Subject, Subscription} from 'rxjs';
-import {ICategoryWithColumnNames} from '../../models/category.model';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {Category, ICategoryWithColumnNames} from '../../models/category.model';
 import {ColDef, GridApi, GridOptions, GridReadyEvent} from 'ag-grid-community';
 import {NbDialogService, NbWindowService} from '@nebular/theme';
 import {ContextMenuItem} from '../../../utils/agGrid/contextMenuItem.interface';
@@ -23,7 +23,7 @@ import {RightsTag} from '../../../shared/rights.list';
 })
 
 export class CategoriesListComponent implements OnInit, OnDestroy {
-  categoriesWithColumnNames: ICategoryWithColumnNames[] = [];
+  categoriesWithColumnNames$: Observable<ICategoryWithColumnNames[]>;
   unsubscribe: Subject<void> = new Subject<void>();
 
   storedFilterModel: any;
@@ -90,6 +90,25 @@ export class CategoriesListComponent implements OnInit, OnDestroy {
     private nbDialogService: NbDialogService,
     private tokenService: TokenService
   ) {
+    this.categoriesWithColumnNames$ = combineLatest(
+      [this.categoriesService.getCategories(), this.categoriesService.getCategoryColumnNames()])
+      .pipe(
+        map(([categories, columnNames]) => {
+          const catWithNames: ICategoryWithColumnNames[] = categories.map((category: Category) => {
+            if (!columnNames?.length) {
+              columnNames = [];
+            }
+            return {
+              code: category.code,
+              tree: category.tree,
+              name: columnNames[category.tree.length - 1]?.name,
+              codeName: columnNames[category.tree.length - 1]?.codeName,
+              useCodeAsColumn: columnNames[category.tree.length - 1]?.useCodeAsColumn
+            };
+          });
+          return catWithNames;
+        })
+      )
   }
 
   ngOnInit(): void {
@@ -99,27 +118,7 @@ export class CategoriesListComponent implements OnInit, OnDestroy {
       this.gridContext.permissions.categoriesEditAllowed = this.tokenService.getPermission(RightsTag.updateCategory);
     });
 
-    combineLatest(
-      [this.categoriesService.getCategories(), this.categoriesService.getCategoryColumnNames()])
-      .pipe(
-        map(([categories, columnNames]) => {
-          const catWithNames: ICategoryWithColumnNames[] = categories.map((category) => {
-            if (!columnNames?.length) {
-              columnNames = [];
-            }
-            return {
-              ...category,
-              name: columnNames[category.tree.length - 1]?.name,
-              codeName: columnNames[category.tree.length - 1]?.codeName,
-              useCodeAsColumn: columnNames[category.tree.length - 1]?.useCodeAsColumn
-            };
-          });
-          return catWithNames;
-        }),
-        takeUntil(this.unsubscribe),
-      ).subscribe(categoriesWithColumnName => {
-      this.categoriesWithColumnNames = categoriesWithColumnName;
-    })
+
 
   }
 

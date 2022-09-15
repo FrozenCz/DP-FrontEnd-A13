@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subject} from 'rxjs';
-import {DefaultCategory, ICategory} from '../../models/category.model';
+import {DefaultCategory, Category} from '../../models/category.model';
 import {CategoriesService} from '../../categories.service';
 import {NbComponentStatus, NbDialogRef, NbToastrService, NbTrigger} from '@nebular/theme';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -13,7 +13,7 @@ import {map, takeUntil} from 'rxjs/operators';
 })
 export class CreateCategoryDialogComponent implements OnInit, OnDestroy {
   @Input() parentCategoryId!: number;
-  categories: (ICategory | DefaultCategory)[] = [];
+  categories: (Category | DefaultCategory)[] = [];
   unsubscribe: Subject<void> = new Subject<void>();
   defaultCategory: DefaultCategory = {
     name: 'Hlavní kategorie',

@@ -106,16 +106,18 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
       this.getAsset(this.assetId)
         .pipe(
           withLatestFrom(this.usersService.getUsers$().pipe(take(1))),
-          tap(([asset, users]) => {
+          switchMap(([asset, users]) => {
             this.editedAsset = asset;
             this.insertAssetDataIntoDetailForm(asset, users);
             this.reachToUser = !!this.editedAsset?.user?.reachable;
             this.setEditModeTo(false);
-            const catTree = this.categoriesService.getCategoryTreeForDetail(asset.category.id);
+            return this.categoriesService.getCategoryById(asset.category.id)
+          }),
+          tap(category => {
+            const catTree = CategoriesService.getCategoryTreeForDetail(category);
             this.categoryTree = catTree ? catTree : '';
             this.loading = false;
           }),
-          map((rel) => !rel),
           takeUntil(this.unsubscribe))
         .subscribe()
     } else {
@@ -262,13 +264,6 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
     this.assetForm.patchValue({
       user: users.find(u => u.id === preselectedUserId)
     });
-
-    // this.usersService.users$.pipe(take(1)).subscribe(
-    //   user => {
-    //     this.assetForm.patchValue({
-    //         user: user.find(u => u.id === preselectedUserId)
-    //       });
-    //   });
   }
 
   private getAsset(assetId: number): Observable<AssetModelExt> {

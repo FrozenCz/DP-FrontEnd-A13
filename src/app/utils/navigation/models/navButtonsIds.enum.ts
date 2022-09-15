@@ -20,6 +20,10 @@ export enum NavButtonsIdsEnum {
   removed_assets_protocols = 'removed_assets_protocols',
 
   units_list='units_list',
-  unist_list_new='unist_list_new'
+  unist_list_new='unist_list_new',
 
+  category_list='category_list',
+  category_new='category_new',
+
+  category_column_edit='category_column_edit'
 }

@@ -8,9 +8,6 @@ import {AgGridInstanceService} from './utils/agGrid/ag-grid-instance.service';
 import {WebsocketService} from './services/websocket.service';
 import {TokenService} from './auth/token.service';
 import {MainTab} from './utils/navigation/components/toolbar/toolbar.component';
-import {NavigationInterface} from './utils/navigation/components/navigation/nav.model';
-import {NavButClickedEmit} from './utils/navigation/components/navigation/ribbon.component';
-import {NavActionsEnum} from './utils/navigation/components/navigation/navActions.enum';
 import {Navigation} from './utils/navigation/models/navigation';
 import {NavigationTab} from './utils/navigation/models/navigationTab';
 import {NavigationSection} from './utils/navigation/models/navigationSection';
@@ -29,17 +26,13 @@ import {take} from 'rxjs/operators';
 
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'bpProjekt-Frontend';
-  usersSelected = false;
   activeTab: string = '';
   protocolsTemplate = false;
   ribbon = true;
   sideNavCollapsed = false;
-  navigationInterface: NavigationInterface = {
-    activeLinkClass: 'text-primary-color',
-    navTabs: []
-  };
 
   navigation: Navigation = new Navigation('text-primary-color');
+  topNav: MainTab[] = [];
   usersTab: NavigationTab = new NavigationTab('users', 'Uživatelé', ['users'], 'person-outline');
   assetTab: NavigationTab = new NavigationTab('assets', 'Majetek', ['assets'], 'monitor-outline');
   listsTab: NavigationTab = new NavigationTab('lists', 'Sestavy', ['lists'], 'list-outline');
@@ -58,9 +51,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     iconType: NavigationAcceptedIconsEnum.eva
   });
 
-
-  topNav: MainTab[] = [];
-
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -76,80 +66,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.createNavigation();
   }
 
-  navigationButtonClicked(navButClickedEmit: NavButClickedEmit): void {
-
-    switch (navButClickedEmit.action) {
-      case NavActionsEnum.showStartingPage:
-        this.router.navigate(['']).then(noop);
-        break;
-      case NavActionsEnum.menuUsers || NavActionsEnum.usersList:
-        this.router.navigate(['/users']).then(noop);
-        break;
-      case NavActionsEnum.menuAssets || NavActionsEnum.assetsList:
-        this.router.navigate(['/assets']).then(noop);
-        break;
-      case NavActionsEnum.menuUnits || NavActionsEnum.unitsList:
-        this.router.navigate(['/units']).then(noop);
-        break;
-      case NavActionsEnum.menuCategories || NavActionsEnum.categoriesList:
-        this.router.navigate(['/categories']).then(noop);
-        break;
-      case NavActionsEnum.menuLocations:
-        this.router.navigate(['/locations']).then(noop);
-        break;
-      case NavActionsEnum.menuHistory:
-        this.router.navigate(['/history']).then(noop);
-        break;
-
-      case NavActionsEnum.createUser:
-        this.dialogService.showCreateUserDialog();
-        break;
-      case NavActionsEnum.deleteSelectedUsers:
-        this.dialogService.showDeleteSelectedUsersDialog();
-        break;
-      case NavActionsEnum.editSelectedUsers:
-        this.usersService.setEditModeTo(true);
-        break;
-      case NavActionsEnum.createAsset:
-        this.router.navigate(['/categories']).then(noop);
-        this.dialogService.youMustSelectCategoryFirst();
-        break;
-
-      case NavActionsEnum.createUnit:
-        this.dialogService.showCreateUnitDialog();
-        break;
-      case NavActionsEnum.collapseUnits:
-        this.agGridService.setCollapseUnitsTo(true);
-        break;
-      case NavActionsEnum.expandUnits:
-        this.agGridService.setCollapseUnitsTo(false);
-        break;
-
-      case NavActionsEnum.createCategory:
-        this.dialogService.showCreateCategoryDialog();
-        break;
-      case NavActionsEnum.editCategoryColumns:
-        this.dialogService.showEditCategoryColumnsDialog();
-        break;
-
-      case NavActionsEnum.menuLists:
-        this.router.navigate(['lists']).then(noop);
-        break;
-      case NavActionsEnum.lists:
-        this.router.navigate(['lists']).then(noop);
-        break;
-      case NavActionsEnum.showWorkingList:
-        this.router.navigate(['lists/working-list']).then(noop);
-        break;
-      case NavActionsEnum.transferProtocol:
-        this.router.navigate(['lists/working-list']).then(noop);
-        break;
-
-    }
-  }
-
   ngOnInit(): void {
-
     this.router.events.subscribe((data) => {
       if (data instanceof RoutesRecognized) {
         if (!this.activeTab) {
@@ -158,18 +75,17 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.protocolsTemplate = !!data.state?.root?.children[0]?.data['protocols'];
           });
         } else {
-
           this.routeLogic(data);
         }
       }
-
-    });
-
-    this.usersService.selectedUsers$.subscribe((selectedUsers) => {
-      this.usersSelected = !!selectedUsers.length;
     });
   }
 
+  /**
+   * make active tab from url
+   * @param data
+   * @private
+   */
   private routeLogic(data: any): void {
     const splitUrl = data.url.split('/');
     if (splitUrl && splitUrl.length > 1) {
@@ -189,10 +105,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         e.preventDefault();
       }
     });
-  }
-
-  onProtocolEmit($event: any): void {
-
   }
 
   /**
@@ -259,11 +171,19 @@ export class AppComponent implements OnInit, AfterViewInit {
       case NavButtonsIdsEnum.unist_list_new:
         this.dialogService.showCreateUnitDialog();
         break;
+      case NavButtonsIdsEnum.category_new:
+        this.dialogService.showCreateCategoryDialog();
+        break;
+      case NavButtonsIdsEnum.category_list:
+        this.router.navigate(['/categories']).then(noop);
+        break;
+      case NavButtonsIdsEnum.category_column_edit:
+        this.dialogService.showEditCategoryColumnsDialog();
+        break;
       default:
         alert(`action ${actionId} is not defined in navButtonsID`);
     }
   }
-
 
   private prepareToolbar(): void {
     this.topNav = this.navigation.navTabs.map(tab => {
@@ -408,8 +328,38 @@ export class AppComponent implements OnInit, AfterViewInit {
       iconType: NavigationAcceptedIconsEnum.eva
     })
     unitsMainSectionSubSectionA.buttons.push(newUnitButton)
-
     this.unitsTab.sections.push(unitsMainSection)
+
+    /** categories **/
+    const categoriesMainSection = new NavigationSection('categories', 'kategories', {
+      name: 'windows-outline',
+      iconType: NavigationAcceptedIconsEnum.eva
+    });
+    const categoriesMainSectionSubSectionA = new NavigationSubSectionButtons();
+    categoriesMainSection.subSections.push(categoriesMainSectionSubSectionA);
+    const categoriesList = new NavigationButton(NavButtonsIdsEnum.category_list,
+      'seznam kategorií',
+      {name: 'list-outline', iconType: NavigationAcceptedIconsEnum.eva})
+    categoriesMainSectionSubSectionA.buttons.push(categoriesList);
+    const newCategoryButton = new NavigationButton(NavButtonsIdsEnum.category_new, 'nová kategorie', {
+      name: 'plus-outline',
+      iconType: NavigationAcceptedIconsEnum.eva
+    })
+    categoriesMainSectionSubSectionA.buttons.push(newCategoryButton)
+    this.categoryTab.sections.push(categoriesMainSection)
+
+    const categoryColumnSection = new NavigationSection('categories', 'kategories', {
+      name: 'windows-outline',
+      iconType: NavigationAcceptedIconsEnum.eva
+    });
+    const categoryColumnSubSectionA = new NavigationSubSectionButtons();
+    categoryColumnSection.subSections.push(categoryColumnSubSectionA);
+    const columnsEditButton = new NavigationButton(NavButtonsIdsEnum.category_column_edit,
+      'sloupce',
+      {name: 'edit-outline', iconType: NavigationAcceptedIconsEnum.eva})
+    categoryColumnSubSectionA.buttons.push(columnsEditButton);
+    this.categoryTab.sections.push(categoryColumnSection)
+
 
     /* handling changes */
     this.prepareToolbar();
