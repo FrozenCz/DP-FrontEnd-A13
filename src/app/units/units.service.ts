@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {NbDialogService} from '@nebular/theme';
 import {IUnitGet, Unit, UnitsGetObject, UnitUpdate} from './models/unit.model';
 import {HttpClient} from '@angular/common/http';
-import {BehaviorSubject, forkJoin, Observable, Subject, throwError} from 'rxjs';
+import {BehaviorSubject, forkJoin, Observable, throwError} from 'rxjs';
 import {catchError, map, tap} from 'rxjs/operators';
 import {TokenService} from '../auth/token.service';
 

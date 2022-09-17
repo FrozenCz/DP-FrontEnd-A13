@@ -28,8 +28,6 @@ interface ColDefExt {
 })
 export class CategoriesService {
   categoriesStore$: Store<Category> = new Store<Category>({identifierName: 'id'});
-  private categories$: BehaviorSubject<Category[]> = new BehaviorSubject<Category[]>([]);
-
 
   //todo: config na sloupce.... super vyreseno... facku bych si dal
   private categoriesSettingsStore: BehaviorSubject<IColumnSettings> = new BehaviorSubject<IColumnSettings>({
@@ -39,7 +37,6 @@ export class CategoriesService {
   private catSettings$: Observable<IColumnSettings> = this.categoriesSettingsStore.asObservable();
 
   private categoriesColDefsStore: BehaviorSubject<ColDefExt[]> = new BehaviorSubject<ColDefExt[]>([]);
-  private categoriesColDefs$ = this.categoriesColDefsStore.asObservable();
 
   constructor(
     private httpClient: HttpClient,
