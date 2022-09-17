@@ -3,6 +3,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 // @ts-ignore
 import jwt_decode from 'jwt-decode';
 import {RightsTag} from '../shared/rights.list';
+import {map} from 'rxjs/operators';
 
 export interface JwtToken {
   userId: number;
@@ -49,6 +50,10 @@ export class TokenService {
 
   public getPermission(rightsTag: RightsTag): boolean {
     return !!this.currentTokenSubject.getValue()?.rights.includes(rightsTag);
+  }
+
+  public getPermission$(rightsTag: RightsTag): Observable<boolean> {
+    return this.currentToken$.pipe(map(token => !!token?.rights.includes(rightsTag)))
   }
 
   public getToken(): Observable<JwtToken | undefined> {

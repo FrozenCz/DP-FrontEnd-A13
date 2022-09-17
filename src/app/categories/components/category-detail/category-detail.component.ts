@@ -1,9 +1,9 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {DialogService} from '../../../services/dialog.service';
-import {combineLatest, Subject, switchMap, tap} from 'rxjs';
+import {firstValueFrom, Observable, switchMap} from 'rxjs';
 import {Category} from '../../models/category.model';
 import {CategoriesService} from '../../categories.service';
-import {map, takeUntil} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {TokenService} from '../../../auth/token.service';
 import {RightsTag} from '../../../shared/rights.list';
 import {AssetsService, IAssetsExt} from '../../../assets/assets.service';
@@ -13,49 +13,34 @@ import {AssetsService, IAssetsExt} from '../../../assets/assets.service';
   templateUrl: './category-detail.component.html',
   styleUrls: ['./category-detail.component.scss']
 })
-export class CategoryDetailComponent implements OnInit, OnDestroy {
+export class CategoryDetailComponent implements OnInit {
   @Input() categoryId!: number;
-  category: Category | undefined = undefined;
-  assetsCreateAllowed = false;
-  unsubscribe = new Subject<void>();
-  assetsFilteredByCategory: IAssetsExt[] = [];
+  category$!: Observable<Category>;
+  assetsCreateAllowed$: Observable<boolean>;
+  assetsFilteredByCategory$!: Observable<IAssetsExt[]>;
 
   constructor(private dialogService: DialogService,
               private categoriesService: CategoriesService,
               private assetsService: AssetsService,
               private tokenService: TokenService) {
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
+    this.assetsCreateAllowed$ = this.tokenService.getPermission$(RightsTag.createAssets);
   }
 
   ngOnInit(): void {
-    this.categoriesService.getDescendants(this.categoryId)
+    this.assetsFilteredByCategory$ = this.categoriesService.getDescendants(this.categoryId)
       .pipe(
         map(cats => cats.map(c => c.name)),
         switchMap((cats) => this.assetsService.getAssets()
-          .pipe(map(assets => assets.filter(a => cats.includes(a.categories[a.categories.length - 1]))))),
-        takeUntil(this.unsubscribe)
-      ).subscribe((assets) => {
-      this.assetsFilteredByCategory = assets;
-    })
+          .pipe(
+            map(assets => assets.filter(a => cats.includes(a.categories[a.categories.length - 1]))))),
+      )
 
-    this.tokenService.getToken().pipe(takeUntil(this.unsubscribe)).subscribe(() => {
-      this.assetsCreateAllowed = this.tokenService.getPermission(RightsTag.createAssets);
-    });
-    this.categoriesService.getCategories()
-      .pipe(
-        takeUntil(this.unsubscribe))
-      .subscribe(categories => {
-        this.category = categories.find(value => value.id === this.categoryId);
-      });
+    this.category$ = this.categoriesService.getCategoryById(this.categoryId);
   }
 
   onNewClicked(): void {
-    if (this.category) {
-      this.dialogService.showCreateAssetsDialog(this.category);
-    }
+    firstValueFrom(this.category$).then(category => {
+      this.dialogService.showCreateAssetsDialog(category);
+    })
   }
 }

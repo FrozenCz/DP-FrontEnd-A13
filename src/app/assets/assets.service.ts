@@ -6,18 +6,18 @@ import {
   AssetNote,
   AssetState,
   Change,
-  IAssetUser,
   ICreateAsset,
   IRemoveAssetsInformation, AssetsModelDto
 } from './models/assets.model';
-import {BehaviorSubject, combineLatest, Observable, OperatorFunction, throwError} from 'rxjs';
+import {BehaviorSubject, combineLatest, firstValueFrom, Observable, OperatorFunction, throwError} from 'rxjs';
 import {debounceTime, filter, finalize, map, shareReplay, tap} from 'rxjs/operators';
 import {TokenService} from '../auth/token.service';
 import {CategoriesService} from '../categories/categories.service';
 import {UnitsService} from '../units/units.service';
 import {Unit} from '../units/models/unit.model';
 import {NbToastrService} from '@nebular/theme';
-
+import {User} from '../users/model/user.model';
+import {UsersService} from '../users/users.service';
 
 interface ChangeUserBulk {
   assetId: number;
@@ -91,32 +91,8 @@ export class AssetsService {
               private tokenService: TokenService,
               private categoriesService: CategoriesService,
               private toastrService: NbToastrService,
+              private usersService: UsersService,
               private unitsService: UnitsService) {
-
-    // // -- web sockets --/
-    // this.websocketService.listen()
-    //   .pipe(
-    //     tap(console.log)
-    //     // filter(ev => ev.event === AssetsWs.assetsUpdate),
-    //     // filter((val, index) => index > 1),
-    //     filter((res) => !!res.data && !!this.allUnits && !!this.reachableUnitsIds))
-    //   .subscribe((response) => {
-    //     console.log(response);
-    //     // const updatedAssets: AssetModel[] = response.data;
-    //     // if (updatedAssets.length > 0) {
-    //     //   const assets = this.assets$.getValue();
-    //     //   updatedAssets?.forEach(updatedAsset => {
-    //     //     const assetIndex = assets.findIndex(ast => ast.id === updatedAsset.id);
-    //     //     if (assetIndex > -1) { // if update
-    //     //       assets[assetIndex] = AssetsService.extendAssetModel(updatedAsset, this.allUnits, this.reachableUnitsIds);
-    //     //     } else { // if new
-    //     //       assets.push(AssetsService.extendAssetModel(updatedAsset, this.allUnits, this.reachableUnitsIds));
-    //     //     }
-    //     //   });
-    //     //   this.assets$.next(assets);
-    //     // }
-    //   });
-    // -- end of web sockets --/
 
     combineLatest([
       this.tokenService.getToken(),
@@ -145,22 +121,15 @@ export class AssetsService {
    * @param allUnits all units, include unreachable
    * @param reachableUnitsIds units on same position in tree or below
    */
-  private static extendAssetModel(assetModel: AssetsModelDto, allUnits: Unit[], reachableUnitsIds: number[]): AssetModelExt {
-    if (allUnits.length < 1) {
-      throw new Error('must be provided some units');
-    }
-    const unit = allUnits.find(u => u.id === assetModel.user?.unit?.id);
-    if (!unit) {
-      throw new Error('unit muss be specified')
+  private static extendAssetModel(assetModel: AssetsModelDto, users: Map<number, User>): AssetModelExt {
+    const found = users.get(assetModel.user_id);
+    if (!found) {
+      throw new Error('User with ID ' + assetModel.user_id + ' not found!');
     }
     return {
       ...assetModel,
-      user: {
-        ...assetModel.user,
-        unit,
-        reachable: !!reachableUnitsIds.includes(unit?.id)
-      }
-    };
+      user: found
+    }
   }
 
   private static transformInformationUpdateBulk(updateInformation: ChangeBulk[]): BackendAcceptableAssetUpdateInformationBulk[] {
@@ -203,7 +172,7 @@ export class AssetsService {
 
   async loadAssets(): Promise<void> {
     try {
-      const assetsList = await this.fetchAssets().toPromise();
+      const assetsList = await firstValueFrom(this.fetchAssets());
       if (assetsList) {
         this.assets$.next(assetsList);
       } else {
@@ -219,41 +188,26 @@ export class AssetsService {
   }
 
   fetchAssets(): Observable<AssetModelExt[]> {
-    return this.http.get<AssetsModelDto[]>('/rest/assets')
-      .pipe(
-        // tap((asets) => console.log('před', asets)),
-        map(assets => {
-            return assets.map(asset => AssetsService.extendAssetModel(asset, this.allUnits, this.reachableUnitsIds));
+    return combineLatest([
+      this.http.get<AssetsModelDto[]>('/rest/assets'),
+      this.usersService.usersStore$.getMap$()
+    ]).pipe(
+        map(([assets, users]) => {
+          return assets.map(asset => AssetsService.extendAssetModel(asset, users));
           },
-          // tap((asets) => console.log(asets)),
         ),
-        // tap((asets) => console.log('po', asets)),
-      );
+      )
   }
 
-  changeAssetUser(assetId: number, user: IAssetUser): Observable<AssetModelExt> {
-    return this.http.patch<AssetsModelDto>('/rest/assets/' + assetId + '/changeUser', {userId: user.id})
-      .pipe(
-        filter(asset => !!asset),
-        map(asset => {
-          if (asset) {
-            const assets = this.assets$.getValue();
-            const assetIndex = assets.findIndex(ast => ast.id === assetId);
-            const updatedAsset = AssetsService.extendAssetModel(asset, this.allUnits, this.reachableUnitsIds);
-            assets[assetIndex] = updatedAsset;
-            this.assets$.next(assets);
-            return updatedAsset;
-          } else {
-            throw new Error('assets not found')
-          }
-        }))
-      .pipe(tap(updatedAsset => this.updateAssetsStore(updatedAsset)));
+  changeAssetUser(assetId: number, user_id: number): Observable<void> {
+    return this.http.patch<void>('/rest/assets/' + assetId + '/changeUser', {userId: user_id})
   }
 
-  changeAssetInformation(assetId: number, changes: Partial<AssetsModelDto>): Observable<AssetModelExt> {
-    return this.http.patch<AssetsModelDto>('/rest/assets/' + assetId + '/information', {...changes})
-      .pipe(map(asset => AssetsService.extendAssetModel(asset, this.allUnits, this.reachableUnitsIds)))
-      .pipe(tap(updatedAsset => this.updateAssetsStore(updatedAsset)));
+  //todo:  change subsrcibers
+  changeAssetInformation(assetId: number, changes: Partial<AssetsModelDto>): Observable<void> {
+    return this.http.patch<void>('/rest/assets/' + assetId + '/information', {...changes})
+      // .pipe(map(asset => AssetsService.extendAssetModel(asset, this.allUnits, this.reachableUnitsIds)))
+      // .pipe(tap(updatedAsset => this.updateAssetsStore(updatedAsset)));
   }
 
   getAssetsRawList(): Observable<AssetModelExt[]> {
@@ -300,7 +254,7 @@ export class AssetsService {
         return combineLatest([this.assetsList$, this.categoriesService.getDescendants(assetFilter.parentCategoryId)])
           .pipe(
             shareReplay(),
-            filter(([, categories]) => !!categories))
+            filter(([_, categories]) => !!categories))
           .pipe(
             map(([assets, onlyCategories]) => assets.filter(asset => onlyCategories.map(cat => cat.id).includes(asset.asset.category.id)))
           );
@@ -365,18 +319,7 @@ export class AssetsService {
     return workingListUpdated;
   }
 
-  // createAsset(asset: ICreateAsset): Observable<AssetModelExt> {
-  //   return this.http.post<AssetModelExt>('/rest/assets', asset)
-  //     .pipe(
-  //       catchError(err => {
-  //         return throwError(err);
-  //       }),
-  //       tap((newAsset) => {
-  //         const newAssetList: AssetModelExt[] = [...this.assets$.getValue(), newAsset];
-  //         this.assets$.next(newAssetList);
-  //       })
-  //     );
-  // }
+
   createAsset(asset: ICreateAsset): Observable<AssetsModelDto> {
     return this.http.post<AssetsModelDto>('/rest/assets', asset);
   }
@@ -497,58 +440,20 @@ export class AssetsService {
   }
 
 
-  private changeAssetUserBulk(switchUser: ChangeUserBulk[]): Observable<AssetModelExt[]> {
-    return this.http.patch<AssetsModelDto[]>('/rest/assets/changeAssetUserBulk', switchUser)
-      .pipe(
-        map((assetModels) =>
-          assetModels.map(assetModel => AssetsService.extendAssetModel(assetModel, this.allUnits, this.reachableUnitsIds))
-        ))
-      .pipe(tap((changedAssets) => {
-        const assets = this.assets$.getValue();
-        changedAssets?.forEach((changed) => {
-          const indexAsset = assets.findIndex(a => a.id === changed.id);
-          assets[indexAsset] = changed;
-        });
-        this.assets$.next(assets);
-      }));
+  private changeAssetUserBulk(switchUser: ChangeUserBulk[]): Observable<void> {
+    return this.http.patch<void>('/rest/assets/changeAssetUserBulk', switchUser)
   }
 
-  private changeAssetInformationBulk(updateInformation: BackendAcceptableAssetUpdateInformationBulk[]): Observable<AssetModelExt[]> {
-    return this.http.patch<AssetsModelDto[]>('/rest/assets/changeAssetInformationBulk', updateInformation)
-      .pipe(
-        map((assetModels) =>
-          assetModels.map(assetModel => AssetsService.extendAssetModel(assetModel, this.allUnits, this.reachableUnitsIds))
-        ))
-      .pipe(tap((changedAssets) => {
-        const assets = this.assets$.getValue();
-        changedAssets?.forEach((changed) => {
-          const indexAsset = assets.findIndex(a => a.id === changed.id);
-          assets[indexAsset] = changed;
-        });
-        this.assets$.next(assets);
-      }));
+  private changeAssetInformationBulk(updateInformation: BackendAcceptableAssetUpdateInformationBulk[]): Observable<void> {
+    return this.http.patch<void>('/rest/assets/changeAssetInformationBulk', updateInformation)
   }
 
-  removeAssets(removingInformation: IRemoveAssetsInformation, removedAssetsIds: IAssetsExt[]): Observable<AssetModelExt[]> {
-
+  removeAssets(removingInformation: IRemoveAssetsInformation, removedAssetsIds: IAssetsExt[]): Observable<void> {
     const removeAssetsDto: RemoveAssetsDto = {
       ...removingInformation,
       assetsIds: removedAssetsIds.map(asset => asset.asset.id)
     };
-    return this.http.request<IRemovingDocument>('delete', '/rest/assets', {body: removeAssetsDto})
-      .pipe(
-        map(removingDocument => removingDocument.assets),
-        map((assetModels) =>
-          assetModels.map(assetModel => AssetsService.extendAssetModel(assetModel, this.allUnits, this.reachableUnitsIds))
-        ))
-      .pipe(tap((changedAssets) => {
-        const assets = this.assets$.getValue();
-        changedAssets?.forEach((changed) => {
-          const indexAsset = assets.findIndex(a => a.id === changed.id);
-          assets[indexAsset] = changed;
-        });
-        this.assets$.next(assets);
-      }));
+    return this.http.request<void>('delete', '/rest/assets', {body: removeAssetsDto})
   }
 
   createAssetNote(assetId: number, note: string): Observable<AssetNote> {
@@ -556,21 +461,12 @@ export class AssetsService {
   }
 
   wsAssetsUpdate(changes: AssetsModelDto[]): void {
-    if (!this.allUnits || !this.reachableUnitsIds) {
-      return;
-    }
-    const updatedAssets: AssetsModelDto[] = changes;
-    if (updatedAssets.length > 0) {
-      const assets = this.assets$.getValue();
-      updatedAssets?.forEach(updatedAsset => {
-        const assetIndex = assets.findIndex(ast => ast.id === updatedAsset.id);
-        if (assetIndex > -1) { // if update
-          assets[assetIndex] = AssetsService.extendAssetModel(updatedAsset, this.allUnits, this.reachableUnitsIds);
-        } else { // if new
-          assets.push(AssetsService.extendAssetModel(updatedAsset, this.allUnits, this.reachableUnitsIds));
+    firstValueFrom(this.usersService.usersStore$.getMap$()).then( users => {
+        const updatedAssets: AssetModelExt[] = [];
+        for(const asset of changes) {
+          updatedAssets.push(AssetsService.extendAssetModel(asset, users))
         }
+        this.assets$.next(updatedAssets);
       });
-      this.assets$.next(assets);
-    }
   }
 }

@@ -3,14 +3,14 @@
     <nb-icon icon="person">
     </nb-icon>
     <span *ngIf="userToDelete">Smazání uživatele</span>
-    <span *ngIf="usersToDelete">Smazání uživatelů</span>
+    <span *ngIf="!userToDelete">Smazání uživatelů</span>
   </nb-card-header>
 
   <nb-card-body fxLayoutGap="1em" fxLayout="column">
     <div>Opravdu chcete smazat?
       <div *ngIf="userToDelete">{{userToDelete.surname}} {{userToDelete.name}}</div>
-    <ul *ngIf="usersToDelete">
-      <li *ngFor="let user of usersToDelete">{{user.surname}} {{user.name}}</li>
+    <ul *ngIf="(usersToDelete$ | async) as usrsToDel">
+      <li *ngFor="let user of usrsToDel">{{user.surname}} {{user.name}}</li>
     </ul>
     </div>
 

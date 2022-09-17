@@ -3,7 +3,7 @@ import {AssetsService, AssetsSourceEnum} from '../../assets.service';
 import {BehaviorSubject, combineLatest, OperatorFunction, Subject, Subscription} from 'rxjs';
 import {CellEditingStoppedEvent, CellValueChangedEvent, ColDef, GridOptions} from 'ag-grid-community';
 import {filter, map, take, takeUntil} from 'rxjs/operators';
-import {IUserExt} from '../../../users/model/user.model';
+import {User} from '../../../users/model/user.model';
 import {TokenService} from '../../../auth/token.service';
 import {UsersService} from '../../../users/users.service';
 import {NbDialogRef} from '@nebular/theme';
@@ -29,9 +29,9 @@ export class MultiEditAssetDialogComponent implements OnInit, OnDestroy {
   gridUid = 'multiEditAsset';
   customGridOptions: GridOptions = {};
   customColDefs: ColDef[] = [];
-  users$: BehaviorSubject<IUserExt[]> = new BehaviorSubject<IUserExt[]>([]);
-  users: IUserExt[] = [];
-  selectedUser: IUserExt | undefined = undefined;
+  users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
+  users: User[] = [];
+  selectedUser: User | undefined = undefined;
   flipped = false;
   note = '';
   ableToChangeUser: boolean = false;
@@ -177,7 +177,7 @@ export class MultiEditAssetDialogComponent implements OnInit, OnDestroy {
    * change user for selected one foreach selected node
    * @param selectedUser new user
    */
-  changeUser(selectedUser: IUserExt | undefined): void {
+  changeUser(selectedUser: User | undefined): void {
     if (!selectedUser) {
       throw new Error('user must be defined');
     }
@@ -186,13 +186,7 @@ export class MultiEditAssetDialogComponent implements OnInit, OnDestroy {
       if (!this.gridService.getSelectedIds().includes(asset.asset.id)) {
         return asset;
       }
-      asset.asset.user = {
-        id: selectedUser.id,
-        name: selectedUser.name,
-        surname: selectedUser.surname,
-        reachable: selectedUser.reachable,
-        unit: selectedUser.unit
-      };
+      asset.asset.user = selectedUser;
       asset.changes = [{type: AssetChangeEnum.assetUser, newValue: selectedUser}];
       return asset;
     });

@@ -67,6 +67,7 @@ import { AssetsDashboardComponent } from './dashboards/assets-dashboard/assets-d
         AssetsListComponent,
         QuickFilterComponent,
         AssetsGridComponent,
+        AssetDetailComponent,
     ]
 })
 export class AssetsModule { }

@@ -1,12 +1,14 @@
 import {Injectable} from '@angular/core';
 import {NbDialogService, NbToastrService} from '@nebular/theme';
-import {BehaviorSubject, forkJoin, Observable, of, switchMap} from 'rxjs';
-import {IUser, IUserChanges, IUserExt, IUserMultipleChanges, IUserWithRights} from './model/user.model';
+import {BehaviorSubject, firstValueFrom, forkJoin, noop, Observable, of, switchMap} from 'rxjs';
+import {IUserChanges, IUserMultipleChanges, IUserWithRights, User} from './model/user.model';
 import {HttpClient} from '@angular/common/http';
 import {TokenService} from '../auth/token.service';
-import {map, take, tap} from 'rxjs/operators';
+import {map, take, tap, withLatestFrom} from 'rxjs/operators';
 import {Unit} from '../units/models/unit.model';
 import {UnitsService} from '../units/units.service';
+import {Store} from '../store/store';
+import {UserDto} from './dto/user.dto';
 
 export interface IRightsGet {
   id: number;
@@ -28,11 +30,10 @@ export interface ICreateUser {
   providedIn: 'root'
 })
 export class UsersService {
-  private users$: BehaviorSubject<IUserExt[]> = new BehaviorSubject<IUserExt[]>([]);
-  private reachableUnits: Unit[] = [];
+  usersStore$: Store<User> = new Store<User>({identifierName: 'id'});
+  selectedUsers$: Store<User> = new Store<User>({identifierName: 'id'});
 
-  private selectedUsers: BehaviorSubject<IUserExt[]> = new BehaviorSubject<IUserExt[]>([]);
-  selectedUsers$: Observable<IUser[]> = this.selectedUsers.asObservable();
+  private reachableUnits: Unit[] = [];
 
   editMode: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   editMode$: Observable<boolean> = this.editMode.asObservable();
@@ -57,89 +58,66 @@ export class UsersService {
     });
   }
 
-  private static createFullName(user: IUser): string {
-    return user.surname + ' ' + user.name;
+
+  createUser(newUser: ICreateUser): Observable<void> {
+    return this.httpClient.post<void>('/rest/users', newUser);
   }
 
-  createUser(newUser: ICreateUser): Observable<IUser> {
-    return this.httpClient.post<IUser>('/rest/users', newUser);
-  }
-
-  private fetchUsers(): Observable<IUserExt[]> {
-    return this.httpClient.get<IUser[]>('/rest/users').pipe(
-      map(users => users.map(user => {
-        return {
-          ...user,
-          fullName: UsersService.createFullName(user),
-          reachable: this.isUserReachable(user)
-        };
-      }))
-    );
+  private fetchUsers(): Observable<UserDto[]> {
+    return this.httpClient.get<UserDto[]>('/rest/users');
   }
 
   async loadUsers(): Promise<void> {
     try {
       const users = await this.fetchUsers().toPromise();
       if (users) {
-        this.users$.next(users);
+        const usersEntities: User[] = [];
+        for(const user of users) {
+          usersEntities.push(this.createUserFromDTO(user))
+        }
+        this.usersStore$.putData(usersEntities);
       }
     } catch (e: any) {
       if ([401, 403].includes(e.error.statusCode)) {
-        this.users$.next([]);
+        this.usersStore$.putData([]);
       }
     }
   }
 
-  getUser(id: number): Observable<IUserExt> {
-    return this.users$.asObservable()
-      .pipe(
-        map(users => {
-          const userFound = users.find(user => user.id === id);
-          if (!userFound) {
-            throw new Error(`user with id ${id} not found`);
-          }
-          return userFound;
-        })
-      );
+
+  private createUserFromDTO(userDTO: UserDto): User {
+    return new User(userDTO.id, userDTO.name, userDTO.name, userDTO.surname, userDTO.unit_id, userDTO.reachable)
+  }
+
+  getUser(id: number): Observable<User> {
+    return this.usersStore$.getOne$(id);
   }
 
   getUserWithRights(userId: number): Observable<IUserWithRights> {
     return this.httpClient.get<IUserWithRights>('/rest/users/' + userId);
   }
 
-  updateUser(userId: number, user: IUserChanges): Observable<IUser> {
-    return this.httpClient.patch<IUser>('/rest/users/' + userId, {...user});
+  updateUser(userId: number, user: IUserChanges): Observable<void> {
+    return this.httpClient.patch<void>('/rest/users/' + userId, {...user});
   }
 
   addUserToSelected(userId: number): void {
-    const selectedUsers = this.selectedUsers.getValue().slice(0);
-    if (selectedUsers.find(u => u.id === userId)) {
-      return;
-    }
-    const userToAdd = this.users$.getValue().find(user => user.id === userId);
+    firstValueFrom(this.usersStore$.getOne$(userId).pipe(withLatestFrom(this.selectedUsers$.getAll$()))).then(([user, users]) => {
+      this.selectedUsers$.putData([...users.filter(u => u.id !== user.id), user]);
+    })
 
-    if (userToAdd) {
-      selectedUsers.push(userToAdd);
-      this.selectedUsers.next(selectedUsers);
-    }
   }
 
 
   removeUserFromSelected(userId: number): void {
-    const selectedUsers = this.selectedUsers.getValue().slice(0);
-    const selectedUserIndex = selectedUsers.findIndex(user => user.id === userId);
-
-    if (selectedUserIndex > -1) {
-      selectedUsers.splice(selectedUserIndex, 1);
-      this.selectedUsers.next(selectedUsers);
-    }
+    this.selectedUsers$.remove(userId).then(noop);
   }
 
   deleteUser(userId: number): Observable<void> {
     return this.httpClient.delete<void>('/rest/users/' + userId);
   }
 
-  deleteUsers(users: IUser[]): Observable<any> {
+  deleteUsers(users: User[]): Observable<any> {
     const requests = [];
     for (let user of users) {
       requests.push(this.deleteUser(user.id));
@@ -147,9 +125,11 @@ export class UsersService {
     return forkJoin([...requests]).pipe(
       take(1),
       tap(() => {
-        const filteredUsers = this.users$.getValue().filter(user => !users.includes(user));
-        this.users$.next(filteredUsers);
-        this.selectedUsers.next([]);
+        // toto by mel resit ws
+        // const filteredUsers = this.usersStore$.getValue().filter(user => !users.includes(user));
+        // this.users$.next(filteredUsers);
+
+        this.selectedUsers$.putData([]);
       })
     );
   }
@@ -165,60 +145,39 @@ export class UsersService {
     });
   }
 
+
+
   setEditModeTo(bool: boolean): void {
     this.editMode.next(bool);
     if (bool === false) {
-      this.selectedUsers.next([]);
+      this.selectedUsers$.putData([]);
       this.loadUsers().then();
     } else {
-      this.users$.next(this.selectedUsers.getValue());
+      // nechápu vyznam teto akce
+      // this.users$.next(this.selectedUsers$.getValue());
     }
   }
 
-  getSelectedUsers(): IUser[] {
-    return this.selectedUsers.getValue();
+  getSelectedUsers(): Observable<User[]> {
+    return this.selectedUsers$.getAll$();
   }
 
-  updateUsers(changes: IUserMultipleChanges[]): Observable<IUser[]> {
-    return this.httpClient.put<IUser[]>('/rest/users', {changes});
+  updateUsers(changes: IUserMultipleChanges[]): Observable<void> {
+    return this.httpClient.put<void>('/rest/users', {changes});
   }
 
-  public getUsers$(): Observable<IUserExt[]> {
-    return this.users$.asObservable().pipe(map(users => users.sort((a, b) => {
+  public getUsers$(): Observable<User[]> {
+    return this.usersStore$.getAll$().pipe(map(users => users.sort((a, b) => {
       return a.surname.localeCompare(b.surname);
     })));
   }
 
-
-  private isUserReachable(user: IUser): boolean {
-    if (user.unit === null) return true;
-    return this.reachableUnits.map(unit => unit.id).includes(user.unit?.id);
+  wsUsersUpdate(users: UserDto[]): void {
+    // nejsem si jist zda se jedná o update všeho nebo jen jedne entity
+    this.usersStore$.update(users.map(u => this.createUserFromDTO(u)));
   }
 
-  wsUsersUpdate(users: IUser[]): void {
-    console.log('co:?');
-    if (!this.reachableUnits) {
-      return;
-    }
-    const updatedUsers = this.users$.getValue().slice(0);
-    users?.forEach((user) => {
-      const userIndex = updatedUsers.findIndex(u => u.id === user.id);
-      const updateUserExt: IUserExt = {
-        ...user,
-        fullName: UsersService.createFullName(user),
-        reachable: this.isUserReachable(user)
-      };
-      if (userIndex > -1) { // update
-        updatedUsers[userIndex] = updateUserExt;
-      } else { // new user
-        updatedUsers.push(updateUserExt);
-      }
-    });
-    this.users$.next(updatedUsers);
-  }
-
-  wsUsersDelete(users: IUser[]): void {
-    const updatedUsers = this.users$.getValue().slice(0).filter(user => !users.map(u => u.id).includes(user.id));
-    this.users$.next(updatedUsers);
+  wsUsersDelete(users: UserDto[]): void {
+    this.usersStore$.remove(users).then(noop);
   }
 }

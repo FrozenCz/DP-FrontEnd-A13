@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {JwtToken, TokenService} from '../../../auth/token.service';
 import {RightsTag} from '../../../shared/rights.list';
-import {IUser, IUserChanges, IUserExt} from '../../model/user.model';
+import {IUserChanges, User} from '../../model/user.model';
 import {UsersService} from '../../users.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {UnitsService} from '../../../units/units.service';
@@ -9,7 +9,7 @@ import {Observable, Subject} from 'rxjs';
 import {Unit} from '../../../units/models/unit.model';
 import {NbComponentSize, NbDialogService, NbToastrService, NbWindowRef} from '@nebular/theme';
 import {ShowRightsSettingDialogComponent} from '../show-rights-setting-dialog/show-rights-setting-dialog.component';
-import {map, take, takeUntil} from 'rxjs/operators';
+import {map, takeUntil} from 'rxjs/operators';
 import {AssetsService, IAssetsExt} from '../../../assets/assets.service';
 
 
@@ -27,7 +27,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
 
   editMode = false;
-  user!: IUserExt;
+  user!: User;
   units$!: Observable<Unit[]>;
 
   userEditForm: FormGroup;
@@ -141,11 +141,11 @@ export class UserDetailComponent implements OnInit, OnDestroy {
     // todo: nezapomenou vratit zpet mod
   }
 
-  resetValues(user: IUser): void {
+  resetValues(user: User): void {
     this.userEditForm.patchValue({
       name: this.user.name,
       surname: this.user.surname,
-      unitId: this.user.unit?.id ? this.user.unit.id : null
+      unitId: this.user.unit_id
     });
   }
 

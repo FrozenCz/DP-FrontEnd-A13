@@ -1,5 +1,5 @@
 import {Unit} from '../../units/models/unit.model';
-import {IUser} from '../../users/model/user.model';
+import {User} from '../../users/model/user.model';
 import {IAssetsExt} from '../assets.service';
 
 export const ASSETS_INFORMATION = ['quantity', 'name', 'serialNumber', 'inventoryNumber', 'evidenceNumber',
@@ -16,7 +16,7 @@ export interface AssetModelExt {
   category: IAssetCategory;
   name: string;
   quantity: number;
-  user: IAssetUserExt;
+  user: User;
   serialNumber: string;
   inventoryNumber: string;
   evidenceNumber: string;
@@ -35,7 +35,7 @@ export interface AssetsModelDto {
   category: IAssetCategory;
   name: string;
   quantity: number;
-  user: IAssetUser;
+  user_id: number;
   serialNumber: string;
   inventoryNumber: string;
   evidenceNumber: string;
@@ -128,7 +128,7 @@ export enum AssetChangeEnum {
 
 export interface Change {
   type: AssetChangeEnum;
-  newValue: string | number | IUser;
+  newValue: string | number | User;
 }
 
 export interface IAssetExtWithChanges extends IAssetsExt {

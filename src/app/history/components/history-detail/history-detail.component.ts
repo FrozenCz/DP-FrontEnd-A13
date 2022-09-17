@@ -1,12 +1,14 @@
-import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {ChangeType, HistoryService} from '../../history.service';
 import {HistoryModel, SimpleUser} from '../../models/history.model';
 import {AssetsModelDto} from '../../../assets/models/assets.model';
 import {HumanReadableAssetsChange} from '../../models/history.humanReadable';
 import {HistoryRelatedTo} from '../../models/history.enum';
-import {IUser} from '../../../users/model/user.model';
+import {User} from '../../../users/model/user.model';
 import {NbWindowService, NbWindowState} from '@nebular/theme';
 import {AssetDetailDialogComponent} from '../../../assets/components/asset-detail-dialog/asset-detail-dialog.component';
+import {UsersService} from '../../../users/users.service';
+import {firstValueFrom} from 'rxjs';
 
 interface ChangeHumanReadableForm {
   propertyName: string;
@@ -23,21 +25,24 @@ export class HistoryDetailComponent {
   changeType: ChangeType;
   doneBy: SimpleUser;
   createdDate: string;
-  changedFrom: ChangeHumanReadableForm[];
-  changedTo: ChangeHumanReadableForm[];
+  changedFrom: ChangeHumanReadableForm[] = [];
+  changedTo: ChangeHumanReadableForm[] = [];
 
-  constructor(private nbWindowService: NbWindowService) {
+  constructor(private nbWindowService: NbWindowService, private usersService: UsersService) {
     this.changeType = HistoryService.translateRelatedToEnum(this.history.relatedTo);
     this.doneBy = this.history.changedBy;
     this.createdDate = new Date(this.history.created).toLocaleDateString();
-    this.changedFrom = HistoryDetailComponent.humanReadableChangesInArray(this.history.changedFrom, this.history.relatedTo);
-    this.changedTo = HistoryDetailComponent.humanReadableChangesInArray(this.history.changedTo, this.history.relatedTo);
+    firstValueFrom(this.usersService.usersStore$.getMap$()).then(usersMap => {
+      this.changedFrom = HistoryDetailComponent.humanReadableChangesInArray(this.history.changedFrom, this.history.relatedTo, usersMap);
+      this.changedTo = HistoryDetailComponent.humanReadableChangesInArray(this.history.changedTo, this.history.relatedTo, usersMap);
+    })
+
   }
   static isAssetsModelDto(obj: any): obj is Partial<AssetsModelDto> {
     return 'id' in obj && 'serialNumber' in obj;
   }
 
-  static humanReadableChangesInArray(changedFrom: Partial<AssetsModelDto> | Partial<IUser>, relatedTo: HistoryRelatedTo): ChangeHumanReadableForm[] {
+  static humanReadableChangesInArray(changedFrom: Partial<AssetsModelDto> | Partial<User>, relatedTo: HistoryRelatedTo, usersMap: Map<number, User>): ChangeHumanReadableForm[] {
     if (!(changedFrom instanceof Object)) {
       return [];
     }
@@ -54,7 +59,9 @@ export class HistoryDetailComponent {
           let propertyValue: any;
           propertyValue = changedFrom[changeAsKey];
           if (change === 'user') {
-            propertyValue = changedFrom.user?.surname + ' ' + changedFrom.user?.name;
+            // todo: až uvidím co jsem tim chtel delat
+            // const user = usersMap.get(changedFrom.user_id);
+            // propertyValue = changedFrom.user?.surname + ' ' + changedFrom.user?.name;
           } else if (change === 'category') {
             propertyValue = changedFrom.category?.name;
           }

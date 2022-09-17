@@ -1,10 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {IUser, IUserWithRights} from '../../model/user.model';
+import {User} from '../../model/user.model';
 import {IRightsGet, UsersService} from '../../users.service';
 import {NbDialogRef, NbToastrService} from '@nebular/theme';
 import {forkJoin, Subject} from 'rxjs';
 import {RightsCategoryEnum} from '../../../shared/rights.list';
-import {take, tap} from 'rxjs/operators';
 
 interface IRightsGetExtended extends IRightsGet {
   selected: boolean;
@@ -23,8 +22,8 @@ interface RightsCategory {
 })
 
 export class ShowRightsSettingDialogComponent implements OnInit {
-  @Input() user!: IUser;
-  userWithRights: IUserWithRights;
+  @Input() user!: User;
+  usersRights: IRightsGet[] = [];
   loaded$ = new Subject();
   rights: IRightsGetExtended[] = [];
   rightsCategory: RightsCategory[] = [
@@ -38,14 +37,11 @@ export class ShowRightsSettingDialogComponent implements OnInit {
   rightsToAdd: number[] = [];
   rightsToRemove: number[] = [];
 
-  constructor(private usersService: UsersService, private nbDialogRef: NbDialogRef<ShowRightsSettingDialogComponent>, private nbToastrService: NbToastrService) {
-    this.userWithRights = {...this.user, rights: []};
-  }
+  constructor(private usersService: UsersService, private nbDialogRef: NbDialogRef<ShowRightsSettingDialogComponent>, private nbToastrService: NbToastrService) {}
 
   ngOnInit(): void {
     const rights$ = this.usersService.getRights();
     const user$ = this.usersService.getUserWithRights(this.user.id);
-
 
     forkJoin([rights$, user$]).subscribe(([rights, user]) => {
       this.loaded$.next(true);
@@ -66,7 +62,7 @@ export class ShowRightsSettingDialogComponent implements OnInit {
     const rightsSelected = !right.selected; // vstupni hodnota je opacna nez na co se meni !!!
 
     /* pokud je pravo u uzivatele, tak v pripade odznaceni jej budeme odebirat */
-    if (this.userWithRights.rights.find(rights => rights.id === right.id)) {
+    if (this.usersRights.find(rights => rights.id === right.id)) {
       if (!rightsSelected) {
         this.rightsToRemove.push(id);
       } else {
@@ -84,7 +80,7 @@ export class ShowRightsSettingDialogComponent implements OnInit {
   OnSaveRightsButtonClicked(): void {
     this.usersService.saveUsersRights(this.user.id, this.rightsToAdd, this.rightsToRemove)
       .subscribe((newRights) => {
-        this.userWithRights.rights = newRights;
+        this.usersRights = newRights;
         this.rightsToRemove = [];
         this.rightsToAdd = [];
         this.nbToastrService.success('Práva nastavena', 'Práva', {duration: 2000, icon: 'settings-2-outline'});

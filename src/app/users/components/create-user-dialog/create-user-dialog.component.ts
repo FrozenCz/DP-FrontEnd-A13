@@ -6,8 +6,8 @@ import {Unit} from '../../../units/models/unit.model';
 import {UnitsService} from '../../../units/units.service';
 import {takeUntil} from 'rxjs/operators';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
-import {IUser} from '../../model/user.model';
 import {FormFuncs} from '../../../utils/form.funcs';
+import {User} from '../../model/user.model';
 
 @Component({
   templateUrl: './create-user-dialog.component.html',
@@ -19,7 +19,7 @@ import {FormFuncs} from '../../../utils/form.funcs';
 export class CreateUserDialogComponent implements OnInit, OnDestroy {
   createUserForm: FormGroup;
   units: Unit[] = [];
-  users: IUser[] = [];
+  users: User[] = [];
   unsubscribe: Subject<void> = new Subject<void>();
 
   toastMessages = {

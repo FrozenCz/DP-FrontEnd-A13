@@ -1,19 +1,21 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {IUser, IUserMultipleChanges} from '../../model/user.model';
+import {IUserMultipleChanges, User} from '../../model/user.model';
 import {UsersService} from '../../users.service';
-import {ColDef, GridApi, GridOptions, GridReadyEvent, RowNode} from 'ag-grid-community';
+import {ColDef, GridApi, GridOptions, GridReadyEvent} from 'ag-grid-community';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NbDialogService, NbToastrService, NbWindowService} from '@nebular/theme';
 import {UserDetailComponent} from '../user-detail/user-detail.component';
-import {Observable, Subject} from 'rxjs';
+import {combineLatest, Observable, Subject} from 'rxjs';
 import {Unit} from '../../../units/models/unit.model';
 import {UnitsService} from '../../../units/units.service';
 import {SelectUnitCellRendererComponent} from '../select-unit-cell-renderer/select-unit-cell-renderer.component';
-import {takeUntil, tap, withLatestFrom} from 'rxjs/operators';
+import {takeUntil, tap} from 'rxjs/operators';
 import {AgGridFuncs} from '../../../utils/agGrid/ag-grid.funcs';
 import {TokenService} from '../../../auth/token.service';
 import {RightsTag} from '../../../shared/rights.list';
-import {DeleteSelectedUsersDialogComponent} from '../delete-selected-users-dialog/delete-selected-users-dialog.component';
+import {
+  DeleteSelectedUsersDialogComponent
+} from '../delete-selected-users-dialog/delete-selected-users-dialog.component';
 import {BooleanCellRenderComponent} from '../../../utils/agGrid/boolean-cell-render/boolean-cell-render.component';
 import {ProtocolsService} from '../../../protocols/protocols.service';
 
@@ -25,8 +27,8 @@ import {ProtocolsService} from '../../../protocols/protocols.service';
 })
 export class UsersListComponent implements OnInit, OnDestroy {
   @Input() unitForSelect!: Unit;
-  editedUsersOldValues: Partial<IUser>[] = [];
-  usersList$!: Observable<IUser[]>;
+  editedUsersOldValues: Partial<User>[] = [];
+  usersList$!: Observable<User[]>;
   units$!: Observable<Unit[]>;
   editMode$!: Observable<boolean>;
   storedFilterModel: any;
@@ -43,10 +45,12 @@ export class UsersListComponent implements OnInit, OnDestroy {
       editable: false,
       cellEditor: 'agRichSelectCellEditor',
     },
-    {field: 'reachable', filter: 'agSetColumnFilter',
+    {
+      field: 'reachable', filter: 'agSetColumnFilter',
       filterParams: {values: [true, false]},
       headerName: 'Právo editovat',
-      cellRenderer: 'booleanCellRendererComponent'}
+      cellRenderer: 'booleanCellRendererComponent'
+    }
   ];
   gridApi!: GridApi;
   gridOptions: GridOptions = {
@@ -92,8 +96,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
     nbWindowService: this.nbWindowService,
     nbDialogService: this.nbDialogService,
     protocolService: this.protocolsService,
-    permissions: {
-    }
+    permissions: {}
   };
 
   constructor(private usersService: UsersService,
@@ -129,14 +132,13 @@ export class UsersListComponent implements OnInit, OnDestroy {
     }));
     this.editMode$ = this.usersService.editMode$;
 
-    this.editMode$.pipe(withLatestFrom(this.units$)).subscribe(([editMode, units]) => {
+    combineLatest([
+      this.editMode$,
+      this.units$,
+      this.usersService.getSelectedUsers()]
+    ).subscribe(([editMode, units, selectedUsers]) => {
       if (editMode) {
-        this.editedUsersOldValues = this.usersService.getSelectedUsers().map(user => {
-          return {
-            id: user.id,
-            unit: user.unit
-          };
-        });
+        this.editedUsersOldValues = selectedUsers;
         setTimeout(() => {
           this.gridOptions.singleClickEdit = true;
           this.gridApi.getColumnDef('unit')!.editable = true;
@@ -248,7 +250,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
     this.gridApi.forEachNode((node) => {
       if (node.data?.id) {
         const oldValues = this.editedUsersOldValues.find(ov => ov.id === node.data.id);
-        if (oldValues?.unit !== node.data.unit) {
+        if (oldValues?.unit_id !== node.data.unit.id) {
           changes.push({userId: node.data.id, unitId: node.data.unit.id});
         }
       }
@@ -263,7 +265,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
   resetValues(): void {
     const selected = this.editedUsersOldValues;
     this.gridApi.forEachNode((node) => {
-      const defaultUnit = selected.find(user => user.id === node.data.id)?.unit;
+      const defaultUnit = selected.find(user => user.id === node.data.id)?.unit_id;
       node.setDataValue('unit', defaultUnit);
     });
   }

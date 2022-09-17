@@ -1,15 +1,15 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {combineLatest, first, firstValueFrom, noop, Observable, of, Subject, switchMap, tap} from 'rxjs';
+import {noop, Observable, Subject, switchMap, tap} from 'rxjs';
 import {AssetModelExt, ASSETS_INFORMATION, AssetsModelDto, ICreateAsset} from '../../models/assets.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {IUserExt} from '../../../users/model/user.model';
+import {User} from '../../../users/model/user.model';
 import {HistoryModel} from '../../../history/models/history.model';
 import {TokenService} from '../../../auth/token.service';
 import {UsersService} from '../../../users/users.service';
 import {AssetsService} from '../../assets.service';
 import {NbToastrService} from '@nebular/theme';
 import {HistoryService} from '../../../history/history.service';
-import {filter, map, take, takeUntil, withLatestFrom} from 'rxjs/operators';
+import {map, take, takeUntil, withLatestFrom} from 'rxjs/operators';
 import {RightsTag} from '../../../shared/rights.list';
 import {CategoriesService} from '../../../categories/categories.service';
 
@@ -52,7 +52,7 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
   assetForm: FormGroup;
   noteForm: FormGroup;
   editMode = false;
-  users$: Observable<IUserExt[]>;
+  users$: Observable<User[]>;
 
   showTemplate: AssetDetailTabEnum = AssetDetailTabEnum.detail;
   reachToUser = false;
@@ -226,10 +226,11 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
       }
     }
 
-    if (changes.user && changes.user.id !== this.editedAsset.user.id) {
-      this.assetsService.changeAssetUser(this.assetId, changes.user).pipe(take(1)).subscribe((asset) => {
+
+    if (changes.user_id && changes.user_id !== this.editedAsset.user.id) {
+      this.assetsService.changeAssetUser(this.assetId, changes.user_id).pipe(take(1))
+        .subscribe((asset) => {
         this.toastrService.success('úspěšně změněn', 'Uživatel', {icon: 'user'});
-        this.editedAsset = asset;
         this.assetForm.controls['user'].markAsUntouched();
       }, () => {
         this.toastrService.danger('nebyl změněn', 'Uživatel', {icon: 'user'});
@@ -253,7 +254,7 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
     // this.assetsService.updateAsset(changes, this.assetId).subscribe(console.log);
   }
 
-  insertAssetDataIntoDetailForm(asset: AssetModelExt, users: IUserExt[]): void {
+  insertAssetDataIntoDetailForm(asset: AssetModelExt, users: User[]): void {
     this.assetForm.patchValue(
       {
         ...asset,

@@ -99,6 +99,7 @@ export class CategoriesListComponent implements OnInit, OnDestroy {
               columnNames = [];
             }
             return {
+              id: category.id,
               code: category.code,
               tree: category.tree,
               name: columnNames[category.tree.length - 1]?.name,
@@ -117,9 +118,6 @@ export class CategoriesListComponent implements OnInit, OnDestroy {
       this.gridContext.permissions.categoriesDeleteAllowed = this.tokenService.getPermission(RightsTag.deleteCategory);
       this.gridContext.permissions.categoriesEditAllowed = this.tokenService.getPermission(RightsTag.updateCategory);
     });
-
-
-
   }
 
   onGridSizeChanged(): void {
@@ -150,7 +148,6 @@ export class CategoriesListComponent implements OnInit, OnDestroy {
     const contextMenuItems: (ContextMenuItem | string)[] = [];
     const permissions = params.context.permissions;
 
-
     contextMenuItems.push({
       name: 'Detail kategorie',
       action: () => {
@@ -159,7 +156,8 @@ export class CategoriesListComponent implements OnInit, OnDestroy {
           context: {
             categoryId:  params.node?.data?.id
           },
-          closeOnBackdropClick: false
+          closeOnBackdropClick: false,
+          closeOnEsc: true
         });
       },
       icon: '&#9871;'
@@ -226,6 +224,7 @@ export class CategoriesListComponent implements OnInit, OnDestroy {
   }
 
   openCategoryDetail(params: any): void {
+    console.log(params);
     params.context.nbWindowService.open(CategoryDetailComponent, {
       title: params.node?.data?.tree.join(' | '),
       context: {

@@ -1,8 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {IUser} from '../../model/user.model';
+import {Component, Input} from '@angular/core';
+import {User} from '../../model/user.model';
 import {NbDialogRef, NbToastrService} from '@nebular/theme';
 import {UsersService} from '../../users.service';
 import {take} from 'rxjs/operators';
+import {firstValueFrom, Observable} from 'rxjs';
 
 @Component({
   selector: 'app-delete-selected-users-dialog',
@@ -10,16 +11,14 @@ import {take} from 'rxjs/operators';
   styleUrls: ['./delete-selected-users-dialog.component.scss']
 })
 export class DeleteSelectedUsersDialogComponent {
-  @Input('userToDelete') userToDelete!: IUser;
-  usersToDelete: IUser[] = [];
+  @Input('userToDelete') userToDelete!: User;
+  usersToDelete$: Observable<User[]>
 
   constructor(
     private toastrService: NbToastrService,
     private nbDialogRef: NbDialogRef<DeleteSelectedUsersDialogComponent>,
     private usersService: UsersService) {
-    if (!this.userToDelete) {
-      this.usersToDelete = this.usersService.getSelectedUsers();
-    }
+      this.usersToDelete$ = this.usersService.getSelectedUsers();
   }
 
 
@@ -39,9 +38,12 @@ export class DeleteSelectedUsersDialogComponent {
           }
         });
     } else {
-      this.usersService.deleteUsers(this.usersToDelete).pipe(take(1)).subscribe(() => {
-        this.nbDialogRef.close();
-      });
+      firstValueFrom(this.usersToDelete$).then(users => {
+        this.usersService.deleteUsers(users).pipe(take(1)).subscribe(() => {
+          this.nbDialogRef.close();
+        });
+      })
+
     }
   }
 }

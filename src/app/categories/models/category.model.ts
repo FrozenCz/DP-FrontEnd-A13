@@ -109,6 +109,7 @@ export interface IColumnName {
 
 
 export interface ICategoryWithColumnNames extends IColumnName {
+  id: number;
   code: string;
   tree: string[];
 }

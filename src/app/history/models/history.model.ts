@@ -1,6 +1,6 @@
 import {HistoryRelatedTo} from './history.enum';
 import {AssetsModelDto} from '../../assets/models/assets.model';
-import {IUser} from '../../users/model/user.model';
+import {User} from '../../users/model/user.model';
 
 export interface IHistoryInList {
   id: number;
@@ -8,7 +8,7 @@ export interface IHistoryInList {
   changedFrom: Partial<AssetsModelDto>;
   changedTo: Partial<AssetsModelDto>;
   changedBy: SimpleUser;
-  user?: IUser;
+  user?: User;
   asset?: AssetsModelDto;
   created: Date;
 }

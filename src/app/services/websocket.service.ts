@@ -11,10 +11,11 @@ import {CategoriesWs} from '../categories/models/categories.ws.model';
 import {UsersWs} from '../users/model/users.ws.model';
 import {ICategoryGet} from '../categories/models/category.model';
 import {AssetsService} from '../assets/assets.service';
-import {IUser} from '../users/model/user.model';
 import {CategoriesService} from '../categories/categories.service';
 import {UsersService} from '../users/users.service';
 import {NbToastrService} from '@nebular/theme';
+import {User} from '../users/model/user.model';
+import {UserDto} from '../users/dto/user.dto';
 
 // create update delete
 export interface AssetsUpdate {
@@ -36,13 +37,13 @@ export interface CategoryDelete {
 
 // create update
 export interface UsersUpdate {
-  changes: IUser[];
+  changes: UserDto[];
   type: UsersWs.usersUpdate;
 }
 
 // delete
 export interface UsersDelete {
-  changes: IUser[];
+  changes: UserDto[];
   type: UsersWs.usersDelete;
 }
 
