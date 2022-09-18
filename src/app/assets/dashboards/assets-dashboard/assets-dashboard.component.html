@@ -1,1 +1,1 @@
-<app-assets-list [assets]="assets"></app-assets-list>
+<app-assets-list *ngIf="(assets$ | async) as assets" [assets]="assets"></app-assets-list>

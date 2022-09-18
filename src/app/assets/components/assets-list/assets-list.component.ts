@@ -11,7 +11,6 @@ import {Subject} from 'rxjs';
 export class AssetsListComponent{
   @Input() assets: IAssetsExt[] = [];
   gridUid = 'assetList';
-  unsubscribe: Subject<void> =  new Subject<void>()
 
   constructor() {
   }

@@ -5,11 +5,12 @@ import {NbButtonModule, NbCardModule, NbDialogModule, NbIconModule, NbInputModul
 import { LoginFormDialogComponent } from './components/login-form-dialog/login-form-dialog.component';
 import {FlexModule} from '@angular/flex-layout';
 import {ReactiveFormsModule} from '@angular/forms';
+import { LoggedUserDetailComponent } from './components/logged-user-detail/logged-user-detail.component';
 
 
 
 @NgModule({
-  declarations: [AuthComponent,  LoginFormDialogComponent],
+  declarations: [AuthComponent,  LoginFormDialogComponent, LoggedUserDetailComponent],
   exports: [
     AuthComponent,
   ],

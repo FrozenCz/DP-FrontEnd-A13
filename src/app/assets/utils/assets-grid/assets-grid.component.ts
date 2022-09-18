@@ -45,8 +45,6 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
   @Input() customColDefs?: ColDef[];
   @Input() removeDefaultColDefsByColId?: string[];
   @Input() disableOpenDetailOnDoubleClick = false;
-  // @Output() gridReady: EventEmitter<Grid> = new EventEmitter<Grid>();
-  // @Output() cellKeyPress: EventEmitter<CellKeyPressEvent> = new EventEmitter<CellKeyPressEvent>();
   @Output() cellValueChanged: EventEmitter<CellValueChangedEvent> = new EventEmitter<CellValueChangedEvent>();
   @Output() cellEditingStopped: EventEmitter<CellEditingStoppedEvent> = new EventEmitter<CellEditingStoppedEvent>();
   unsubscribe: Subject<void> = new Subject<void>();

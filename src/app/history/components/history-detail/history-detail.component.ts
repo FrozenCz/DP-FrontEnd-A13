@@ -38,11 +38,13 @@ export class HistoryDetailComponent {
     })
 
   }
+
   static isAssetsModelDto(obj: any): obj is Partial<AssetsModelDto> {
     return 'id' in obj && 'serialNumber' in obj;
   }
 
-  static humanReadableChangesInArray(changedFrom: Partial<AssetsModelDto> | Partial<User>, relatedTo: HistoryRelatedTo, usersMap: Map<number, User>): ChangeHumanReadableForm[] {
+  static humanReadableChangesInArray(changedFrom: Partial<AssetsModelDto> | Partial<User>,
+                                     relatedTo: HistoryRelatedTo, usersMap: Map<number, User>): ChangeHumanReadableForm[] {
     if (!(changedFrom instanceof Object)) {
       return [];
     }
@@ -63,9 +65,13 @@ export class HistoryDetailComponent {
             // const user = usersMap.get(changedFrom.user_id);
             // propertyValue = changedFrom.user?.surname + ' ' + changedFrom.user?.name;
           } else if (change === 'category') {
-            propertyValue = changedFrom.category?.name;
+            // todo: menil jsem dto....
+            // propertyValue = changedFrom.category?.name;
           }
-          result.push({propertyName: HumanReadableAssetsChange[change as keyof typeof HumanReadableAssetsChange], propertyValue});
+          result.push({
+            propertyName: HumanReadableAssetsChange[change as keyof typeof HumanReadableAssetsChange],
+            propertyValue
+          });
         });
         break;
       case HistoryRelatedTo.assetsUserChange:
@@ -77,7 +83,6 @@ export class HistoryDetailComponent {
     }
     return result;
   }
-
 
 
   openDetail(): void {

@@ -1,2 +1,18 @@
-<app-asset-detail [assetId]="assetId" (onClose)="dismiss()">
-</app-asset-detail>
+<ng-container *ngIf="dataPrepared$ | async as dataPrepared; else loading">
+      <app-asset-detail
+        (onClose)="dismiss()"
+        [asset]="dataPrepared[0]"
+        [users]="dataPrepared[1]"
+        [permissions]="permissions"
+        [category]="dataPrepared[2]"
+      >
+      </app-asset-detail>
+</ng-container>
+
+
+
+<ng-template #loading>
+  <nb-card style="height: 90vh; width: 90vw" [nbSpinner]="true" nbSpinnerMessage="Načítám data...">
+  </nb-card>
+</ng-template>
+

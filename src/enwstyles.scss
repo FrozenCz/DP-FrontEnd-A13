@@ -1292,6 +1292,14 @@ input[nbInput].size-tiny::placeholder {
   }
 }
 
+.ag-theme-alpine {
+  .ag-cell nb-icon svg{
+    //background: red !important;
+    max-height: 24px !important;
+    max-width: 24px !important;
+  }
+}
+
 *[readonly] {
   //border: none !important;
   //background: transparent !important;

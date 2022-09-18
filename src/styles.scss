@@ -252,6 +252,7 @@ app-asset-detail-single-page-wrapper {
       border-color: $border-basic-color-3 !important;
     }
   }
+
   [nbInput].status-basic, select, nb-select button.select-button {
     color: $text-basic-color !important;
     background-color: $background-basic-color-1 !important;
@@ -713,6 +714,15 @@ app-asset-detail-single-page-wrapper {
     //animation: 2s moveIn forwards;
   }
 }
+
+.ag-theme-alpine {
+  .ag-cell {
+    background: red !important;
+    //height: 24px !important;
+    //width: 24px !important;
+  }
+}
+
 
 @import "custom-themes/contrastMode";
 

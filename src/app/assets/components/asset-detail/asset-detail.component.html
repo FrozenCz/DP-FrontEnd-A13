@@ -1,4 +1,4 @@
-<div style="min-width: 110em" [nbSpinner]="loading" nbSpinnerMessage="nahrávám data" nbSpinnerSize="large" *ngIf="(this.users$ | async) as users">
+<div style="min-width: 110em">
   <form [formGroup]="assetForm" (ngSubmit)="submit()" class="editMode"
         *ngIf="this.showTemplate === 0"
         style="height: 100%; width: 100%;">
@@ -22,7 +22,7 @@
             </label>
             <nb-form-field fxFlex>
               <nb-select id="user" formControlName="user" fullWidth>
-                <nb-option *ngFor="let user of users" [value]="user">{{user.surname}} {{user.name}}</nb-option>
+                <nb-option *ngFor="let user of getUsers()" [value]="user">{{user.surname}} {{user.name}}</nb-option>
               </nb-select>
             </nb-form-field>
           </div>
@@ -75,7 +75,7 @@
               <input nbInput type="text" id="evidenceNumber" formControlName="evidenceNumber" fullWidth>
             </nb-form-field>
           </div>
-          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em" fxFlex="25" >
+          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em" fxFlex="25">
             <label for="identificationNumber">
               Identifikační číslo
             </label>
@@ -170,14 +170,15 @@
             <nb-icon icon="close"></nb-icon>
             Zavřít
           </button>
-          <button nbButton status="info" *ngIf="reachToUser && this.editedAsset.state===0" outline (click)="setEditModeTo(true)">
+          <button nbButton status="info" *ngIf="ableToEdit()" outline
+                  (click)="setEditModeTo(true)">
             <nb-icon icon="save"></nb-icon>
             Editovat
           </button>
         </div>
-        <div *ngIf="editMode && editedAsset" fxLayoutGap="1em">
+        <div *ngIf="editMode && asset" fxLayoutGap="1em">
           <button nbButton status="basic" outline type="button"
-                  (click)="setEditModeTo(false);insertAssetDataIntoDetailForm(this.editedAsset, users)">
+                  (click)="setEditModeTo(false);insertAssetDataIntoDetailForm(asset, usersMap)">
             <nb-icon icon="close"></nb-icon>
             Zrušit
           </button>
@@ -186,7 +187,7 @@
             Uložit
           </button>
         </div>
-        <div *ngIf="!editedAsset" fxLayoutGap="1em">
+        <div *ngIf="!asset" fxLayoutGap="1em">
           <button nbButton status="basic" outline type="button" (click)="resetForm()">
             <nb-icon icon="refresh"></nb-icon>
             Resetovat
@@ -223,7 +224,8 @@
         </nb-list>
 
 
-        <textarea rows="8" nbInput id="userNote" formControlName="userNote" fullWidth placeholder="Zde vložte Vaší poznámku">
+        <textarea rows="8" nbInput id="userNote" formControlName="userNote" fullWidth
+                  placeholder="Zde vložte Vaší poznámku">
             </textarea>
 
 
@@ -232,13 +234,14 @@
         <div [ngTemplateOutlet]="bottomLeftActions"></div>
         <button nbButton status="primary" type="submit" [disabled]="!this.noteForm.valid">
           <nb-icon icon="save-outline"></nb-icon>
-          Uložit poznámku</button>
+          Uložit poznámku
+        </button>
       </nb-card-footer>
     </form>
   </div>
   <div *ngIf="showTemplate === 2">
-    <nb-card-body >
-      <app-history-list [assetId]="assetId" [gridUid]="'assetsDetailHistory'">
+    <nb-card-body>
+      <app-history-list [assetId]="asset.id" [gridUid]="'assetsDetailHistory'">
       </app-history-list>
     </nb-card-body>
     <nb-card-footer fxLayout="row" fxLayoutAlign="space-between center" style="padding-left:0; padding-right: 0;">
@@ -249,16 +252,23 @@
     <div fxLayout="row" fxFlex fxLayoutAlign="start center" fxLayoutGap="1em">
       <button nbButton type="button" status="primary" [ghost]="this.showTemplate!=0" (click)="this.showTemplate=0">
         <nb-icon icon="monitor-outline"></nb-icon>
-        Informace o majetku</button>
-      <button nbButton type="button" style="position: relative;" status="info" [ghost]="this.showTemplate!=1" (click)="this.showTemplate=1">
-        <nb-icon icon="edit-2-outline"></nb-icon>Poznámky
+        Informace o majetku
+      </button>
+      <button nbButton type="button" style="position: relative;" status="info" [ghost]="this.showTemplate!=1"
+              (click)="this.showTemplate=1">
+        <nb-icon icon="edit-2-outline"></nb-icon>
+        Poznámky
         <nb-badge status="info" position="top right" text="6"></nb-badge>
       </button>
-      <button nbButton type="button" style="position: relative;" status="warning" [ghost]="this.showTemplate!=2" (click)="this.showTemplate = 2">
-        <nb-icon icon="clock-outline"></nb-icon>Historie
+      <button nbButton type="button" style="position: relative;" status="warning" [ghost]="this.showTemplate!=2"
+              (click)="this.showTemplate = 2">
+        <nb-icon icon="clock-outline"></nb-icon>
+        Historie
       </button>
-      <button nbButton type="button" style="position: relative;" status="warning" [ghost]="this.showTemplate!=2" (click)="this.showTemplate = 2">
-        <nb-icon icon="clock-outline"></nb-icon>Soubory
+      <button nbButton type="button" style="position: relative;" status="warning" [ghost]="this.showTemplate!=2"
+              (click)="this.showTemplate = 2">
+        <nb-icon icon="clock-outline"></nb-icon>
+        Soubory
       </button>
     </div>
   </ng-template>

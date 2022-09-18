@@ -55,7 +55,7 @@ export class DialogService {
   showCreateAssetsDialog(category?: Category): void {
     this.nbWindowService.open(AssetDetailDialogComponent, {
       title: 'Vložení nového majetku', context: {
-        selectedCategory: category
+        selectedCategoryId: category?.id
       }
     });
   }

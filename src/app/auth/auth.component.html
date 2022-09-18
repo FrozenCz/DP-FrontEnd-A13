@@ -1,8 +1,11 @@
-<ng-template [ngIf]="!logged">
+<ng-container *ngIf="token$ | async as token; else notLogged;">
+  <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1rem" *ngIf="token">
+    <nb-icon icon="person" (click)="onShowUserClick(token)"></nb-icon>
+    <nb-icon status="danger" icon="log-out" (click)="logOut()"></nb-icon>
+  </div>
+</ng-container>
+
+
+<ng-template #notLogged>
   <nb-icon icon="log-in" (click)="showLoginDialog()"></nb-icon>
-</ng-template>
-
-
-<ng-template [ngIf]="logged">
-  <nb-icon status="danger" icon="log-out" (click)="logOut()"></nb-icon>
 </ng-template>

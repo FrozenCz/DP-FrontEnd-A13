@@ -105,9 +105,7 @@ export class UsersService {
     firstValueFrom(this.usersStore$.getOne$(userId).pipe(withLatestFrom(this.selectedUsers$.getAll$()))).then(([user, users]) => {
       this.selectedUsers$.putData([...users.filter(u => u.id !== user.id), user]);
     })
-
   }
-
 
   removeUserFromSelected(userId: number): void {
     this.selectedUsers$.remove(userId).then(noop);
@@ -128,7 +126,6 @@ export class UsersService {
         // toto by mel resit ws
         // const filteredUsers = this.usersStore$.getValue().filter(user => !users.includes(user));
         // this.users$.next(filteredUsers);
-
         this.selectedUsers$.putData([]);
       })
     );
@@ -171,6 +168,11 @@ export class UsersService {
       return a.surname.localeCompare(b.surname);
     })));
   }
+
+  public getUsersMap$(): Observable<Map<number, User>> {
+    return this.usersStore$.getMap$();
+  }
+
 
   wsUsersUpdate(users: UserDto[]): void {
     // nejsem si jist zda se jedná o update všeho nebo jen jedne entity

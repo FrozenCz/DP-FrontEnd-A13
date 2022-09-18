@@ -80,6 +80,11 @@ export class Category {
   set parentName(value: string) {
     this._parentName = value;
   }
+
+  get categoryTreeForDetail(): string {
+    return this.tree?.join(' > ') ?? '';
+  }
+
 }
 
 export interface DefaultCategory {

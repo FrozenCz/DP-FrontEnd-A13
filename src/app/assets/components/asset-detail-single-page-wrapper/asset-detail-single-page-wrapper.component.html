@@ -1,3 +1,9 @@
-<app-asset-detail [assetId]=assetId>
-</app-asset-detail>
-
+<ng-container *ngIf="asset$ | async as asset">
+  <app-asset-detail
+    *ngIf="category && asset"
+    [asset]="asset"
+    [permissions]="permissions"
+    [category]="category"
+  >
+  </app-asset-detail>
+</ng-container>

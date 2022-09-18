@@ -7,9 +7,9 @@ import {
   AssetState,
   Change,
   ICreateAsset,
-  IRemoveAssetsInformation, AssetsModelDto
+  IRemoveAssetsInformation, AssetsModelDto, Asset
 } from './models/assets.model';
-import {BehaviorSubject, combineLatest, firstValueFrom, Observable, OperatorFunction, throwError} from 'rxjs';
+import {BehaviorSubject, combineLatest, firstValueFrom, noop, Observable, OperatorFunction, throwError} from 'rxjs';
 import {debounceTime, filter, finalize, map, shareReplay, tap} from 'rxjs/operators';
 import {TokenService} from '../auth/token.service';
 import {CategoriesService} from '../categories/categories.service';
@@ -18,6 +18,7 @@ import {Unit} from '../units/models/unit.model';
 import {NbToastrService} from '@nebular/theme';
 import {User} from '../users/model/user.model';
 import {UsersService} from '../users/users.service';
+import {Store} from '../store/store';
 
 interface ChangeUserBulk {
   assetId: number;
@@ -49,6 +50,7 @@ export interface IAssetsExtFilter {
 }
 
 export interface IAssetsExt {
+  id: number;
   asset: AssetModelExt;
   categories: string[];
 }
@@ -72,7 +74,9 @@ interface RemoveAssetsDto {
 
 @Injectable({providedIn: 'root'})
 export class AssetsService {
-  private assets$: BehaviorSubject<AssetModelExt[]> = new BehaviorSubject<AssetModelExt[]>([]);
+  assetsStore$: Store<Asset> = new Store<Asset>({identifierName: 'id'});
+
+
   private assetsList$: BehaviorSubject<IAssetsExt[]> = new BehaviorSubject<IAssetsExt[]>([]);
   private assetsSelectedInGridList$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
   private assetsWorkingList$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
@@ -106,30 +110,34 @@ export class AssetsService {
       this.loadAssets().catch((err) => console.log(err));
     });
 
-    this.assets$.subscribe((assets) => {
-      this.assetsWorkingList$.next(this.assetsWorkingList$.getValue()
-        .filter(awl => assets.filter(a => a.state === AssetState.actual)
-          .map(a => a.id)
-          .includes(awl)));
-    });
+    //todo: je treba udelat aby pri zmene se projevila i zmena na working list.... ale proc tam nejsou jen id?
+    // this.assets$.subscribe((assets) => {
+    //   this.assetsWorkingList$.next(this.assetsWorkingList$.getValue()
+    //     .filter(awl => assets.filter(a => a.state === AssetState.actual)
+    //       .map(a => a.id)
+    //       .includes(awl)));
+    // });
 
   }
 
-  /**
-   * enhance assetModel with unit and reachable indicator
-   * @param assetModel asset for enhance
-   * @param allUnits all units, include unreachable
-   * @param reachableUnitsIds units on same position in tree or below
-   */
-  private static extendAssetModel(assetModel: AssetsModelDto, users: Map<number, User>): AssetModelExt {
-    const found = users.get(assetModel.user_id);
-    if (!found) {
-      throw new Error('User with ID ' + assetModel.user_id + ' not found!');
-    }
-    return {
-      ...assetModel,
-      user: found
-    }
+  private static transformAssetDTOtoAsset(assetModelDTO: AssetsModelDto): Asset {
+    return new Asset(
+      assetModelDTO.category_id,
+      assetModelDTO.id,
+      assetModelDTO.name,
+      assetModelDTO.quantity,
+      assetModelDTO.user_id,
+      assetModelDTO.serialNumber,
+      assetModelDTO.inventoryNumber,
+      assetModelDTO.evidenceNumber,
+      assetModelDTO.identificationNumber,
+      new Date(assetModelDTO.inquiryDate),
+      assetModelDTO.document,
+      assetModelDTO.inquiryPrice,
+      assetModelDTO.location,
+      assetModelDTO.locationEtc,
+      assetModelDTO.note,
+      assetModelDTO.state)
   }
 
   private static transformInformationUpdateBulk(updateInformation: ChangeBulk[]): BackendAcceptableAssetUpdateInformationBulk[] {
@@ -163,6 +171,34 @@ export class AssetsService {
     });
   }
 
+  async loadAssets(): Promise<void> {
+    try {
+      const assetsList = await firstValueFrom(this.fetchAssets());
+      if (assetsList) {
+        this.assetsStore$.putData(assetsList);
+      } else {
+        this.assetsStore$.putData([]);
+      }
+    } catch (e: any) {
+      console.error(e);
+      if ([401, 403].includes(e.error.statusCode)) {
+        this.assetsStore$.putData([]);
+      }
+    }
+  }
+
+  private fetchAssets(): Observable<Asset[]> {
+    return this.http.get<AssetsModelDto[]>('/rest/assets')
+      .pipe(
+        map((assets) => {
+            return assets.map(asset => AssetsService.transformAssetDTOtoAsset(asset));
+          },
+        ),
+      )
+  }
+
+
+
 
   public getAssetsSelectedInGridList$(): Observable<IAssetsExt[]> {
     return combineLatest([this.assetsSelectedInGridList$, this.assetsList$]).pipe(debounceTime(20), map(([inGrid, assets]) =>
@@ -170,34 +206,7 @@ export class AssetsService {
         .filter(asset => asset.asset.state === AssetState.actual)));
   }
 
-  async loadAssets(): Promise<void> {
-    try {
-      const assetsList = await firstValueFrom(this.fetchAssets());
-      if (assetsList) {
-        this.assets$.next(assetsList);
-      } else {
-        this.assets$.next([]);
-      }
-      this.enhanceAssetsWithCategories();
-    } catch (e: any) {
-      console.log(e);
-      if ([401, 403].includes(e.error.statusCode)) {
-        this.assets$.next([]);
-      }
-    }
-  }
 
-  fetchAssets(): Observable<AssetModelExt[]> {
-    return combineLatest([
-      this.http.get<AssetsModelDto[]>('/rest/assets'),
-      this.usersService.usersStore$.getMap$()
-    ]).pipe(
-        map(([assets, users]) => {
-          return assets.map(asset => AssetsService.extendAssetModel(asset, users));
-          },
-        ),
-      )
-  }
 
   changeAssetUser(assetId: number, user_id: number): Observable<void> {
     return this.http.patch<void>('/rest/assets/' + assetId + '/changeUser', {userId: user_id})
@@ -206,13 +215,13 @@ export class AssetsService {
   //todo:  change subsrcibers
   changeAssetInformation(assetId: number, changes: Partial<AssetsModelDto>): Observable<void> {
     return this.http.patch<void>('/rest/assets/' + assetId + '/information', {...changes})
-      // .pipe(map(asset => AssetsService.extendAssetModel(asset, this.allUnits, this.reachableUnitsIds)))
-      // .pipe(tap(updatedAsset => this.updateAssetsStore(updatedAsset)));
+    // .pipe(map(asset => AssetsService.extendAssetModel(asset, this.allUnits, this.reachableUnitsIds)))
+    // .pipe(tap(updatedAsset => this.updateAssetsStore(updatedAsset)));
   }
 
-  getAssetsRawList(): Observable<AssetModelExt[]> {
-    return this.assets$.asObservable();
-  }
+  // getAssetsRawList(): Observable<AssetModelExt[]> {
+  //   return this.assets$.asObservable();
+  // }
 
   getQuickFilter(): Observable<string> {
     return this.quickFilter$;
@@ -226,23 +235,23 @@ export class AssetsService {
   /**
    * function that watch on assets$ change and if it, it recalculate categories
    */
-  private enhanceAssetsWithCategories(): void {
-    combineLatest([this.getAssetsRawList(), this.categoriesService.getCategories()])
-      .pipe(
-        filter(([rawList, cats]) => !!rawList && !!cats),
-        map(([assetList, categories]) => assetList.map((asset) => {
-          const cc = categories.find(cat => cat.id === asset?.category.id)?.columnValues;
-          const ccc = this.categoriesService.getColumnValuesInArray(cc);
-          return {
-            asset,
-            categories: ccc
-          };
-        })))
-      .subscribe((enhancedModelArray: any[]) => {
-          this.assetsList$.next(enhancedModelArray);
-        }
-      );
-  }
+  // private enhanceAssetsWithCategories(): void {
+  //   combineLatest([this.getAssetsRawList(), this.categoriesService.getCategories()])
+  //     .pipe(
+  //       filter(([rawList, cats]) => !!rawList && !!cats),
+  //       map(([assetList, categories]) => assetList.map((asset) => {
+  //         const cc = categories.find(cat => cat.id === asset?.category.id)?.columnValues;
+  //         const ccc = this.categoriesService.getColumnValuesInArray(cc);
+  //         return {
+  //           asset,
+  //           categories: ccc
+  //         };
+  //       })))
+  //     .subscribe((enhancedModelArray: any[]) => {
+  //         this.assetsList$.next(enhancedModelArray);
+  //       }
+  //     );
+  // }
 
   isInWorkingList(assetId: number): boolean {
     return this.assetsWorkingList$.getValue().some(asset => asset === assetId);
@@ -324,16 +333,12 @@ export class AssetsService {
     return this.http.post<AssetsModelDto>('/rest/assets', asset);
   }
 
-  getRawAsset(assetId: number): Observable<AssetModelExt> {
-    return this.assets$.pipe(
-      map(assets => assets.find(asset => asset.id === assetId)),
-      filter(rel => !!rel) as OperatorFunction<AssetModelExt | undefined, AssetModelExt>
-    );
+  getRawAsset(assetId: number): Observable<Asset> {
+    return this.assetsStore$.getOne$(assetId)
   }
 
   updateAsset(changes: Partial<AssetModelExt>, assetId: number): Observable<AssetModelExt> {
     return this.http.patch<AssetModelExt>('/rest/assets/' + assetId, {changes})
-      .pipe(tap(console.log));
   }
 
   addAssetsIdToWorkingList(ids: number[]): number[] {
@@ -373,13 +378,6 @@ export class AssetsService {
     return this.assetsList$.getValue().filter(asset => this.assetsWorkingList$.getValue().includes(asset.asset.id));
   }
 
-
-  private updateAssetsStore(updatedAsset: AssetModelExt): void {
-    const assets = this.assets$.getValue();
-    const updatedAssetIndex = assets.findIndex(asset => asset.id === updatedAsset.id);
-    assets[updatedAssetIndex] = updatedAsset;
-    this.assets$.next(assets);
-  }
 
   changesBulk(changes: ChangeBulk[], source: AssetsSourceEnum): void {
     const switchUser: ChangeUserBulk[] = [];
@@ -461,12 +459,6 @@ export class AssetsService {
   }
 
   wsAssetsUpdate(changes: AssetsModelDto[]): void {
-    firstValueFrom(this.usersService.usersStore$.getMap$()).then( users => {
-        const updatedAssets: AssetModelExt[] = [];
-        for(const asset of changes) {
-          updatedAssets.push(AssetsService.extendAssetModel(asset, users))
-        }
-        this.assets$.next(updatedAssets);
-      });
+    this.assetsStore$.update(changes.map(a => AssetsService.transformAssetDTOtoAsset(a))).then(noop);
   }
 }

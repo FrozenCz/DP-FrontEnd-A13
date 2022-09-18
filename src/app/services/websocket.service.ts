@@ -16,6 +16,8 @@ import {UsersService} from '../users/users.service';
 import {NbToastrService} from '@nebular/theme';
 import {User} from '../users/model/user.model';
 import {UserDto} from '../users/dto/user.dto';
+import { io } from "socket.io-client";
+
 
 // create update delete
 export interface AssetsUpdate {
@@ -57,7 +59,8 @@ export interface WsResponse {
   providedIn: 'root'
 })
 export class WebsocketService {
-  websocket: RxWebsocketSubject<WsResponse> = new RxWebsocketSubject<WsResponse>();
+  // websocket: RxWebsocketSubject<WsResponse> = new RxWebsocketSubject<WsResponse>();
+  socket = io(webSocketUrl);
 
   constructor(
     private assetsService: AssetsService,
@@ -65,7 +68,8 @@ export class WebsocketService {
     private usersService: UsersService,
     private toastrService: NbToastrService
   ) {
-    this.websocket.wsMessages$.subscribe((response: WsResponse) => {
+
+    this.socket.on('changes', (response: WsResponse) => {
       switch (response?.data?.type) {
         case AssetsWs.assetsUpdate:
           this.assetsService.wsAssetsUpdate(response.data.changes);
@@ -83,14 +87,36 @@ export class WebsocketService {
           this.usersService.wsUsersDelete(response.data.changes);
           break;
       }
-    });
-    this.websocket.connectionEstablished$.subscribe(connected => {
-      if (connected) {
-        this.toastrService.success('spojení navázáno', 'WEBSOCKET', {icon: 'wifi-outline'});
-      } else {
-        this.toastrService.danger('spojení ztraceno', 'WEBSOCKET', {icon: 'wifi-off-outline'});
-      }
-    });
+
+    })
+
+
+    // this.websocket.wsMessages$.subscribe((response: WsResponse) => {
+    //   switch (response?.data?.type) {
+    //     case AssetsWs.assetsUpdate:
+    //       this.assetsService.wsAssetsUpdate(response.data.changes);
+    //       break;
+    //     case CategoriesWs.categoryUpdate:
+    //       this.categoriesService.wsCategoryUpdate(response.data.changes);
+    //       break;
+    //     case CategoriesWs.categoryDelete:
+    //       this.categoriesService.wsCategoryDelete(response.data.changes);
+    //       break;
+    //     case UsersWs.usersUpdate:
+    //       this.usersService.wsUsersUpdate(response.data.changes);
+    //       break;
+    //     case UsersWs.usersDelete:
+    //       this.usersService.wsUsersDelete(response.data.changes);
+    //       break;
+    //   }
+    // });
+    // this.websocket.connectionEstablished$.subscribe(connected => {
+    //   if (connected) {
+    //     this.toastrService.success('spojení navázáno', 'WEBSOCKET', {icon: 'wifi-outline'});
+    //   } else {
+    //     this.toastrService.danger('spojení ztraceno', 'WEBSOCKET', {icon: 'wifi-off-outline'});
+    //   }
+    // });
   }
 }
 

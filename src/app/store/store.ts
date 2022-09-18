@@ -15,6 +15,7 @@ export class Store<T> {
   constructor(config?: { identifierName?: string }, initialData?: T[]) {
     if (config && config.identifierName) {
       this._identifierName = config.identifierName as keyof T;
+
     }
 
     if (initialData) {
@@ -37,6 +38,7 @@ export class Store<T> {
     for (const entity of updArr) {
       storedEntities.set(this.getKeyFromEntity(entity), entity);
     }
+    this._$innerStore.next(storedEntities);
   }
 
   /**
@@ -94,7 +96,7 @@ export class Store<T> {
     return this.getMap$().pipe(map(eAsMap => {
       const found = eAsMap.get(uuid);
       if (!found) {
-        throw new Error('Entity with identifier['+ this._identifierName +'] ' + uuid+ 'not found');
+        throw new Error('Entity with identifier['+ this._identifierName +'] ' + uuid+ ' not found');
       }
       return found;
     }));
