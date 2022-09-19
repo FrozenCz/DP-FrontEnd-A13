@@ -197,15 +197,22 @@ export class AssetsService {
       )
   }
 
-
-
-
-  public getAssetsSelectedInGridList$(): Observable<IAssetsExt[]> {
-    return combineLatest([this.assetsSelectedInGridList$, this.assetsList$]).pipe(debounceTime(20), map(([inGrid, assets]) =>
-      assets.filter(a => inGrid.includes(a.asset.id))
-        .filter(asset => asset.asset.state === AssetState.actual)));
+  public assetsWorkingListIds$(): Observable<number[]> {
+    return this.assetsWorkingList$.asObservable();
   }
 
+  public getAssetsSelectedInGridList$(): Observable<Map<number, Asset>> {
+    return combineLatest([this.assetsSelectedInGridList$, this.assetsStore$.getMap$()]).pipe(debounceTime(20), map(([inGrid, assets]) => {
+      const selectedInGrid: Map<number, Asset> = new Map<number, Asset>();
+      for (const assetId of inGrid) {
+        const found = assets.get(assetId);
+        if (found && found.state === AssetState.actual) {
+          selectedInGrid.set(assetId, found);
+        }
+      }
+      return selectedInGrid;
+    }))
+  }
 
 
   changeAssetUser(assetId: number, user_id: number): Observable<void> {
@@ -275,41 +282,33 @@ export class AssetsService {
     return this.assetsList$;
   }
 
-  getAssetsWorkingList$(): Observable<IAssetsExt[]> {
-    return combineLatest([this.assetsWorkingList$, this.assetsList$]).pipe(
-      shareReplay(),
-      map(([workingList, assets]) =>
-        assets.filter(a => workingList.includes(a.asset.id))
-          .filter(asset => asset.asset.state === AssetState.actual)));
+  getAssetsWorkingList$(): Observable<Map<number, Asset>> {
+    return combineLatest([this.assetsWorkingList$, this.assetsStore$.getMap$()]).pipe(
+     map(([inGrid, assets]) => {
+        const selectedInGrid: Map<number, Asset> = new Map<number, Asset>();
+        for (const assetId of inGrid) {
+          const found = assets.get(assetId);
+          if (found && found.state === AssetState.actual) {
+            selectedInGrid.set(assetId, found);
+          }
+        }
+        return selectedInGrid;
+      }))
   }
 
-  public addAssetIdToWorkingList(assetId: number): number[] {
-    const found = this.assetsList$.getValue().find(extModel => extModel.asset.id === assetId)?.asset.id;
-
-    if (!found) {
-      throw new Error('item not found');
-    }
-
-    if (this.isInWorkingList(assetId)) {
-      // return;
-      throwError('This item is already in working list');
-    }
-
-    const updatedList = [...this.assetsWorkingList$.getValue(), found];
-
+  public addAssetIdToWorkingList(assetId: number): void {
+    const updatedList = [...this.assetsWorkingList$.getValue(), assetId];
     this.assetsWorkingList$.next(updatedList);
-    return updatedList;
   }
 
-  public addToSelectedInGrid(assetId: number): number[] {
-    const found = this.assetsList$.getValue().find(extModel => extModel.asset.id === assetId)?.asset.id;
+  public async addToSelectedInGrid(assetId: number): Promise<void> {
+    const found = (await firstValueFrom(this.assetsStore$.getMap$())).get(assetId);
 
     if (!found) {
       throw new Error('item not found');
     }
-    const assetsSelectedInGridListUpdate = [...this.assetsSelectedInGridList$.getValue().filter(id => id !== assetId), found];
+    const assetsSelectedInGridListUpdate = [...this.assetsSelectedInGridList$.getValue().filter(id => id !== assetId), assetId];
     this.assetsSelectedInGridList$.next(assetsSelectedInGridListUpdate);
-    return assetsSelectedInGridListUpdate;
   }
 
   public removeFromSelectedInGrid(assetId: number): number[] {

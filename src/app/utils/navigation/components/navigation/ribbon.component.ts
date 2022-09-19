@@ -10,6 +10,7 @@ import { Router} from '@angular/router';
 import {Navigation} from '../../models/navigation';
 import {NavigationAcceptedIconsEnum} from '../../models/navigation.types';
 import {NavButtonsIdsEnum} from '../../models/navButtonsIds.enum';
+import {NavigationButton} from '../../models/navigationButton';
 
 
 export interface NavButClickedEmit {
@@ -41,6 +42,13 @@ export class RibbonComponent {
     const url = this.navigation.navTabs.find(nav => nav.name.toLowerCase() === navTabName)?.url;
     if (url) {
       this.router.navigate(url);
+    }
+  }
+
+  actionEmit(button: NavigationButton): void {
+    if (!button.url || button.url.length < 1) {
+      // nechci emitovat id pro buttony
+      this.actionEmitted.emit({id: button.id})
     }
   }
 

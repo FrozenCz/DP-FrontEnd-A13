@@ -10,7 +10,7 @@ export class NavigationButton {
   private readonly _name: string;
   private readonly _icon: string;
   private readonly _iconType: NavigationAcceptedIconsEnum;
-  private readonly _url: string[] = [];
+  private readonly _url: string[] | undefined = undefined;
   private _target: '_self' | '_blank' = '_self';
   private _disabled: boolean = false;
   private _class?: string | undefined;
@@ -49,7 +49,7 @@ export class NavigationButton {
     return this._iconType;
   }
 
-  get url(): string[] {
+  get url(): string[] | undefined {
     return this._url;
   }
 

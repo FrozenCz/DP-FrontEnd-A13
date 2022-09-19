@@ -1,20 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {RouterModule, Routes} from '@angular/router';
-import {LocationsComponent} from './locations.component';
-
-const routes: Routes = [
-  {path: '', component: LocationsComponent}
-];
-
+import { MainLocationDashboardComponent } from './dashboards/main-location-dashboard/main-location-dashboard.component';
+import {LocationsRoutingModule} from './locations-routing.module';
 
 @NgModule({
   declarations: [
-    LocationsComponent
+    MainLocationDashboardComponent
   ],
   imports: [
-    RouterModule.forChild(routes),
-    CommonModule
+    CommonModule,
+    LocationsRoutingModule
   ]
 })
 export class LocationsModule { }

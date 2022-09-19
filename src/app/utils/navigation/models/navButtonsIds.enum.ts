@@ -25,5 +25,8 @@ export enum NavButtonsIdsEnum {
   category_list='category_list',
   category_new='category_new',
 
-  category_column_edit='category_column_edit'
+  category_column_edit='category_column_edit',
+
+  locations_list='locations_list',
+  locations_create_new='locations_create_new'
 }

@@ -17,6 +17,7 @@ import {NavigationButton} from './utils/navigation/models/navigationButton';
 import {NavButtonsIdsEnum} from './utils/navigation/models/navButtonsIds.enum';
 import {AssetsService, AssetsSourceEnum} from './assets/assets.service';
 import {take} from 'rxjs/operators';
+import {LocationCreateNewButton, LocationListButton, LocationNav} from './locations/model/locations.navigation';
 
 @Component({
   selector: 'app-root',
@@ -38,7 +39,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   listsTab: NavigationTab = new NavigationTab('lists', 'Sestavy', ['lists'], 'list-outline');
   unitsTab: NavigationTab = new NavigationTab('units', 'Jednotky', ['units'], 'layers-outline');
   categoryTab: NavigationTab = new NavigationTab('categories', 'Kategorie', ['categories'], 'grid-outline');
-  locationTab: NavigationTab = new NavigationTab('locations', 'Lokace', ['locations'], 'paper-plane-outline');
   historyTab: NavigationTab = new NavigationTab('history', 'Historie', ['history'], 'clock-outline');
   hintTab: NavigationTab = new NavigationTab('hint', 'Nápověda', [''], 'question-mark-circle-outline');
   usersSection: NavigationSection = new NavigationSection('users', 'uživatel', {
@@ -201,7 +201,7 @@ export class AppComponent implements OnInit, AfterViewInit {
    * @private
    */
   private createNavigation(): void {
-    this.navigation.navTabs.push(this.usersTab, this.assetTab, this.listsTab, this.unitsTab, this.categoryTab, this.locationTab, this.historyTab, this.hintTab);
+    this.navigation.navTabs.push(this.usersTab, this.assetTab, this.listsTab, this.unitsTab, this.categoryTab, LocationNav, this.historyTab, this.hintTab);
 
     /** users **/
     this.usersTab.sections.push(this.usersSection);
@@ -360,20 +360,30 @@ export class AppComponent implements OnInit, AfterViewInit {
     categoryColumnSubSectionA.buttons.push(columnsEditButton);
     this.categoryTab.sections.push(categoryColumnSection)
 
+    /** lokace */
+    const lokSecA = new NavigationSection('lok_sec_a', 'lokace', {name: 'paper-plane-outline', iconType: NavigationAcceptedIconsEnum.eva});
+    const subSecA = new NavigationSubSectionButtons();
+    LocationNav.sections.push(lokSecA);
+    lokSecA.subSections.push(subSecA);
+    subSecA.buttons.push(LocationListButton, LocationCreateNewButton);
+
+
 
     /* handling changes */
     this.prepareToolbar();
     this.assetsService.getAssetsWorkingList$().subscribe(workingList => {
-      showWorkingListButton.setBadgeText(workingList.length);
-      dropWorkingListButton.disabled = !workingList.length;
-      showProtocolsFromWorkingList.setBadgeText(workingList.length);
-      massEditFromWorkingList.setBadgeText(workingList.length);
-      assetRemoveFromWorkingList.setBadgeText(workingList.length);
+      const size = workingList.size;
+      showWorkingListButton.setBadgeText(size);
+      dropWorkingListButton.disabled = !size;
+      showProtocolsFromWorkingList.setBadgeText(size);
+      massEditFromWorkingList.setBadgeText(size);
+      assetRemoveFromWorkingList.setBadgeText(size);
     });
     this.assetsService.getAssetsSelectedInGridList$().subscribe(selectedAssets => {
-      showProtocolsFromSelected.setBadgeText(selectedAssets.length);
-      massEditFromSelected.setBadgeText(selectedAssets.length)
-      assetRemoveFromSelected.setBadgeText(selectedAssets.length)
+      const size = selectedAssets.size;
+      showProtocolsFromSelected.setBadgeText(size);
+      massEditFromSelected.setBadgeText(size)
+      assetRemoveFromSelected.setBadgeText(size)
     })
   }
 }

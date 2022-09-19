@@ -3,6 +3,7 @@ import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
 import {AssetsService, IAssetsExt} from '../assets/assets.service';
 import {HttpClient} from '@angular/common/http';
 import {filter, map, tap, withLatestFrom} from 'rxjs/operators';
+import {Asset} from '../assets/models/assets.model';
 
 interface AssetsListGeneral {
   id: number;
@@ -20,7 +21,7 @@ export interface IAssetsList extends AssetsListGeneral {
 }
 
 export interface IAssetsListForCreateUpdate extends AssetsListGeneral{
-  assets: IAssetsExt[];
+  assets: Asset[];
 }
 
 interface IAssetsListFromNest extends AssetsListGeneral {
@@ -106,7 +107,7 @@ export class ListsService {
    * @return obs of new List
    */
   createAssetsList(assetsList: IAssetsListForCreateUpdate): Observable<IAssetsList> {
-    const assetsListForNest: IAssetsListForNest = {...assetsList, assetsIds: assetsList.assets.map(asset => asset.asset.id)};
+    const assetsListForNest: IAssetsListForNest = {...assetsList, assetsIds: assetsList.assets.map(asset => asset.id)};
     return this.http.post<IAssetsListFromNest>('rest/lists', assetsListForNest)
       .pipe(
         withLatestFrom(this.assetsService.getAssets()),
@@ -121,7 +122,7 @@ export class ListsService {
   }
 
   updateAssetsList(assetsList: IAssetsListForCreateUpdate): Observable<IAssetsList> {
-    const assetsListForNest: IAssetsListForNest = {...assetsList, assetsIds: assetsList.assets.map(asset => asset.asset.id)};
+    const assetsListForNest: IAssetsListForNest = {...assetsList, assetsIds: assetsList.assets.map(asset => asset.id)};
     return this.http.put<IAssetsListFromNest>('rest/lists/' + assetsList.id, assetsListForNest)
       .pipe(
         withLatestFrom(this.assetsService.getAssets()),

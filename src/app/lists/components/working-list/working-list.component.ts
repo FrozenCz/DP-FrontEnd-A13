@@ -1,27 +1,20 @@
-import {Component, OnDestroy} from '@angular/core';
-import {AssetsService, IAssetsExt} from '../../../assets/assets.service';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {Component} from '@angular/core';
+import {IAssetsExt} from '../../../assets/assets.service';
+import {Observable} from 'rxjs';
+import {AssetSource, Facade} from '../../../facade/facade';
 
 @Component({
   selector: 'app-working-list',
   templateUrl: './working-list.component.html',
   styleUrls: ['./working-list.component.scss']
 })
-export class WorkingListComponent implements OnDestroy{
-  assetsWorkingList: IAssetsExt[] = [];
+export class WorkingListComponent{
+  assetsWorkingList$: Observable<IAssetsExt[]>;
   gridUid = 'assetList';
-  unsubscribe: Subject<void> = new Subject<void>();
 
-  constructor(private assetsService: AssetsService) {
-    this.assetsService.getAssetsWorkingList$()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(assets => this.assetsWorkingList = assets);
+  constructor(private facade: Facade) {
+    this.assetsWorkingList$ = this.facade.getAssetExt(AssetSource.workingList);
   }
 
-  ngOnDestroy(): void {
-    this.unsubscribe.next()
-    this.unsubscribe.complete()
-  }
 
 }

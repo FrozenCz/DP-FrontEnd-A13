@@ -34,7 +34,7 @@
                    [routerLink]="navButton.url"
                    [routerLinkActive]="navButton.url ? navigation.activeLinkClass : ''"
                    [routerLinkActiveOptions]="{exact: !!navButton.routerLinkActiveExactOptions}"
-                   (click)="actionEmitted.emit({id: navButton.id})"
+                   (click)="actionEmit(navButton)"
                    [disabled]="navButton.disabled"
                 >
                   <nb-icon *ngIf="navButton.icon && navButton.iconType === navIconType.eva" [icon]="navButton.icon"></nb-icon>

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ICellRendererAngularComp} from 'ag-grid-angular';
 import {IAfterGuiAttachedParams, ICellRendererParams} from 'ag-grid-community';
 import {AssetsService, IAssetsExt} from '../../../assets/assets.service';
-
+import {noop} from 'rxjs';
 
 
 @Component({
@@ -15,10 +15,6 @@ export class ActionButtonsForAgGridComponent implements ICellRendererAngularComp
   multiRowSelection = false;
 
   constructor(private assetsService: AssetsService) {
-  }
-
-
-  afterGuiAttached(params?: IAfterGuiAttachedParams): void {
   }
 
   agInit(params: ICellRendererParams): void {
@@ -49,7 +45,9 @@ export class ActionButtonsForAgGridComponent implements ICellRendererAngularComp
 
   private selectNodes(assetModelExt: IAssetsExt, removeIfIsPresent: boolean = true): void {
     if (this.assetsService.isInWorkingList(assetModelExt.asset.id)) {
-      if (removeIfIsPresent) { this.assetsService.removeFromAssetsWorkingList(assetModelExt.asset.id); }
+      if (removeIfIsPresent) {
+        this.assetsService.removeFromAssetsWorkingList(assetModelExt.asset.id);
+      }
     } else {
       this.assetsService.addAssetIdToWorkingList(assetModelExt.asset.id);
     }

@@ -5,6 +5,7 @@ import {AssetsService, IAssetsExt} from '../../../assets/assets.service';
 import {combineLatest, Subject} from 'rxjs';
 import {map, take, takeUntil} from 'rxjs/operators';
 import { IAssetsListForCreateUpdate, ListsService} from '../../lists.service';
+import {Asset} from '../../../assets/models/assets.model';
 
 @Component({
   selector: 'app-save-list',
@@ -13,7 +14,7 @@ import { IAssetsListForCreateUpdate, ListsService} from '../../lists.service';
 })
 export class SaveListComponent implements OnInit, OnDestroy {
   listForm: FormGroup;
-  assetsWorkingList: IAssetsExt[] = [];
+  assetsWorkingList: Asset[] = [];
   editedListId: number | undefined = undefined;
   unsubscribe: Subject<void> = new Subject<void>();
 
@@ -40,7 +41,7 @@ export class SaveListComponent implements OnInit, OnDestroy {
 
 
     this.assetsService.getAssetsWorkingList$().pipe(takeUntil(this.unsubscribe))
-      .subscribe(assetsList => this.assetsWorkingList = assetsList);
+      .subscribe(assetsList => this.assetsWorkingList = Array.from(assetsList.values()));
 
     combineLatest([this.listsService.getAssetsLists(), this.listForm.valueChanges])
       .pipe(

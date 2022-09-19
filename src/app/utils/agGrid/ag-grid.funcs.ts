@@ -101,7 +101,7 @@ export class AgGridFuncs {
         ],
         hiddenByDefault: false,
       },
-      context: {workingListAssetsIds: []},
+      context: {workingListAssetsIds: null},
       getRowClass: AgGridFuncs.getClassIfInWorkingList,
       frameworkComponents: {
         actionButtonsForAgGrid: ActionButtonsForAgGridComponent,

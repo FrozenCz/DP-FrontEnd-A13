@@ -18,6 +18,7 @@
 @import "partials/components/myDialog";
 @import "partials/components/topNav";
 @import "partials/components/sidenav";
+@import "src/app/utils/navigation/style";
 
 
 @include nb-install() {

@@ -160,21 +160,6 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
     }
   }
 
-  //
-  // quantity: [1, [Validators.required, Validators.min(1), Validators.max(100000)]],
-  // name: [null],
-  // user: [null, [Validators.required]],
-  // serialNumber: [null, [Validators.maxLength(50)]],
-  // inventoryNumber: [null, [Validators.maxLength(50)]],
-  // evidenceNumber: [null, [Validators.maxLength(50)]],
-  // identificationNumber: [null, [Validators.maxLength(50)]],
-  // inquiryDate: [new Date()],
-  // inquiryPrice: [null, [Validators.max(9999999999)]],
-  // document: [null, [Validators.maxLength(20)]],
-  // location: [null, [Validators.maxLength(50)]],
-  // locationEtc: [null, [Validators.maxLength(150)]],
-  // note: [null, [Validators.maxLength(250)]]
-
   private createAsset(): void {
     this.assetsService.createAsset({
       categoryId: this.category.id,

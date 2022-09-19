@@ -15,6 +15,6 @@
         <app-save-list *ngIf="!ref.compacted"></app-save-list>
       </div>
     </nb-sidebar>
-    <app-assets-grid [assets]="assetsWorkingList" [gridUid]="gridUid"></app-assets-grid>
+    <app-assets-grid *ngIf="assetsWorkingList$ | async as assetsWl" [assets]="assetsWl" [gridUid]="gridUid"></app-assets-grid>
   </div>
 </div>

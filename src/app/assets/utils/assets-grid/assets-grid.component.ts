@@ -50,7 +50,6 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
   unsubscribe: Subject<void> = new Subject<void>();
   data: IAssetsExt[] = [];
   columnDefs: ColDef[] = [];
-  workingList: IAssetsExt[] = [];
   quickFilterSub: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   quickFilter$ = this.quickFilterSub.asObservable().pipe(shareReplay());
   switchSearchMode$!: Observable<AssetsSearchModeEnum>;
@@ -128,10 +127,10 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
     this.agGridStates$ = this.agGridInstanceService.getGrid(this.gridUid);
     this.viewsAsButton = this.agGridStates$.pipe(map(grid => grid?.gridViews.filter(view => view.showAsButton)));
 
-    this.assetsService.getAssetsWorkingList$().subscribe(workingList => {
-      this.workingList = workingList;
-      this.gridOptions.context.workingListAssetsIds = workingList.map(asset => asset.asset.id);
+    this.assetsService.assetsWorkingListIds$().subscribe(workingList => {
+      this.gridOptions.context.workingListAssetsIds = workingList;
     });
+
     /**
      * when gridStart
      */
