@@ -12,7 +12,7 @@ export class AssetsDashboardComponent {
   assets$: Observable<IAssetsExt[]>
 
   constructor(private facade: Facade) {
-    this.assets$ = this.facade.getAssetExt(AssetSource.store);
+    this.assets$ = this.facade.getAssetExt(AssetSource.STORE);
   }
 
 

@@ -19,6 +19,7 @@ import {NbToastrService} from '@nebular/theme';
 import {User} from '../users/model/user.model';
 import {UsersService} from '../users/users.service';
 import {Store} from '../store/store';
+import {AssetSource} from '../facade/facade';
 
 interface ChangeUserBulk {
   assetId: number;
@@ -76,8 +77,6 @@ interface RemoveAssetsDto {
 export class AssetsService {
   assetsStore$: Store<Asset> = new Store<Asset>({identifierName: 'id'});
 
-
-  private assetsList$: BehaviorSubject<IAssetsExt[]> = new BehaviorSubject<IAssetsExt[]>([]);
   private assetsSelectedInGridList$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
   private assetsWorkingList$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
 
@@ -264,22 +263,22 @@ export class AssetsService {
     return this.assetsWorkingList$.getValue().some(asset => asset === assetId);
   }
 
-  getAssets(assetFilter?: IAssetsExtFilter): Observable<IAssetsExt[]> {
+  getAssets(assetFilter?: IAssetsExtFilter): Observable<Asset[]> {
     if (assetFilter) {
       if (assetFilter.parentCategoryId) {
-        return combineLatest([this.assetsList$, this.categoriesService.getDescendants(assetFilter.parentCategoryId)])
+        return combineLatest([this.assetsStore$.getAll$(), this.categoriesService.getDescendants(assetFilter.parentCategoryId)])
           .pipe(
             shareReplay(),
             filter(([_, categories]) => !!categories))
           .pipe(
-            map(([assets, onlyCategories]) => assets.filter(asset => onlyCategories.map(cat => cat.id).includes(asset.asset.category.id)))
-          );
+            map(([assets, _]) => assets)
+          )
       }
       if (assetFilter.userId) {
-        return this.assetsList$.pipe(map(assets => assets.filter(asset => asset.asset.user.id === assetFilter.userId)));
+        return this.assetsStore$.getAll$().pipe(map(assets => assets.filter(asset => asset.user_id === assetFilter.userId)));
       }
     }
-    return this.assetsList$;
+    return this.assetsStore$.getAll$();
   }
 
   getAssetsWorkingList$(): Observable<Map<number, Asset>> {
@@ -340,45 +339,21 @@ export class AssetsService {
     return this.http.patch<AssetModelExt>('/rest/assets/' + assetId, {changes})
   }
 
-  addAssetsIdToWorkingList(ids: number[]): number[] {
-    const found = this.assetsList$.getValue().filter(extModel => ids.includes(extModel.asset.id)).map(a => a.asset.id);
-
-    const updatedList = [...this.assetsWorkingList$.getValue().filter(extModel => !ids.includes(extModel)), ...found];
+  addAssetsIdToWorkingList(ids: number[]): void {
+    const updatedList = [...this.assetsWorkingList$.getValue().filter(extModel => !ids.includes(extModel)), ...ids];
     this.assetsWorkingList$.next(updatedList);
-    return updatedList;
   }
 
   resetSelectedIds(): void {
     this.assetsSelectedInGridList$.next([]);
   }
 
-  getAssetFromSource(sourceType: AssetsSourceEnum): IAssetsExt[] {
-    let source = [];
-    switch (sourceType) {
-      case AssetsSourceEnum.GRID:
-        source = this.getAssetsSelectedInGridList();
-        break;
-      case AssetsSourceEnum.WORKING_LIST:
-        source = this.getAssetsWorkingList();
-        break;
-    }
-    return [...source];
-  }
 
   clearWorkingList(): void {
     this.assetsWorkingList$.next([]);
   }
 
-  private getAssetsSelectedInGridList(): IAssetsExt[] {
-    return this.assetsList$.getValue().filter(asset => this.assetsSelectedInGridList$.getValue().includes(asset.asset.id));
-  }
-
-  private getAssetsWorkingList(): IAssetsExt[] {
-    return this.assetsList$.getValue().filter(asset => this.assetsWorkingList$.getValue().includes(asset.asset.id));
-  }
-
-
-  changesBulk(changes: ChangeBulk[], source: AssetsSourceEnum): void {
+  changesBulk(changes: ChangeBulk[], source: AssetSource): void {
     const switchUser: ChangeUserBulk[] = [];
     const updateInformation: { id: number, assetChanges: Change[] }[] = [];
     const lock$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

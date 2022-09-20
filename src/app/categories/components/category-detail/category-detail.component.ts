@@ -6,7 +6,8 @@ import {CategoriesService} from '../../categories.service';
 import {map} from 'rxjs/operators';
 import {TokenService} from '../../../auth/token.service';
 import {RightsTag} from '../../../shared/rights.list';
-import {AssetsService, IAssetsExt} from '../../../assets/assets.service';
+import {IAssetsExt} from '../../../assets/assets.service';
+import {AssetSource, Facade} from '../../../facade/facade';
 
 @Component({
   selector: 'app-category-detail',
@@ -21,8 +22,9 @@ export class CategoryDetailComponent implements OnInit {
 
   constructor(private dialogService: DialogService,
               private categoriesService: CategoriesService,
-              private assetsService: AssetsService,
-              private tokenService: TokenService) {
+              private tokenService: TokenService,
+              private facade: Facade
+  ) {
     this.assetsCreateAllowed$ = this.tokenService.getPermission$(RightsTag.createAssets);
   }
 
@@ -30,11 +32,10 @@ export class CategoryDetailComponent implements OnInit {
     this.assetsFilteredByCategory$ = this.categoriesService.getDescendants(this.categoryId)
       .pipe(
         map(cats => cats.map(c => c.name)),
-        switchMap((cats) => this.assetsService.getAssets()
+        switchMap((cats) => this.facade.getAssetExt(AssetSource.STORE)
           .pipe(
             map(assets => assets.filter(a => cats.includes(a.categories[a.categories.length - 1]))))),
       )
-
     this.category$ = this.categoriesService.getCategoryById(this.categoryId);
   }
 

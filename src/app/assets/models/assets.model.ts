@@ -156,6 +156,27 @@ export interface AssetsModelDto {
   version: number;
 }
 
+export interface AssetsChanges {
+  id: number;
+  category_id: number;
+  name: string;
+  quantity: number;
+  user: User;
+  serialNumber: string;
+  inventoryNumber: string;
+  evidenceNumber: string;
+  identificationNumber: string;
+  inquiryDate: string;
+  document: string;
+  inquiryPrice: number;
+  location: string;
+  locationEtc: string;
+  note: string;
+  state: AssetState;
+  removingProtocol_id: number;
+  version: number;
+}
+
 export interface IRemovingProtocolInAsset {
   id: number;
   document: string;

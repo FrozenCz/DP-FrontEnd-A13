@@ -11,6 +11,7 @@ import {NbComponentSize, NbDialogService, NbToastrService, NbWindowRef} from '@n
 import {ShowRightsSettingDialogComponent} from '../show-rights-setting-dialog/show-rights-setting-dialog.component';
 import {map, takeUntil} from 'rxjs/operators';
 import {AssetsService, IAssetsExt} from '../../../assets/assets.service';
+import {AssetSource, Facade} from '../../../facade/facade';
 
 
 @Component({
@@ -24,7 +25,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
   updateUsersInformationAllowed = false;
   setPermissionsAllowed = false;
   token: JwtToken | undefined = undefined;
-  private unsubscribe = new Subject();
+  private unsubscribe: Subject<void> = new Subject();
 
   editMode = false;
   user!: User;
@@ -32,9 +33,10 @@ export class UserDetailComponent implements OnInit, OnDestroy {
 
   userEditForm: FormGroup;
   buttonSize: NbComponentSize = 'medium';
-  assetsFilteredByUser: IAssetsExt[] = [];
+  assetsFilteredByUser$: Observable<IAssetsExt[]>;
 
   constructor(
+    private facade: Facade,
     private tokenService: TokenService,
     private unitsService: UnitsService,
     private usersService: UsersService,
@@ -48,28 +50,29 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       this.updateUsersInformationAllowed = this.tokenService.getPermission(RightsTag.updateUsersInformation);
       this.setPermissionsAllowed = this.tokenService.getPermission(RightsTag.settingRights);
     });
+
     this.userEditForm = new FormGroup({
       name: new FormControl({value: '', disabled: true}, [Validators.required]),
       surname: new FormControl({value: '', disabled: true}, [Validators.required]),
       unitId: new FormControl({value: '', disabled: true})
     });
+
+    this.assetsFilteredByUser$ = this.facade.getAssetExt(AssetSource.STORE)
+      .pipe(map(assets => assets.filter(a => a.asset.user.id === this.userId)))
+
+    this.units$ = this.unitsService.getUnits();
+
   }
 
   ngOnDestroy(): void {
-    this.unsubscribe.next(true);
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   ngOnInit(): void {
 
-    this.assetsService.getAssets()
-      .pipe(
-        map(assets => assets.filter(a => a.asset.user.id === this.userId)),
-        takeUntil(this.unsubscribe)
-      ).subscribe(assets => {
-        this.assetsFilteredByUser = [...assets];
-    })
 
-    this.units$ = this.unitsService.getUnits();
+
     this.usersService.getUser(this.userId).pipe(takeUntil(this.unsubscribe)).subscribe(
       (user) => {
         this.user = user;

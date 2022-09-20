@@ -1,9 +1,10 @@
-import {Injectable, OnDestroy, OnInit} from '@angular/core';
-import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {AssetsService, IAssetsExt} from '../assets/assets.service';
 import {HttpClient} from '@angular/common/http';
 import {filter, map, tap, withLatestFrom} from 'rxjs/operators';
 import {Asset} from '../assets/models/assets.model';
+import {AssetSource, Facade} from '../facade/facade';
 
 interface AssetsListGeneral {
   id: number;
@@ -61,7 +62,7 @@ export class ListsService {
   private assetsLists$: Observable<IAssetsList[]> = this.assetsListStore.asObservable();
 
 
-  constructor(private http: HttpClient, private assetsService: AssetsService) {
+  constructor(private http: HttpClient, private facade: Facade) {
     this.transformAssetsLists().subscribe(
       (assetsLists) => {
         this.assetsListStore.next(assetsLists);
@@ -75,8 +76,8 @@ export class ListsService {
   }
 
   private transformAssetsLists(): Observable<IAssetsList[]> {
-    return combineLatest([this.fetchAssetsLists(), this.assetsService.getAssets()]).pipe(
-      filter(([lists, assets]) => !!assets),
+    return combineLatest([this.fetchAssetsLists(), this.facade.getAssetExt(AssetSource.STORE)]).pipe(
+      filter(([_, assets]) => !!assets),
       map(([lists, assets]) => {
         return lists.map(list => this.transformAssetsList(list, assets));
       }));
@@ -110,7 +111,7 @@ export class ListsService {
     const assetsListForNest: IAssetsListForNest = {...assetsList, assetsIds: assetsList.assets.map(asset => asset.id)};
     return this.http.post<IAssetsListFromNest>('rest/lists', assetsListForNest)
       .pipe(
-        withLatestFrom(this.assetsService.getAssets()),
+        withLatestFrom(this.facade.getAssetExt(AssetSource.STORE)),
         map(([assetList, assets]) => this.transformAssetsList(assetList, assets)),
         tap((newList) => {
             const assetsLists = this.assetsListStore.getValue();
@@ -125,7 +126,7 @@ export class ListsService {
     const assetsListForNest: IAssetsListForNest = {...assetsList, assetsIds: assetsList.assets.map(asset => asset.id)};
     return this.http.put<IAssetsListFromNest>('rest/lists/' + assetsList.id, assetsListForNest)
       .pipe(
-        withLatestFrom(this.assetsService.getAssets()),
+        withLatestFrom(this.facade.getAssetExt(AssetSource.STORE)),
         map(([assetList, assets]) => this.transformAssetsList(assetList, assets)),
         tap((assetsListTransformed) => {
           const assetsLists = this.assetsListStore.getValue().filter(al => al.name !== assetsListTransformed.name);

@@ -3,13 +3,14 @@ import {IAssetsList, ListsService} from '../../lists.service';
 import {Observable, OperatorFunction, Subject} from 'rxjs';
 import {AssetsService, AssetsSourceEnum, IAssetsExt} from '../../../assets/assets.service';
 import {NbDialogService, NbWindowRef} from '@nebular/theme';
-import {filter, map, take} from 'rxjs/operators';
+import {filter, map, take, takeUntil} from 'rxjs/operators';
 import {ActivatedRoute} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {SelectAssetsProtocolDialogComponent} from '../../../protocols/components/select-assets-protocol-dialog/select-assets-protocol-dialog.component';
 import {AgGridInstanceService} from '../../../utils/agGrid/ag-grid-instance.service';
 import {AgGridService} from '../../../utils/agGrid/ag-grid.service';
 import {GridInstance} from '../../../utils/agGrid/models/grid.model';
+import {AssetSource} from '../../../facade/facade';
 
 @Component({
   selector: 'app-list-detail',
@@ -22,6 +23,7 @@ export class ListDetailComponent implements OnInit, OnDestroy {
   gridUid = 'assetList';
   gridService!: AgGridService;
   unsubscribe: Subject<void> = new Subject<void>();
+  assetSourceEnum = AssetSource;
 
   assetsInList: IAssetsExt[] = [];
   assetList: IAssetsList | undefined = undefined;
@@ -60,6 +62,7 @@ export class ListDetailComponent implements OnInit, OnDestroy {
     this.listsService.getAssetList(this.listId)
       .pipe(
         filter(list => !!list) as OperatorFunction<IAssetsList | undefined, IAssetsList>)
+      .pipe(takeUntil(this.unsubscribe))
       .subscribe(assetList => {
         this.assetList = assetList;
         this.assetsInList = assetList.assets;
@@ -106,7 +109,7 @@ export class ListDetailComponent implements OnInit, OnDestroy {
   }
 
 
-  onShowProtocolSelectList(source: AssetsSourceEnum): void {
+  onShowProtocolSelectList(source: AssetSource): void {
     this.nbDialogService.open(SelectAssetsProtocolDialogComponent, {context: {source}});
   }
 }

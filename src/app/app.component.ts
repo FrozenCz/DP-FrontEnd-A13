@@ -18,6 +18,7 @@ import {NavButtonsIdsEnum} from './utils/navigation/models/navButtonsIds.enum';
 import {AssetsService, AssetsSourceEnum} from './assets/assets.service';
 import {take} from 'rxjs/operators';
 import {LocationCreateNewButton, LocationListButton, LocationNav} from './locations/model/locations.navigation';
+import {AssetSource} from './facade/facade';
 
 @Component({
   selector: 'app-root',
@@ -142,22 +143,22 @@ export class AppComponent implements OnInit, AfterViewInit {
         });
         break;
       case NavButtonsIdsEnum.protocols_from_working_list:
-        this.dialogService.showProtocolListSelectionDialog(AssetsSourceEnum.WORKING_LIST);
+        this.dialogService.showProtocolListSelectionDialog(AssetSource.WORKING_LIST);
         break;
       case NavButtonsIdsEnum.protocols_from_selected:
-        this.dialogService.showProtocolListSelectionDialog(AssetsSourceEnum.GRID);
+        this.dialogService.showProtocolListSelectionDialog(AssetSource.SELECTED_IN_GRID);
         break;
       case NavButtonsIdsEnum.mass_edit_from_working_list:
-        this.dialogService.showMultiEditAssetDialog(AssetsSourceEnum.WORKING_LIST);
+        this.dialogService.showMultiEditAssetDialog(AssetSource.WORKING_LIST);
         break;
       case NavButtonsIdsEnum.mass_edit_from_selected:
-        this.dialogService.showMultiEditAssetDialog(AssetsSourceEnum.GRID);
+        this.dialogService.showMultiEditAssetDialog(AssetSource.SELECTED_IN_GRID);
         break;
       case NavButtonsIdsEnum.asset_remove_from_working_list:
-        this.dialogService.showRemoveAssetClicked(AssetsSourceEnum.WORKING_LIST);
+        this.dialogService.showRemoveAssetClicked(AssetSource.WORKING_LIST);
         break;
       case NavButtonsIdsEnum.asset_remove_from_selected:
-        this.dialogService.showRemoveAssetClicked(AssetsSourceEnum.GRID);
+        this.dialogService.showRemoveAssetClicked(AssetSource.SELECTED_IN_GRID);
         break;
       case NavButtonsIdsEnum.removed_assets_list:
         this.dialogService.showRemovedAssetsList();

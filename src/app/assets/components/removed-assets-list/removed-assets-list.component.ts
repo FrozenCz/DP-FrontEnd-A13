@@ -1,39 +1,33 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subject} from 'rxjs';
-import {AssetsService, IAssetsExt} from '../../assets.service';
+import {Component, OnInit} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
+import {IAssetsExt} from '../../assets.service';
 import {ColDef, GridOptions} from 'ag-grid-community';
 import {AgGridFuncs, DateTimeFormatterType} from '../../../utils/agGrid/ag-grid.funcs';
-import {map, takeUntil} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {AssetState} from '../../models/assets.model';
+import {AssetSource, Facade} from '../../../facade/facade';
 
 @Component({
   selector: 'app-removed-assets-list',
   templateUrl: './removed-assets-list.component.html',
   styleUrls: ['./removed-assets-list.component.scss']
 })
-export class RemovedAssetsListComponent implements OnInit, OnDestroy {
+export class RemovedAssetsListComponent implements OnInit {
   gridUid = 'removeAssetsList';
-  removedAssets: IAssetsExt[] = [];
+  removedAssets$: Observable<IAssetsExt[]>;
   customGridOptions: Partial<GridOptions> = {};
   customColDefs: ColDef[] = [];
   removedColDefs: string[] = ['akce', 'reachable'];
   unsubscribe: Subject<void> = new Subject<void>();
 
-  constructor(private assetsService: AssetsService) {
-    this.assetsService.getAssets()
+  constructor(private facade: Facade) {
+    this.removedAssets$ = this.facade.getAssetExt(AssetSource.STORE)
       .pipe(
         map(assets => assets.filter(a => a.asset.state === AssetState.removed)),
-        takeUntil(this.unsubscribe)
       )
-      .subscribe(assets => {
-        this.removedAssets = assets;
-      })
   }
 
-  ngOnDestroy(): void {
-    this.unsubscribe.next()
-    this.unsubscribe.complete();
-  }
+
 
   ngOnInit(): void {
 

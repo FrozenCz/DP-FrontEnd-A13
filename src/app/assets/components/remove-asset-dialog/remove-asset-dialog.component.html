@@ -1,4 +1,5 @@
-<nb-card size="large" style="width: 90vw" [formGroup]="removeAssetForm" (ngSubmit)="onRemoveClicked()"
+<ng-container *ngIf="assetsList$ | async as assetList">
+<nb-card size="large" style="width: 90vw" [formGroup]="removeAssetForm" (ngSubmit)="onRemoveClicked(assetList)"
          [nbSpinner]="removing"
          nbSpinnerMessage='Čekám na odpověď'>
   <nb-card-header fxLayout="row" fxLayoutAlign="space-between center">
@@ -53,7 +54,7 @@
     <app-assets-grid [gridUid]="gridUid"
                      [customColDefs]="customColDefs"
                      [customGridOptions]="customGridOptions"
-                     [assets]="assetsList"
+                     [assets]="assetList"
                      [innerSelectionMode]="true"
     >
     </app-assets-grid>
@@ -63,10 +64,11 @@
       <nb-icon icon="close-outline"></nb-icon>
       Zrušit
     </button>
-    <button nbButton status="danger" outline (click)="onRemoveClicked()" [disabled]="!this.removeAssetForm.valid">
+    <button nbButton status="danger" outline (click)="onRemoveClicked(assetList)" [disabled]="!this.removeAssetForm.valid">
       <nb-icon icon="trash-2-outline">
       </nb-icon>
       Vyřadit
     </button>
   </nb-card-footer>
 </nb-card>
+</ng-container>

@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NbDialogRef, NbToastrService} from '@nebular/theme';
-import {AssetsSourceEnum} from '../../../assets/assets.service';
 import {ProtocolEmitEnum, ProtocolsService} from '../../protocols.service';
+import {AssetSource} from '../../../facade/facade';
 
 @Component({
   selector: 'app-select-assets-protocol-dialog',
@@ -9,7 +9,7 @@ import {ProtocolEmitEnum, ProtocolsService} from '../../protocols.service';
   styleUrls: ['./select-assets-protocol-dialog.component.scss']
 })
 export class SelectAssetsProtocolDialogComponent implements OnInit {
-  @Input() source?: AssetsSourceEnum;
+  @Input() source?: AssetSource;
 
   constructor(private dialogRef: NbDialogRef<SelectAssetsProtocolDialogComponent>,
               private nbToastrService: NbToastrService,

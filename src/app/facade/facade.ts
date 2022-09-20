@@ -18,8 +18,10 @@ export class Facade {
 
   getAssetExt(source: AssetSource): Observable<IAssetsExt[]> {
     let obs: Observable<Asset[]> = this.assetsService.assetsStore$.getAll$();
-    if(source === AssetSource.workingList) {
+    if(source === AssetSource.WORKING_LIST) {
       obs = this.assetsService.getAssetsWorkingList$().pipe(map(assetsMap => Array.from(assetsMap.values())));
+    } else if (source === AssetSource.SELECTED_IN_GRID) {
+      obs = this.assetsService.getAssetsSelectedInGridList$().pipe(map(assetsMap => Array.from(assetsMap.values())));
     }
     return combineLatest([
       obs,
@@ -37,6 +39,7 @@ export class Facade {
 
 
 export enum AssetSource {
-  store,
-  workingList
+  STORE,
+  WORKING_LIST,
+  SELECTED_IN_GRID
 }

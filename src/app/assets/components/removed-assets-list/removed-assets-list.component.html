@@ -1,7 +1,8 @@
 <div fxFlex fxLayout="column" style="width: 90vw; height: 90vh;">
   <app-views-bar [gridUid]="gridUid"></app-views-bar>
   <app-assets-grid
-    [assets]="removedAssets"
+    *ngIf="removedAssets$ | async as removedList"
+    [assets]="removedList"
     [gridUid]="gridUid"
     [customGridOptions]="customGridOptions"
     [customColDefs]="customColDefs"

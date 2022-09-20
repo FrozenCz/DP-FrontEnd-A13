@@ -19,6 +19,7 @@ import {RemovingProtocolsListComponent} from '../protocols/components/removing-p
 import {ChooseFirstCategoryDialogComponent} from '../categories/components/choose-first-category-dialog/choose-first-category-dialog.component';
 import {HistoryDetailComponent} from '../history/components/history-detail/history-detail.component';
 import {HistoryModel} from '../history/models/history.model';
+import {AssetSource} from '../facade/facade';
 
 
 @Injectable({
@@ -78,11 +79,11 @@ export class DialogService {
     });
   }
 
-  showProtocolListSelectionDialog(source: AssetsSourceEnum): void {
+  showProtocolListSelectionDialog(source: AssetSource): void {
     this.nbDialogService.open(SelectAssetsProtocolDialogComponent, {context: {source}});
   }
 
-  showMultiEditAssetDialog(source: AssetsSourceEnum): void {
+  showMultiEditAssetDialog(source: AssetSource): void {
     this.nbDialogService.open(MultiEditAssetDialogComponent,
       {
         hasBackdrop: true,
@@ -105,7 +106,7 @@ export class DialogService {
     });
   }
 
-  showRemoveAssetClicked(source: AssetsSourceEnum): void {
+  showRemoveAssetClicked(source: AssetSource): void {
     this.nbDialogService.open(RemoveAssetDialogComponent,
       {
         closeOnBackdropClick: false,

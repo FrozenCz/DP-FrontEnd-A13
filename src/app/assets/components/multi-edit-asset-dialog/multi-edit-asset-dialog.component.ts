@@ -1,6 +1,6 @@
 import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AssetsService, AssetsSourceEnum} from '../../assets.service';
-import {BehaviorSubject, combineLatest, OperatorFunction, Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, firstValueFrom, OperatorFunction, Subject} from 'rxjs';
 import {CellEditingStoppedEvent, CellValueChangedEvent, ColDef, GridOptions} from 'ag-grid-community';
 import {filter, map, take, takeUntil} from 'rxjs/operators';
 import {User} from '../../../users/model/user.model';
@@ -13,6 +13,7 @@ import {AgGridInstanceService} from '../../../utils/agGrid/ag-grid-instance.serv
 import {AgGridService} from '../../../utils/agGrid/ag-grid.service';
 import {AssetChangeEnum, AssetNoteSetTypeEnum, IAssetExtWithChanges} from '../../models/assets.model';
 import {GridInstance} from '../../../utils/agGrid/models/grid.model';
+import {AssetSource, Facade} from '../../../facade/facade';
 
 @Component({
   selector: 'app-multi-edit-asset-dialog',
@@ -20,7 +21,7 @@ import {GridInstance} from '../../../utils/agGrid/models/grid.model';
   styleUrls: ['./multi-edit-asset-dialog.component.scss']
 })
 export class MultiEditAssetDialogComponent implements OnInit, OnDestroy {
-  @Input() source!: AssetsSourceEnum;
+  @Input() source!: AssetSource;
   @ViewChild('selectRef') selectRef!: ElementRef;
   unsubscribe: Subject<void> = new Subject<void>();
 
@@ -39,7 +40,9 @@ export class MultiEditAssetDialogComponent implements OnInit, OnDestroy {
   private gridService!: AgGridService;
 
 
-  constructor(private assetsService: AssetsService,
+  constructor(
+    private facade: Facade,
+    private assetsService: AssetsService,
               private tokenService: TokenService,
               private usersService: UsersService,
               private unitsService: UnitsService,
@@ -164,12 +167,12 @@ export class MultiEditAssetDialogComponent implements OnInit, OnDestroy {
   }
 
   private fetchData(): void {
-    this.assetsChangedList$.next(
-      this.assetsService.getAssetFromSource(this.source)
-        .map((asset) => {
-          return {...asset, asset: {...asset.asset}, changes: []};
-        }).filter((asset => asset.asset.user.reachable === true ))
-    );
+    firstValueFrom(this.facade.getAssetExt(this.source).pipe(
+      map(assets => assets.map((asset) => {
+        return {...asset, asset: {...asset.asset}, changes: []};
+      }).filter((asset => asset.asset.user.reachable ))))).then(assets => {
+        this.assetsChangedList$.next(assets);
+    })
   }
 
 

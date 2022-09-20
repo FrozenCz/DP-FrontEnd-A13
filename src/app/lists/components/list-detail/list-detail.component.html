@@ -40,10 +40,10 @@
       <button nbTooltip="Přidat celou sestavu do pracovní sestavy" nbButton status="success" outline (click)="onToWorkingListClicked(assetsInList)">
         <nb-icon icon="share"></nb-icon>
       </button>
-      <button nbTooltip="Vyber protokol pro položky z pracovní sestavy" nbButton status="success" outline (click)="onShowProtocolSelectList(2)">
+      <button nbTooltip="Vyber protokol pro položky z pracovní sestavy" nbButton status="success" outline (click)="onShowProtocolSelectList(assetSourceEnum.WORKING_LIST)">
         <nb-icon icon="file-text-outline"></nb-icon>
       </button>
-      <button nbTooltip="Vyber protokol pro položky z vybraných položek" nbButton status="primary" outline (click)="onShowProtocolSelectList(1)">
+      <button nbTooltip="Vyber protokol pro položky z vybraných položek" nbButton status="primary" outline (click)="onShowProtocolSelectList(assetSourceEnum.SELECTED_IN_GRID)">
         <nb-icon icon="file-text-outline"></nb-icon>
       </button>
     </div>

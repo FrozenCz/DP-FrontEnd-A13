@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {AssetsService, AssetsSourceEnum} from '../assets/assets.service';
+import {AssetSource, Facade} from '../facade/facade';
+import {firstValueFrom} from 'rxjs';
 
 export enum ProtocolEmitEnum {
   TRANSFER_PROTOCOL = 1,
@@ -9,7 +10,7 @@ export enum ProtocolEmitEnum {
 
 export interface ProtocolEnumWithAssetsSource {
   protocol: ProtocolEmitEnum;
-  source: AssetsSourceEnum;
+  source: AssetSource;
 }
 
 @Injectable({
@@ -19,7 +20,7 @@ export interface ProtocolEnumWithAssetsSource {
 
 export class ProtocolsService {
 
-  constructor(private assetsService: AssetsService) {
+  constructor(private facade: Facade) {
   }
 
   showUserAssetsProtocol(userId: number): void {
@@ -28,10 +29,11 @@ export class ProtocolsService {
 
   prepareProtocol(prepareProtocol: ProtocolEnumWithAssetsSource): void {
     const protocolEmited: ProtocolEmitEnum = prepareProtocol.protocol;
-    const sourceType: AssetsSourceEnum = prepareProtocol.source;
+    const sourceType: AssetSource = prepareProtocol.source;
 
-    const source = this.assetsService.getAssetFromSource(sourceType);
-    localStorage.setItem('protocolList', JSON.stringify(source));
-    window.open('/protocols/' + protocolEmited, '_blank');
+    firstValueFrom(this.facade.getAssetExt(sourceType)).then(source => {
+      localStorage.setItem('protocolList', JSON.stringify(source));
+      window.open('/protocols/' + protocolEmited, '_blank');
+    })
   }
 }

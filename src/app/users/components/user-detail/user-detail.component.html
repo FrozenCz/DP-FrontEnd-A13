@@ -44,7 +44,11 @@
 
   </form>
   <div fxFlex fxLayoutAlign="center center">
-    <app-assets-list [assets]="assetsFilteredByUser">
+    <app-assets-list *ngIf="assetsFilteredByUser$ | async as assetsFilteredByUser; else emptyGrid; " [assets]="assetsFilteredByUser">
     </app-assets-list>
+    <ng-template #emptyGrid>
+      <app-assets-list [assets]="[]">
+      </app-assets-list>
+    </ng-template>
   </div>
 </div>

@@ -13,7 +13,7 @@ export class WorkingListComponent{
   gridUid = 'assetList';
 
   constructor(private facade: Facade) {
-    this.assetsWorkingList$ = this.facade.getAssetExt(AssetSource.workingList);
+    this.assetsWorkingList$ = this.facade.getAssetExt(AssetSource.WORKING_LIST);
   }
 
 

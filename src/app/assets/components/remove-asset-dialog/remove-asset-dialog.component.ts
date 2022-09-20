@@ -1,27 +1,28 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {AssetsService, AssetsSourceEnum, IAssetsExt} from '../../assets.service';
+import {Component, Input, OnDestroy} from '@angular/core';
+import {AssetsService, IAssetsExt} from '../../assets.service';
 import {NbComponentStatus, NbDialogRef, NbToastrService} from '@nebular/theme';
 import {ColDef, GridOptions} from 'ag-grid-community';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {IRemoveAssetsInformation} from '../../models/assets.model';
 import {RightsTag} from '../../../shared/rights.list';
 import {TokenService} from '../../../auth/token.service';
 import {UsersService} from '../../../users/users.service';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {FormFuncs} from '../../../utils/form.funcs';
-import {takeUntil} from 'rxjs/operators';
+import {map, takeUntil} from 'rxjs/operators';
+import {AssetSource, Facade} from '../../../facade/facade';
 
 @Component({
   selector: 'app-remove-asset-dialog',
   templateUrl: './remove-asset-dialog.component.html',
   styleUrls: ['./remove-asset-dialog.component.scss']
 })
-export class RemoveAssetDialogComponent implements OnInit, OnDestroy {
-  @Input() source: AssetsSourceEnum = AssetsSourceEnum.GRID;
+export class RemoveAssetDialogComponent implements OnDestroy {
+  @Input() source: AssetSource = AssetSource.SELECTED_IN_GRID;
   gridUid = 'removeAssetForm';
   customColDefs: ColDef[] = [];
   customGridOptions: GridOptions = {};
-  assetsList: IAssetsExt[] = [];
+  assetsList$: Observable<IAssetsExt[]>;
   unsubscribe = new Subject();
   removeAssetForm: FormGroup;
   today = new Date();
@@ -31,6 +32,7 @@ export class RemoveAssetDialogComponent implements OnInit, OnDestroy {
 
 
   constructor(
+    private facade: Facade,
     private assetsService: AssetsService,
     private usersService: UsersService,
     private tokenService: TokenService,
@@ -53,18 +55,14 @@ export class RemoveAssetDialogComponent implements OnInit, OnDestroy {
       documentDate: [this.today],
       possibleRemovingDate: [this.removingDate]
     });
+
+    this.assetsList$ = this.facade.getAssetExt(this.source).pipe(
+      map(assets => assets.map((asset) => {
+        return {...asset, asset: {...asset.asset}, changes: []};
+      }).filter((asset => asset.asset.user.reachable)))
+    )
   }
 
-  ngOnInit(): void {
-    this.fetchData();
-  }
-
-  private fetchData(): void {
-      this.assetsList = this.assetsService.getAssetFromSource(this.source)
-        .map((asset) => {
-          return {...asset, asset: {...asset.asset}, changes: []};
-        }).filter((asset => asset.asset.user.reachable === true))
-  }
 
   /**
    * close dialog
@@ -73,14 +71,14 @@ export class RemoveAssetDialogComponent implements OnInit, OnDestroy {
     this.nbDialogRef.close();
   }
 
-  onRemoveClicked(): void {
+  onRemoveClicked(assets: IAssetsExt[]): void {
     this.removing = true;
     const removingInformation: IRemoveAssetsInformation = {
       removingDocumentIdentification: this.removeAssetForm.value.removingDocumentIdentification,
       documentDate: this.removeAssetForm.value.documentDate,
       possibleRemovingDate: this.removeAssetForm.value.possibleRemovingDate
     };
-    this.assetsService.removeAssets(removingInformation, this.assetsList)
+    this.assetsService.removeAssets(removingInformation, assets)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(() => {
         this.toasterService.success('vyřazen', 'Majetek');

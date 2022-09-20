@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {firstValueFrom, noop, Observable, Subject} from 'rxjs';
 import {
   Asset,
-  ASSETS_INFORMATION,
+  ASSETS_INFORMATION, AssetsChanges,
   AssetsModelDto,
   AssetState,
 } from '../../models/assets.model';
@@ -73,8 +73,6 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
     public usersService: UsersService,
     private assetsService: AssetsService,
     private toastrService: NbToastrService,
-    private historyService: HistoryService,
-    private categoriesService: CategoriesService
   ) {
 
 
@@ -199,7 +197,7 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
   }
 
   private updateAssetPrepare(): void {
-    const changes: Partial<AssetsModelDto> = {};
+    const changes: Partial<AssetsChanges> = {};
     const changesInformation: Partial<AssetsModelDto> = {};
 
     for (const controlsKey in this.assetForm.controls) {
@@ -213,8 +211,8 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
       }
     }
 
-    if (changes.user_id && changes.user_id !== this.asset.user_id) {
-      this.assetsService.changeAssetUser(this.asset.id, changes.user_id).pipe(take(1))
+    if (changes.user && changes.user.id !== this.asset.user_id) {
+      this.assetsService.changeAssetUser(this.asset.id, changes.user.id).pipe(take(1))
         .subscribe((asset) => {
           this.toastrService.success('úspěšně změněn', 'Uživatel', {icon: 'user'});
           this.assetForm.controls['user'].markAsUntouched();
