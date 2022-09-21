@@ -1,6 +1,6 @@
-<div class="caption">
-  Seznam lokací
-</div>
 <app-location-list
+  fxFlex
   [locations]="locations$ | async"
+  (selectedLocation)="selectedLocation=$event"
 ></app-location-list>
+<app-location-detail-dialog-wrapper fxFlex></app-location-detail-dialog-wrapper>

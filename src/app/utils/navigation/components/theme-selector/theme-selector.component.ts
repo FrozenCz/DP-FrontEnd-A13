@@ -23,6 +23,8 @@ export class ThemeSelectorComponent implements OnInit {
     {theme: 'dark-bp', title: 'idea', color: '#0095D5', background: '#36383b', contrastMode: false},
     {theme: 'dark-cold', title: 'idea', color: '#1e2121', background: '#1f3944', contrastMode: false},
     {theme: 'light-bp', title: 'light', color: '#0095D5', background: '#e0e3e5', contrastMode: false},
+    {theme: 'excelLike', title: 'Světlá - excel', color: '#b4b4b4', background: '#4f7c00', contrastMode: false},
+
     {theme: 'mat-bp', title: 'mat', color: '#0f4021', background: '#b3b4ba', contrastMode: true},
     {theme: 'navy', title: 'navy', color: '#FFB733', background: '#264437', contrastMode: false},
   ];

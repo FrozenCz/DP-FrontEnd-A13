@@ -1,34 +1,52 @@
+//nav{
+//  align-items: flex-start !important;
+//  height: 100% !important;
+//}
+
+
+//@import '~@nebular/theme/styles/theming';
+//@import "/src/themes";
+
 nb-layout-header{
+  //min-height: 7em;
+  //max-height: 7em;
+  //height: 7em;
 }
 
-app-ribbon {
+
+app-navigation {
   position: relative;
+  z-index: 2;
 }
 
 .ribbon-menu nb-tab.emptyRibbon {
   padding: 0 !important;
 }
 
-//top bar and icon
+.ribbon-menu nb-tab a.btn-disabled {
+  nb-badge[class^="status-"], nb-badge[class*=" status-"] {
+    background: var(--color-basic-transparent-100);
+    color: var(--text-basic-color)
+  }
+  &[nbButton].appearance-ghost.status-basic.text-primary-color {
+    color: var(--text-primary-color);
+  }
+}
+
+
+
 .ribbon-menu .fullHeightControl {
   height: 100%;
   text-align: center;
-  background: nb-theme(background-basic-color-3);
+  //background: nb-theme(background-basic-color-3);
   padding: 0.2em 0.5em;
   cursor: pointer;
-}
-
-// ribbon active window background
-.ribbon-menu ul li.active {
-  background: nb-theme(background-basic-color-2);
-}
-.ribbon-menu nb-tab, {
-  background: linear-gradient(nb-theme(background-basic-color-2) 0%, nb-theme(background-basic-color-1) 100%);
+  margin: auto;
 }
 
 .ribbon-menu .fullHeightControl:hover{
-  background: nb-theme(background-primary-color-4);
-  color: nb-theme(color-primary-100);
+  //background: nb-theme(background-primary-color-4);
+  //color: nb-theme(color-primary-100);
 }
 
 .ribbon-menu .fullHeightControl span {
@@ -49,20 +67,38 @@ app-ribbon {
 .ribbon-menu{
   width: 100%;
   height: 100%;
+  color: nb-theme(text-hint-color);
+  & *[nbButton].appearance-ghost.status-basic {
+    color: nb-theme(text-hint-color);
+  }
+  [nbButton].size-tiny {
+    font-size: .72rem;
+  }
 }
 
 .ribbon-menu.ribbonSubmenuHidden nb-tab.content-active{
-  display:none;
+  display: none;
+}
+
+
+#chevron-for-open-ribbon {
+  animation-duration: 3s;
+  animation-name: chevron-beat;
+  animation-iteration-count: 2;
 }
 
 .ribbon-menu section div.section-body, .ribbon-menu section div.section-footer {
-  padding: 0.2em 0.5em;
+  //padding: 0.2em 0.5em;
+  padding: 0.2em 1em;
 }
 
 .ribbon-menu div.section-footer{
-  font-size: 0.7em;
+  //font-size: 0.7em;
+  font-size: .72rem;
   text-align: center;
-  color: nb-theme(text-hint-color);
+  //color: nb-theme(text-hint-color);
+  //color: nb-theme(text-hint-color);
+  color: nb-theme(background-basic-color-4);
 
   border-top: 1px solid nb-theme(border-basic-color-5) !important;
 }
@@ -71,15 +107,56 @@ app-ribbon {
   //padding-left: 0;
 }
 
+.ribbon-menu nb-tab.content-active[tabtitle="Rozcestník"] {
+  display: none;
+}
+
 .ribbon-menu section:not(:first-child){
   border-left: 1px solid nb-theme(border-basic-color-5) !important;
 }
 
 .ribbon-menu section div.section-footer{
-
+  flex-direction: row;
+  box-sizing: border-box;
+  display: flex;
+  place-content: center;
+  align-items: center;
 }
 
-
+// ribbon active window background
+.ribbon-menu ul li.active {
+  background: nb-theme(background-basic-color-2);
+}
+.ribbon-menu nb-tab {
+  background: linear-gradient(nb-theme(background-basic-color-2) 0%, nb-theme(background-basic-color-1) 100%);
+  //&.content-active section:last-child {
+  //  filter: grayscale(100%);
+  //  opacity: .3;
+  //  background: url('/assets/logo_mu.png');
+  //  background-size: 65px;
+  //  background-repeat: no-repeat;
+  //  background-position: bottom 15px right 10px;
+  //}
+  &.content-active section.homeLink {
+    filter: grayscale(100%);
+    opacity: .3;
+    background: url('/assets/logo_mu_70.png');
+    background-size: 70px;
+    height: 80px;
+    display: block;
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    background-repeat: no-repeat;
+    background-position: bottom 5px right 5px;
+    transition: all 0.4s;
+    &:hover {
+      filter: grayscale(0);
+      opacity: 1;
+      cursor: pointer;
+    }
+  }
+}
 
 .ribbon-menu nb-tab{
   padding: 0.2em;
@@ -91,7 +168,7 @@ app-ribbon {
 }
 
 .ribbon-menu ul {
-  background: nb-theme(background-basic-color-3);
+  background: linear-gradient(nb-theme(background-basic-color-3), nb-theme(background-basic-color-4));
   border-bottom: 1px solid nb-theme(border-basic-color-5) !important;
 }
 
@@ -107,6 +184,8 @@ app-ribbon {
   border-bottom-color: transparent;
 }
 
+
+
 .ribbon-menu ul li a.tab-link{
   //height: 1em;
   margin: 0;
@@ -115,9 +194,10 @@ app-ribbon {
   line-height: 1em;
   font-weight: normal;
   text-transform: capitalize;
+  transition: all .3s;
 }
 
-.ribbon-menu button {
+.ribbon-menu button, .ribbon-menu a[nbbutton] {
   text-transform: lowercase !important;
 }
 
@@ -131,8 +211,16 @@ app-ribbon {
   margin: -0.2em // position fix
 }
 
-.ribbon-menu button:focus{
+.ribbon-menu button:not(.select-button):focus, .ribbon-menu a[nbbutton]:focus{
   box-shadow: none !important;
   background: none !important;
   border-color: transparent !important;
 }
+
+
+
+
+[nbButton].appearance-ghost.status-basic.text-primary-color, [nbButton].appearance-ghost.status-basic.text-primary-color:hover, [nbButton].appearance-ghost.status-basic.text-primary-color:focus, [nbButton].appearance-ghost.status-basic.text-primary-color:active {
+  color: var(--text-primary-color);
+}
+

@@ -1,12 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {Location} from '../../model/location';
 import {combineLatest, Observable, of, startWith, switchMap} from 'rxjs';
 import {LocationService} from '../../location.service';
 import {map} from 'rxjs/operators';
 
 @Component({
-  selector: 'app-locatio-detail-dialog-wrapper',
+  selector: 'app-location-detail-dialog-wrapper',
   templateUrl: './location-detail-dialog-wrapper.component.html',
   styleUrls: ['./location-detail-dialog-wrapper.component.scss']
 })
@@ -36,6 +36,5 @@ export class LocationDetailDialogWrapperComponent implements OnInit {
 
   onSaveEmit($event: Location): void {
     this.locationService.saveLocation($event);
-    console.log('anoi', $event);
   }
 }

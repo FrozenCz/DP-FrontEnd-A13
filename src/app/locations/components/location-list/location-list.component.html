@@ -1,3 +1,8 @@
-<div *ngFor="let location of getLocations()">
-  {{location.name}}
-</div>
+<ag-grid-angular
+  fxFlex
+  class="ag-theme-alpine"
+  [rowData]="getLocations()"
+  [columnDefs]="colDefs"
+  (rowSelected)="onRowSelected($event)"
+>
+</ag-grid-angular>

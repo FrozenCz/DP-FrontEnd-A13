@@ -29,4 +29,16 @@ export class Location {
   set parent(value: Location | null) {
     this._parent = value;
   }
+
+  get treePath(): string[] {
+    return this.recursiveSearch(this, []);
+  }
+
+  private recursiveSearch(parent: Location, treePath: string[]): string[] {
+    treePath.unshift(parent.name)
+    if(parent.parent && parent.parent.uuid) {
+      return this.recursiveSearch(parent.parent, treePath)
+    }
+    return treePath;
+  }
 }

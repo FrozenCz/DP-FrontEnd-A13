@@ -1,5 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Location} from '../../model/location';
+import {ColDef, RowSelectedEvent} from 'ag-grid-community';
 
 @Component({
   selector: 'app-location-list',
@@ -8,6 +9,11 @@ import {Location} from '../../model/location';
 })
 export class LocationListComponent implements OnInit {
   @Input() locations: Map<string, Location> | null = null;
+  @Output() selectedLocation: EventEmitter<Location> = new EventEmitter<Location>();
+
+  colDefs: ColDef[] = [
+    {colId: 'locName', field: 'name', headerName: 'Název lokace'}
+  ];
 
   constructor() { }
 
@@ -19,6 +25,12 @@ export class LocationListComponent implements OnInit {
       return Array.from(this.locations.values());
     } else {
       return [];
+    }
+  }
+
+  onRowSelected($event: RowSelectedEvent): void {
+    if ($event.data.uuid) {
+      this.selectedLocation.emit(this.locations?.get($event.data.uuid))
     }
   }
 }

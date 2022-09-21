@@ -1,0 +1,352 @@
+
+$colorPrimary: #1D90DF;
+$colorSuccess: #309220;
+$colorInfo: #00a47f;
+$colorWarning: #d28e18;
+$colorDanger: #bb4545;
+
+$nb-themes: nb-register-theme((
+  //background-basic-color-4: #a6a6a6, //radky a pozadi dialogu
+        background-basic-color-4: #c8c8c8,
+        background-basic-color-3: #e1e1e1, // aggrid listy
+        background-basic-color-2: #f7f9fc, // aggrid listy
+        background-basic-color-1: #ffffff,
+
+  //background-basic-color-4: #babdc5,
+  //background-basic-color-3: #d0d5e1, // aggrid listy
+  //background-basic-color-2: #eff7fc, // aggrid listy
+  //background-basic-color-1: #ffffff,
+
+  //background-basic-color-4: #a8adbc,
+  //background-basic-color-3: #c9d2e2, // aggrid listy
+  //background-basic-color-2: #e7f4fe, // aggrid listy
+  //background-basic-color-1: #ffffff,
+
+
+  //docela ok
+  //background-basic-color-4: #bcb7a8,
+  //background-basic-color-3: #e2dfc9, // aggrid listy
+  //background-basic-color-2: #f3f0e5, // aggrid listy
+  //background-basic-color-1: #ffffff,
+
+
+        background-basic-color-5: #000000,
+        text-basic-color: #2f2f2f,
+        color-primary-100: #D1F5FD,
+        color-primary-200: #A4E7FB,
+        color-primary-300: #75D0F5,
+        color-primary-400: #51B6EB,
+        color-primary-500: #1D90DF,
+        color-primary-600: #1570BF,
+        color-primary-700: #0E54A0,
+        color-primary-800: #093B81,
+        color-primary-900: #052A6B,
+
+        color-success-100: #E4F9D2,
+        color-success-200: #C4F4A7,
+        color-success-300: #95DE76,
+        color-success-400: #66BD4E,
+        color-success-500: #309220,
+        color-success-600: #1D7D17,
+        color-success-700: #106911,
+        color-success-800: #0A5411,
+        color-success-900: #064611,
+
+        color-info-100: #C8FADB,
+        color-info-200: #93F5C3,
+        color-info-300: #5BE3AA,
+        color-info-400: #32C898,
+        color-info-500: #00a47f,
+        color-info-600: #008D7A,
+        color-info-700: #007672,
+        color-info-800: #00595F,
+        color-info-900: #00424E,
+
+        color-warning-100: #FCF3CF,
+        color-warning-200: #FAE4A1,
+        color-warning-300: #F1CC71,
+        color-warning-400: #E3B24C,
+        color-warning-500: #d28e18,
+        color-warning-600: #B47211,
+        color-warning-700: #97590C,
+        color-warning-800: #794307,
+        color-warning-900: #643304,
+
+        color-danger-100: #FBE6DB,
+        color-danger-200: #F8C9B9,
+        color-danger-300: #EAA191,
+        color-danger-400: #D67970,
+        color-danger-500: #bb4545,
+        color-danger-600: #A0323B,
+        color-danger-700: #862234,
+        color-danger-800: #6C162C,
+        color-danger-900: #590D27,
+
+        color-primary-transparent-100: rgba($colorPrimary, 0.08),
+        color-primary-transparent-200: rgba($colorPrimary, 0.16),
+        color-primary-transparent-300: rgba($colorPrimary, 0.24),
+        color-primary-transparent-400: rgba($colorPrimary, 0.32),
+        color-primary-transparent-500: rgba($colorPrimary, 0.4),
+        color-primary-transparent-600: rgba($colorPrimary, 0.48),
+
+        color-primary-success-100: rgba($colorSuccess, 0.08),
+        color-primary-success-200: rgba($colorSuccess, 0.16),
+        color-primary-success-300: rgba($colorSuccess, 0.24),
+        color-primary-success-400: rgba($colorSuccess, 0.32),
+        color-primary-success-500: rgba($colorSuccess, 0.4),
+        color-primary-success-600: rgba($colorSuccess, 0.48),
+
+        color-primary-info-100: rgba($colorInfo, 0.08),
+        color-primary-info-200: rgba($colorInfo, 0.16),
+        color-primary-info-300: rgba($colorInfo, 0.24),
+        color-primary-info-400: rgba($colorInfo, 0.32),
+        color-primary-info-500: rgba($colorInfo, 0.4),
+        color-primary-info-600: rgba($colorInfo, 0.48),
+
+        color-primary-danger-100: rgba($colorDanger, 0.08),
+        color-primary-danger-200: rgba($colorDanger, 0.16),
+        color-primary-danger-300: rgba($colorDanger, 0.24),
+        color-primary-danger-400: rgba($colorDanger, 0.32),
+        color-primary-danger-500: rgba($colorDanger, 0.4),
+        color-primary-danger-600: rgba($colorDanger, 0.48),
+
+        color-primary-warning-100: rgba($colorWarning, 0.08),
+        color-primary-warning-200: rgba($colorWarning, 0.16),
+        color-primary-warning-300: rgba($colorWarning, 0.24),
+        color-primary-warning-400: rgba($colorWarning, 0.32),
+        color-primary-warning-500: rgba($colorWarning, 0.4),
+        color-primary-warning-600: rgba($colorWarning, 0.48),
+
+        text-hint-color: #504d4b,
+        //text-hint-color: var(--color-basic-700),
+        text-primary-hover-color: color-primary-700,
+), excelLike, default);
+
+.nb-theme-excelLike {
+  nb-select.planSelectedBackground.status-basic.appearance-outline {
+    button.select-button {
+      background: var(--color-primary-500) !important;
+      color: var(--text-alternate-color);
+
+      &:focus {
+        background: var(--color-primary-500);
+        color: var(--text-alternate-color);
+      }
+    }
+  }
+
+  *[nbInput].status-basic:hover, nb-select.appearance-outline.status-basic .select-button:hover {
+    background-color: var(--background-basic-color-1);
+    border-color: var(--color-primary-hover-border);
+  }
+
+  *[nbInput]::placeholder {
+    color: #cececd !important;
+  }
+
+
+  * {
+    scrollbar-color: var(--color-primary-500) var(--background-basic-color-3);
+  }
+}
+
+.nb-theme-excelLike {
+  nb-tabset .tab.active .tab-link {
+    color: #217346;
+  }
+  .ribbon-menu ul li.active {
+    background: #f5f3f3;
+    color: #217346;
+  }
+
+  .ribbon-menu nb-tab, {
+    background: #f5f3f3;
+  }
+
+  nb-tabset {
+    .tab{
+      &:hover .tab-link {
+          color: #a2d2bb;
+          text-decoration: underline !important;
+      }
+      .tab-link {
+        color: #a2d2bb;
+      }
+    }
+  }
+
+  .ribbon-menu ul {
+    //background: linear-gradient(nb-theme(background-basic-color-3), nb-theme(background-basic-color-4));
+    background: #217346;
+    border-bottom: 1px solid nb-theme(border-basic-color-1) !important;
+    li {
+      border-bottom-color: nb-theme(border-basic-color-1);
+      &.active {
+        border-left-color: nb-theme(border-basic-color-1);
+        border-right-color: nb-theme(border-basic-color-1);
+        border-bottom-color: transparent;
+      }
+    }
+
+  }
+
+
+  .layout {
+    background: linear-gradient(var(--background-basic-color-3) 0%, var(--background-basic-color-3) 80%, var(--background-basic-color-2) 100%);
+  }
+
+  .ag-theme-alpine {
+    box-shadow: 0 4px 4px -3px rgba(0, 0, 0, 0.2);
+    //.ag-column-drop-horizontal {
+    //  background-color: #0b0b0b;
+    //}
+    .ag-header {
+      background: #f5f3f3;
+    }
+
+    .ag-tool-panel-wrapper {
+      background: linear-gradient(210deg, var(--background-basic-color-2) 0%, var(--background-basic-color-2) 30%, var(--background-basic-color-3) 100%),
+    }
+
+    .ag-column-drop-wrapper .ag-column-drop-horizontal, .ag-side-buttons {
+      background: #f5f3f3;
+    }
+  }
+
+  app-ag-extended-header {
+    background: #f5f3f3;
+    border-color: var(--border-basic-color-5);
+  }
+
+  app-ag-extended-header + .ag-theme-alpine {
+    .ag-column-drop-wrapper .ag-column-drop-horizontal {
+      background: #f5f3f3;
+    }
+
+    .ag-header {
+      background: #f5f3f3;
+    }
+  }
+
+
+  app-ag-extended-header.withoutGrouping {
+    background: #f5f3f3;
+    border-color: var(--border-basic-color-5);
+
+    & + .ag-theme-alpine {
+      .ag-header {
+        background: #f5f3f3;
+      }
+    }
+  }
+
+  nb-badge[status="basic"] {
+    background: var(--text-basic-color);
+    color: var(--text-alternate-color)
+  }
+
+  app-shopping {
+    padding: .5rem;
+  }
+
+  .ribbon-menu {
+    border-bottom: 1px solid var(--border-basic-color-5) !important;
+    box-shadow: 0 4px 4px -3px rgba(0, 0, 0, 0.5);
+    [nbButton].appearance-ghost.status-basic.btn-disabled, div.section-footer {
+      color: #bbb7b5;
+    }
+  }
+
+  .myBoard {
+    &-light {
+      .myBoard__header {
+        background: #f5f3f3;
+      }
+      .myBoard__body {
+        background: var(--background-basic-color-1);
+      }
+    }
+    &__header {
+      background: #f5f3f3;
+      &_menu {
+        li.active {
+          color: var(--text-primary-color);
+          &:before {
+            background: linear-gradient(var(--color-primary-600) 0%, transparent 4%, transparent 40%, var(--background-basic-color-1) 100%);
+            border-left: 1px solid var(--border-basic-color-5);
+            border-right: 1px solid var(--border-basic-color-5);
+          }
+        }
+      }
+    }
+    &__body {
+      background: var(--background-basic-color-1);
+    }
+
+  }
+
+  #solverSSmenu {
+    *[nbButton].text-primary-color {
+      &:before {
+        background: linear-gradient(rgba(0,0,0,0.1) 0%, transparent 10%, transparent 90%, rgba(0,0,0,0.1) 100%);
+      }
+      &:after {
+        position: absolute;
+        width: 2px;
+        background: var(--background-basic-color-1);
+        content: '';
+        top: 0;
+        height: 100%;
+        right:-2px;
+        z-index: 3;
+      }
+      background: linear-gradient(90deg, var(--background-basic-color-3) 0%, var(--background-basic-color-2) 5%, var(--background-basic-color-2) 50%, var(--background-basic-color-1) 100%);
+    }
+  }
+
+
+
+  //*:not([nbInput]) {
+  //  border: none !important;
+  //  box-shadow: none !important;
+  //}
+  //
+  //.ribbon-menu * {
+  //  border: none !important;
+  //  border-right: none !important;
+  //  border-left: none !important;
+  //  border-bottom: none !important;
+  //  border-top: none !important;
+  //  section {
+  //    border: none !important;
+  //    border-right: none !important;
+  //    border-left: none !important;
+  //    border-bottom: none !important;
+  //    border-top: none !important;
+  //  }
+  //}
+  //
+  //.ribbon-menu div.section-footer {
+  //  border: none !important;
+  //}
+  //
+  //.ribbon-menu section:not(:first-child) {
+  //  //border-left: none !important;
+  //}
+  //
+  //.ribbon-menu section:nth-child(n+3) {
+  //  margin-left:2rem;
+  //}
+  //
+  //.myBoard__body {
+  //  background: var(--background-basic-color-3);
+  //}
+  //
+  //body {
+  //  background: var(--background-basic-color-4);
+  //}
+  //
+  //.ribbon-menu {
+  //  border-bottom: none !important;
+  //}
+}

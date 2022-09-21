@@ -10,6 +10,7 @@ import {Location} from '../../model/location';
 })
 export class MainLocationDashboardComponent implements OnInit {
   locations$: Observable<Map<string, Location>>;
+  selectedLocation: Location | undefined = undefined;
 
   constructor(private locationService: LocationService) {
     this.locations$ = this.locationService.locationStore.getMap$();

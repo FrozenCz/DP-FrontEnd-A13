@@ -7,6 +7,8 @@ import { LocationDetailDialogWrapperComponent } from './components/location-deta
 import { LocationListComponent } from './components/location-list/location-list.component';
 import {NbButtonModule, NbCardModule, NbFormFieldModule, NbInputModule, NbSelectModule} from '@nebular/theme';
 import {FormsModule} from '@angular/forms';
+import {FlexModule} from '@angular/flex-layout';
+import {AgGridModule} from 'ag-grid-angular';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import {FormsModule} from '@angular/forms';
     FormsModule,
     NbFormFieldModule,
     NbInputModule,
-    NbButtonModule
+    NbButtonModule,
+    FlexModule,
+    AgGridModule
   ]
 })
 export class LocationsModule { }
