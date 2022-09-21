@@ -1,0 +1,22 @@
+<nb-card>
+  <nb-card-header>Detail lokace</nb-card-header>
+  <nb-card-body>
+
+      <div class="caption">Název</div>
+      <input nbInput [(ngModel)]="location.name" type="text" name="locationName">
+
+      <div class="caption">V</div>
+      <nb-select [(selected)]="location.parent">
+        <nb-option *ngFor="let par of locations" [value]="par">
+          <span>{{par.name}}</span>
+        </nb-option>
+      </nb-select>
+
+  </nb-card-body>
+  <nb-card-footer>
+    <button nbButton status="primary" (click)="save(location)" [disabled]="location.name.trim().length < 1">
+      <span *ngIf="location.uuid">Uložit</span>
+      <span *ngIf="!location.uuid">Přidat</span>
+    </button>
+  </nb-card-footer>
+</nb-card>

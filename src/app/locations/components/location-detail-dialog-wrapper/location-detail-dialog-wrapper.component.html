@@ -1,0 +1,10 @@
+<ng-container *ngIf="locations$ | async as locations">
+  <app-location-detail
+    *ngIf="location$ | async as loc"
+    [location]="loc"
+    [locations]="locations"
+    (saveEmit)="onSaveEmit($event)"
+  ></app-location-detail>
+</ng-container>
+
+<div [routerLink]="['../test']">tets</div>
