@@ -1,6 +1,9 @@
-<app-location-list
-  fxFlex
-  [locations]="locations$ | async"
-  (selectedLocation)="selectedLocation=$event"
-></app-location-list>
-<app-location-detail-dialog-wrapper fxFlex></app-location-detail-dialog-wrapper>
+<div fxFlex fxLayout="row" fxLayoutGap=".5rem">
+  <app-location-list
+    fxFlex
+    *ngIf="locations$ | async as locations"
+    [locations]="locations"
+    (selectedLocation)="selectedLocation=$event"
+  ></app-location-list>
+  <app-location-detail-wrapper fxFlex></app-location-detail-wrapper>
+</div>

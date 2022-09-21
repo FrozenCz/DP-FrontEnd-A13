@@ -28,6 +28,7 @@ export class Location {
 
   set parent(value: Location | null) {
     this._parent = value;
+
   }
 
   get treePath(): string[] {
@@ -35,7 +36,8 @@ export class Location {
   }
 
   private recursiveSearch(parent: Location, treePath: string[]): string[] {
-    treePath.unshift(parent.name)
+    if (parent.uuid) treePath.unshift(parent.uuid)
+
     if(parent.parent && parent.parent.uuid) {
       return this.recursiveSearch(parent.parent, treePath)
     }

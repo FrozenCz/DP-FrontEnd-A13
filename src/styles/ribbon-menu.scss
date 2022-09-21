@@ -140,7 +140,16 @@ app-navigation {
   &.content-active section.homeLink {
     filter: grayscale(100%);
     opacity: .3;
-    background: url('/assets/logo_mu_70.png');
+    font-size: 40px; line-height: 70px;
+    font-weight: bold;
+    span {
+      color: #009ad8;
+      position: relative;
+    }
+
+    color: black;
+    text-align: center;
+    //background: url('/assets/logo_mu_70.png');
     background-size: 70px;
     height: 80px;
     display: block;

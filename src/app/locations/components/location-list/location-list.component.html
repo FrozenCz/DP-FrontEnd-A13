@@ -1,8 +1,15 @@
+<div fxLayout="column" fxFlex>
 <ag-grid-angular
   fxFlex
   class="ag-theme-alpine"
-  [rowData]="getLocations()"
+  [rowData]="locations"
+  [treeData]="treeData"
   [columnDefs]="colDefs"
-  (rowSelected)="onRowSelected($event)"
+  [gridOptions]="gridOptions"
+  [getDataPath]="getDataPath"
+  (selectionChanged)="onSelectionChanged($event)"
+  [autoGroupColumnDef]="autoGroupColumnDef"
+  (gridReady)="gridApi=$event.api"
 >
 </ag-grid-angular>
+</div>

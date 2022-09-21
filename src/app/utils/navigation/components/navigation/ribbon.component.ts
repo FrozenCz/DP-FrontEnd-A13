@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -26,13 +27,14 @@ export interface NavButClickedEmit {
   encapsulation: ViewEncapsulation.None
 })
 
-export class RibbonComponent {
+export class RibbonComponent implements AfterViewInit{
   @Input() navigation!: Navigation;
-  @Input() activeTab: string = '';
+  @Input() activeTab!: string;
   @Output() actionEmitted: EventEmitter<{ id: NavButtonsIdsEnum, context?: any }> = new EventEmitter<{ id: NavButtonsIdsEnum, context?: any }>();
   subMenuHidden = false;
   navIconType = NavigationAcceptedIconsEnum;
   navButtonsEnum = NavButtonsIdsEnum;
+  initialized = false;
 
   constructor(private router: Router) {
   }
@@ -40,7 +42,7 @@ export class RibbonComponent {
   menuChange($event: any): void {
     const navTabName = $event.tabTitle.toLowerCase();
     const url = this.navigation.navTabs.find(nav => nav.name.toLowerCase() === navTabName)?.url;
-    if (url) {
+    if (url && this.initialized) {
       this.router.navigate(url);
     }
   }
@@ -50,6 +52,12 @@ export class RibbonComponent {
       // nechci emitovat id pro buttony
       this.actionEmitted.emit({id: button.id})
     }
+  }
+
+  ngAfterViewInit(): void {
+    console.log(this.activeTab);
+    // this.initialized = true;
+    this.menuChange({tabTitle: this.activeTab})
   }
 
 }

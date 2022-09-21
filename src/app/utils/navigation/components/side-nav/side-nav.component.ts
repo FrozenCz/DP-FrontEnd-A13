@@ -13,6 +13,7 @@ import {Navigation} from '../../models/navigation';
 import {NavigationTab} from '../../models/navigationTab';
 import {NavigationAcceptedIconsEnum} from '../../models/navigation.types';
 import {NavButtonsIdsEnum} from '../../models/navButtonsIds.enum';
+import {NavigationButton} from '../../models/navigationButton';
 
 
 export interface NavActionEmit {
@@ -46,6 +47,13 @@ export class SideNavComponent implements OnChanges {
       this.sideBarRef.collapse();
     } else {
       this.sideBarRef.expand();
+    }
+  }
+
+  actionEmit(button: NavigationButton): void {
+    if (!button.url || button.url.length < 1) {
+      // nechci emitovat id pro buttony
+      this.actionEmitted.emit({id: button.id})
     }
   }
 

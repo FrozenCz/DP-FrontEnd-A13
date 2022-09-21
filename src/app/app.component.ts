@@ -15,9 +15,9 @@ import {NavigationAcceptedIconsEnum} from './utils/navigation/models/navigation.
 import {NavigationSubSectionButtons} from './utils/navigation/models/navigationSubSectionButtons';
 import {NavigationButton} from './utils/navigation/models/navigationButton';
 import {NavButtonsIdsEnum} from './utils/navigation/models/navButtonsIds.enum';
-import {AssetsService, AssetsSourceEnum} from './assets/assets.service';
+import {AssetsService} from './assets/assets.service';
 import {take} from 'rxjs/operators';
-import {LocationCreateNewButton, LocationListButton, LocationNav} from './locations/model/locations.navigation';
+import {LocationListButton, LocationNav} from './locations/model/locations.navigation';
 import {AssetSource} from './facade/facade';
 
 @Component({
@@ -366,7 +366,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     const subSecA = new NavigationSubSectionButtons();
     LocationNav.sections.push(lokSecA);
     lokSecA.subSections.push(subSecA);
-    subSecA.buttons.push(LocationListButton, LocationCreateNewButton);
+    subSecA.buttons.push(LocationListButton);
 
 
 

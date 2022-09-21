@@ -25,7 +25,6 @@ export class LocationService {
     } else {
       nLoc = location;
     }
-    console.log(nLoc);
     this.locationStore.update(nLoc).then(noop);
     return of();
   }

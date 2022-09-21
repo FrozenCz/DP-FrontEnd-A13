@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {LocationService} from '../../location.service';
-import {Observable} from 'rxjs';
+import {Observable, tap} from 'rxjs';
 import {Location} from '../../model/location';
 
 @Component({
@@ -9,11 +9,11 @@ import {Location} from '../../model/location';
   styleUrls: ['./main-location-dashboard.component.scss']
 })
 export class MainLocationDashboardComponent implements OnInit {
-  locations$: Observable<Map<string, Location>>;
+  locations$: Observable<Location[]>;
   selectedLocation: Location | undefined = undefined;
 
   constructor(private locationService: LocationService) {
-    this.locations$ = this.locationService.locationStore.getMap$();
+    this.locations$ = this.locationService.locationStore.getAll$().pipe(tap(console.log));
   }
 
   ngOnInit(): void {

@@ -6,7 +6,7 @@ import {NavButtonsIdsEnum} from '../../utils/navigation/models/navButtonsIds.enu
 
 export const LocationNav = new NavigationTab('locations', 'Lokace', ['locations'], 'paper-plane-outline');
 
-export const LocationListButton = new NavigationButton(NavButtonsIdsEnum.locations_list, 'seznam lokací', {name: 'list-outline', iconType: NavigationAcceptedIconsEnum.eva}, ['/locations'])
+export const LocationListButton = new NavigationButton(NavButtonsIdsEnum.locations_list, 'seznam lokací', {name: 'list-outline', iconType: NavigationAcceptedIconsEnum.eva}, ['/locations', 'all'])
 LocationListButton.routerLinkActiveExactOptions = true;
-export const LocationCreateNewButton = new NavigationButton(NavButtonsIdsEnum.locations_create_new, 'nová lokace', {name: 'plus-outline', iconType: NavigationAcceptedIconsEnum.eva}, ['/locations/new'])
+// export const LocationCreateNewButton = new NavigationButton(NavButtonsIdsEnum.locations_create_new, 'nová lokace', {name: 'plus-outline', iconType: NavigationAcceptedIconsEnum.eva}, ['/locations/new'])
 

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LocationDetailDialogWrapperComponent } from './location-detail-dialog-wrapper.component';
+import { LocationDetailWrapperComponent } from './location-detail-wrapper.component';
 
 describe('LocatioDetailDialogWrapperComponent', () => {
-  let component: LocationDetailDialogWrapperComponent;
-  let fixture: ComponentFixture<LocationDetailDialogWrapperComponent>;
+  let component: LocationDetailWrapperComponent;
+  let fixture: ComponentFixture<LocationDetailWrapperComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LocationDetailDialogWrapperComponent ]
+      declarations: [ LocationDetailWrapperComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LocationDetailDialogWrapperComponent);
+    fixture = TestBed.createComponent(LocationDetailWrapperComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

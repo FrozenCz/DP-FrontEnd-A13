@@ -14,7 +14,7 @@
           [ngClass]="{'ribbonSubmenuHidden' : !navTab.sections.length}"
   >
     <div fxLayout="row" *ngIf="navTab.sections.length">
-      <section class="homeLink" [routerLink]="['/']"  ></section>
+      <section class="homeLink" [routerLink]="['/']"  >&lcub;<span>=</span>&rcub;</section>
       <section fxLayout="column"
                *ngFor="let navSection of navTab.sections;"
                [id]="navSection.id"
