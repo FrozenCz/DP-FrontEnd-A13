@@ -10,6 +10,8 @@
   (selectionChanged)="onSelectionChanged($event)"
   [autoGroupColumnDef]="autoGroupColumnDef"
   (gridReady)="gridApi=$event.api"
+  (firstDataRendered)="sizeFit($event)"
+  (columnResized)="sizeFit($event)"
 >
 </ag-grid-angular>
 </div>

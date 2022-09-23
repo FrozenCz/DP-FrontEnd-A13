@@ -18,7 +18,7 @@
     </div>
 
     <div>
-      <button nbButton status="primary" [disabled]="location.name.trim().length < 1">
+      <button nbButton status="primary" [outline]="!!location.uuid" [disabled]="location.name.trim().length < 1">
         <span *ngIf="location.uuid">Uložit</span>
         <span *ngIf="!location.uuid">Přidat</span>
       </button>

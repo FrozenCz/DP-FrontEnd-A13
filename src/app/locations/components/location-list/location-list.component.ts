@@ -1,6 +1,13 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Location} from '../../model/location';
-import {ColDef, GetDataPath, GridApi, GridOptions, SelectionChangedEvent} from 'ag-grid-community';
+import {
+  ColDef,
+  FirstDataRenderedEvent,
+  GetDataPath,
+  GridApi,
+  GridOptions,
+  SelectionChangedEvent
+} from 'ag-grid-community';
 import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
@@ -28,8 +35,7 @@ export class LocationListComponent implements OnInit, OnChanges {
     // cellRenderer: (params: any) => {
     //   return params.data.name
     // },
-    headerName: "My Group",
-    width: 300,
+    headerName: "Lokace",
     cellRendererParams: {
       suppressCount: true,
       innerRenderer: (params: any) => params.data.name
@@ -51,8 +57,13 @@ export class LocationListComponent implements OnInit, OnChanges {
     }
   }
 
+
+
   ngOnChanges(changes: SimpleChanges): void {
     this.gridApi?.redrawRows()
   }
 
+  sizeFit($event: any) {
+    $event.api.sizeColumnsToFit();
+  }
 }

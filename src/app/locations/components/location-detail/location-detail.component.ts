@@ -26,6 +26,8 @@ export class LocationDetailComponent implements OnChanges {
 
   save(location: Location): void {
     this.saveEmit.emit(location);
-    this.location = new Location();
+    if (!this.location.uuid) {
+      this.location = new Location();
+    }
   }
 }

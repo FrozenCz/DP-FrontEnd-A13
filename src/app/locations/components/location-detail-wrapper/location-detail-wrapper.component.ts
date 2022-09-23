@@ -1,9 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '../../model/location';
 import {combineLatest, Observable, of, startWith, switchMap, tap} from 'rxjs';
 import {LocationService} from '../../location.service';
-import {map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-location-detail-wrapper',
@@ -16,16 +16,22 @@ export class LocationDetailWrapperComponent implements OnInit {
   locations$!: Observable<Location[]>;
   newLoc: Location = new Location();
 
-  constructor(private route: ActivatedRoute, private locationService: LocationService) { }
+  constructor(private router: Router, private route: ActivatedRoute, private locationService: LocationService) {
+  }
 
   ngOnInit(): void {
     this.location$ = this.route.paramMap.pipe(switchMap(paramsMap => {
       this.uuid = paramsMap.get('uuid') ?? undefined;
-      if(this.uuid === 'all') this.uuid = undefined;
+      if (this.uuid === 'all') this.uuid = undefined;
       if (this.uuid) {
-        return this.locationService.locationStore.getOne$(this.uuid).pipe(tap(location => {
-          this.newLoc = new Location(null,'', location)
-        }));
+        return this.locationService.locationStore.getOne$(this.uuid)
+          .pipe(catchError(err => {
+            this.router.navigate(['locations']);
+            return of();
+          }))
+          .pipe(tap(location => {
+            this.newLoc = new Location(null, '', location)
+          }));
       } else {
         return of(new Location());
       }
