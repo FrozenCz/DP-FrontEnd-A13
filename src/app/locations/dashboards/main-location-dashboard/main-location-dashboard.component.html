@@ -4,6 +4,29 @@
     *ngIf="locations$ | async as locations"
     [locations]="locations"
     (selectedLocation)="selectedLocation=$event"
+    (onDeletePressed)="onDeletePressed($event)"
   ></app-location-list>
   <app-location-detail-wrapper fxFlex></app-location-detail-wrapper>
+</div>
+
+
+
+<div class="myDialog" *ngIf="locationForDelete" [@comeToScene] >
+  <div class="myDialog__shade" (click)="locationForDelete=null"></div>
+  <nb-card size="small" status="danger">
+    <nb-card-header>Smazání kategorie</nb-card-header>
+  <nb-card-body>
+    Chystáte se smazat kategorii {{locationForDelete.name}}, opravdu chcete lokaci smazat?
+  </nb-card-body>
+  <nb-card-footer fxLayout="row" fxLayoutAlign="space-between center">
+    <button nbButton ghost (click)="locationForDelete=null">
+      <nb-icon icon="close-outline"></nb-icon>
+      Zrušit
+    </button>
+    <button nbButton status="danger" (click)="deleteConfirmed(locationForDelete)" [nbSpinner]="deletePerformed">
+      <nb-icon icon="trash-2-outline"></nb-icon>
+      Smazat
+    </button>
+  </nb-card-footer>
+  </nb-card>
 </div>

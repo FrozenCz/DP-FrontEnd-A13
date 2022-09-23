@@ -12,6 +12,7 @@
   (gridReady)="gridApi=$event.api"
   (firstDataRendered)="sizeFit($event)"
   (columnResized)="sizeFit($event)"
+  (cellKeyDown)="onCellKeyDown($event)"
 >
 </ag-grid-angular>
 </div>

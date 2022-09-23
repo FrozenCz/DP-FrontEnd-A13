@@ -30,4 +30,8 @@ export class LocationService {
   }
 
 
+  removeLocation(locationForDelete: Location): Observable<void> {
+    this.locationStore.remove(locationForDelete.uuid);
+    return of();
+  }
 }

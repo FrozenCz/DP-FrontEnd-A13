@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
 import {Location} from '../../model/location';
 import {
   ColDef,
-  FirstDataRenderedEvent,
   GetDataPath,
   GridApi,
   GridOptions,
@@ -18,6 +17,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 export class LocationListComponent implements OnInit, OnChanges {
   @Input() locations: Location[] = [];
   @Output() selectedLocation: EventEmitter<Location> = new EventEmitter<Location>();
+  @Output() onDeletePressed: EventEmitter<Location> = new EventEmitter<Location>();
   treeData = true;
   gridApi: GridApi | undefined = undefined;
 
@@ -49,7 +49,7 @@ export class LocationListComponent implements OnInit, OnChanges {
 
   onSelectionChanged(params: SelectionChangedEvent) {
     const data = params.api.getSelectedNodes()[0];
-    if (data.isSelected()) {
+    if (data?.isSelected()) {
       this.selectedLocation.emit(data.data);
       this.router.navigate(['locations', data.data.uuid]);
     } else {
@@ -65,5 +65,12 @@ export class LocationListComponent implements OnInit, OnChanges {
 
   sizeFit($event: any) {
     $event.api.sizeColumnsToFit();
+  }
+
+  onCellKeyDown($event: any) {
+    const code = $event.event.code;
+    if (code === 'Delete' && $event.data) {
+      this.onDeletePressed.emit($event.data);
+    }
   }
 }
