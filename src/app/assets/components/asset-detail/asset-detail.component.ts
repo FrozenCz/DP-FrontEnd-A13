@@ -17,6 +17,7 @@ import {HistoryService} from '../../../history/history.service';
 import {take} from 'rxjs/operators';
 import {CategoriesService} from '../../../categories/categories.service';
 import {Category} from '../../../categories/models/category.model';
+import {Location} from '../../../locations/model/location';
 
 
 enum AssetDetailTabEnum {
@@ -48,6 +49,7 @@ export interface AssetDetailPermissions {
 })
 export class AssetDetailComponent implements OnDestroy, OnInit {
   @Input() category!: Category;
+  @Input() locations!: Map<string, Location>;
   @Input() asset!: Asset;
   @Input() users: Map<number, User> = new Map<number, User>();
   @Input() permissions: AssetDetailPermissions | null = null;
@@ -249,7 +251,7 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
         inquiryDate: asset?.inquiryDate ? new Date(asset.inquiryDate) : new Date(),
         inquiryPrice: asset.inquiryPrice,
         document: asset.document,
-        location: asset.location,
+        location: asset.location_id,
         locationEtc: asset.locationEtc,
         note: asset.note
       },

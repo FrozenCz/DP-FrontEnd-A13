@@ -6,6 +6,7 @@ import {UsersService} from '../users/users.service';
 import {CategoriesService} from '../categories/categories.service';
 import {Transforms} from '../utils/Transforms';
 import {Asset} from '../assets/models/assets.model';
+import {LocationService} from '../locations/location.service';
 
 
 @Injectable({
@@ -13,7 +14,12 @@ import {Asset} from '../assets/models/assets.model';
 })
 export class Facade {
 
-  constructor(private assetsService: AssetsService, private usersService: UsersService, private categoryService: CategoriesService) {
+  constructor(
+    private assetsService: AssetsService,
+    private usersService: UsersService,
+    private categoryService: CategoriesService,
+    private locationService: LocationService
+  ) {
   }
 
   getAssetExt(source: AssetSource): Observable<IAssetsExt[]> {
@@ -26,11 +32,12 @@ export class Facade {
     return combineLatest([
       obs,
       this.usersService.getUsersMap$(),
-      this.categoryService.categoriesStore$.getMap$()
+      this.categoryService.categoriesStore$.getMap$(),
+      this.locationService.locationStore.getMap$()
     ]).pipe(
-      map(([assets, users, categories]) => {
+      map(([assets, users, categories, locations]) => {
         return assets.map(asset => {
-          return Transforms.getAssetModelExt(asset, users, categories);
+          return Transforms.getAssetModelExt(asset, users, categories, locations);
         })
       })
     )
