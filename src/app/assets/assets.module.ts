@@ -30,6 +30,7 @@ import {HistoryModule} from '../history/history.module';
 import { AssetDetailComponent } from './components/asset-detail/asset-detail.component';
 import { AssetDetailSinglePageWrapperComponent } from './components/asset-detail-single-page-wrapper/asset-detail-single-page-wrapper.component';
 import { AssetsDashboardComponent } from './dashboards/assets-dashboard/assets-dashboard.component';
+import {LocationsModule} from '../locations/locations.module';
 
 @NgModule({
   declarations: [AssetsComponent, AssetDetailDialogComponent, AssetsListComponent, QuickFilterComponent, ActionButtonsForAgGridComponent,
@@ -62,6 +63,7 @@ import { AssetsDashboardComponent } from './dashboards/assets-dashboard/assets-d
         NbBadgeModule,
         NbSpinnerModule,
         HistoryModule,
+        LocationsModule,
     ],
     exports: [
         AssetsListComponent,

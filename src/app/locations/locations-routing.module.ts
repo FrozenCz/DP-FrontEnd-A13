@@ -4,7 +4,7 @@ import {MainLocationDashboardComponent} from './dashboards/main-location-dashboa
 
 
 const routes: Routes = [
-  {path: '', redirectTo: 'all'},
+  {path: '', pathMatch: 'full', redirectTo: 'all'},
   {path: ':uuid', component: MainLocationDashboardComponent}
 ];
 
@@ -13,4 +13,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class LocationsRoutingModule { }
+export class LocationsRoutingModule {
+}

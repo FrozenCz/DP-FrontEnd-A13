@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '../../model/location';
-import {combineLatest, Observable, of, startWith, switchMap, tap} from 'rxjs';
+import {combineLatest, firstValueFrom, noop, Observable, of, startWith, switchMap, tap} from 'rxjs';
 import {LocationService} from '../../location.service';
 import {catchError, map} from 'rxjs/operators';
 
@@ -45,6 +45,7 @@ export class LocationDetailWrapperComponent implements OnInit {
   }
 
   onSaveEmit($event: Location): void {
-    this.locationService.saveLocation($event);
+    firstValueFrom(this.locationService.saveLocation($event))
+      .then(noop)
   }
 }

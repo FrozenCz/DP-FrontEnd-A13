@@ -7,6 +7,7 @@ export const environment = {
 };
 
 export const webSocketUrl = 'ws://localhost:3000';
+export const restIp = '/rest';
 // export const webSocketUrl = 'ws://http://46.36.39.68:3000';
 
 /*

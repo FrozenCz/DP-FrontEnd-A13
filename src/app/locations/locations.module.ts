@@ -18,26 +18,29 @@ import {FlexModule} from '@angular/flex-layout';
 import {AgGridModule} from 'ag-grid-angular';
 
 @NgModule({
-  declarations: [
-    MainLocationDashboardComponent,
-    LocationDetailComponent,
-    LocationDetailWrapperComponent,
-    LocationListComponent
-  ],
-  imports: [
-    CommonModule,
-    LocationsRoutingModule,
-    NbCardModule,
-    NbSelectModule,
-    FormsModule,
-    NbFormFieldModule,
-    NbInputModule,
-    NbButtonModule,
-    FlexModule,
-    AgGridModule,
-    NbIconModule,
-    NbSpinnerModule
-  ]
+    declarations: [
+        MainLocationDashboardComponent,
+        LocationDetailComponent,
+        LocationDetailWrapperComponent,
+        LocationListComponent
+    ],
+    exports: [
+        LocationListComponent
+    ],
+    imports: [
+        CommonModule,
+        LocationsRoutingModule,
+        NbCardModule,
+        NbSelectModule,
+        FormsModule,
+        NbFormFieldModule,
+        NbInputModule,
+        NbButtonModule,
+        FlexModule,
+        AgGridModule,
+        NbIconModule,
+        NbSpinnerModule
+    ]
 })
 export class LocationsModule {
 }

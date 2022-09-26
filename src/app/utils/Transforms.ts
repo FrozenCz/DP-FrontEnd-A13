@@ -3,6 +3,8 @@ import {User} from '../users/model/user.model';
 import {Category} from '../categories/models/category.model';
 import {IAssetsExt} from '../assets/assets.service';
 import {Location} from '../locations/model/location';
+import {LocationDto} from '../locations/dto/in/location.dto';
+import {NotFoundError} from 'rxjs';
 
 export class Transforms {
 
@@ -54,5 +56,14 @@ export class Transforms {
   }
 
 
-
+  public static getLocationFromDto(locationDto: LocationDto, locations: Map<string, Location>): Location {
+    let parent = null;
+    if (locationDto.parent_uuid) {
+        parent = locations.get(locationDto.parent_uuid);
+        if (!parent) {
+          throw new NotFoundError('Parent not found ' + locationDto.parent_uuid);
+        }
+    }
+    return new Location(locationDto.uuid, locationDto.name, parent);
+  }
 }

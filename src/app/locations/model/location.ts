@@ -1,5 +1,5 @@
 export class Location {
-  private readonly _uuid: string | null;
+  private _uuid: string | null;
   private _name: string;
   private _parent: Location | null;
 
@@ -8,6 +8,11 @@ export class Location {
     this._uuid = uuid ?? null;
     this._name = name ?? '';
     this._parent = parent ?? null;
+  }
+
+
+  set uuid(value: string | null) {
+    this._uuid = value;
   }
 
   get uuid(): string | null {
