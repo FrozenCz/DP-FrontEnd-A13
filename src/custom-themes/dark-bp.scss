@@ -1,3 +1,7 @@
+$templateBackgroundColor: #2f2f2f;
+$templateColor: #a9a9a9;
+$templateActiveColor: #49889d;
+
 $nb-themes: nb-register-theme((
   background-basic-color-1: #2f2f2f,
   background-basic-color-2: #36383b,
@@ -80,3 +84,54 @@ $nb-themes: nb-register-theme((
   color-danger-transparent-500: rgba(223, 91, 91, 0.4),
   color-danger-transparent-600: rgba(223, 91, 91, 0.48)
 ), dark-bp, dark);
+
+
+.nb-theme-dark-bp {
+
+  app-toolbar {
+    .myBoard {
+      border: 0px;
+      &__header {
+        background: $templateBackgroundColor;
+        button nb-icon, .topNav a {
+          color: $templateColor;
+          &.text-primary-color {
+            color: $templateActiveColor;
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+
+  nb-sidebar {
+    border: 1px solid darken($templateBackgroundColor, 5%);
+    box-shadow: 0 4px 4px -3px rgba(0, 0, 0, 0.5);
+    background: $templateBackgroundColor;
+    color: mix($templateColor, $templateActiveColor);
+
+    [nbButton].appearance-ghost.status-basic {
+      color: lighten($templateColor, 3%);
+
+      &.btn-disabled {
+        color: darken($templateColor, 30%);
+      }
+    }
+
+    .section-header {
+      color: $templateActiveColor;
+      text-decoration: underline;
+    }
+
+
+    .sidenav__header {
+      background: $templateBackgroundColor;
+
+      span {
+        color: darken($templateColor, 30%);
+        text-shadow: none;
+      }
+    }
+
+  }
+}
