@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {firstValueFrom, noop, Observable, Subject} from 'rxjs';
+import {firstValueFrom, noop, Observable, startWith, Subject} from 'rxjs';
 import {
   Asset,
   ASSETS_INFORMATION, AssetsChanges,
@@ -13,11 +13,10 @@ import {TokenService} from '../../../auth/token.service';
 import {UsersService} from '../../../users/users.service';
 import {AssetsService} from '../../assets.service';
 import {NbToastrService} from '@nebular/theme';
-import {HistoryService} from '../../../history/history.service';
-import {take} from 'rxjs/operators';
-import {CategoriesService} from '../../../categories/categories.service';
+import {map, take, tap} from 'rxjs/operators';
 import {Category} from '../../../categories/models/category.model';
 import {Location} from '../../../locations/model/location';
+import {LocationWs} from '../../../locations/model/location.ws';
 
 
 enum AssetDetailTabEnum {
@@ -57,6 +56,7 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
   assetStates = AssetState;
   editMode = false;
   categoryTree = '';
+  filteredControlLocation$: Observable<Location[]>;
 
   unsubscribe = new Subject();
   private editorUserId: number | undefined;
@@ -77,7 +77,6 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
     private toastrService: NbToastrService,
   ) {
 
-
     this.assetForm = this.formBuilder.group({
       quantity: [1, [Validators.required, Validators.min(1), Validators.max(100000)]],
       name: [null],
@@ -96,9 +95,34 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
     this.noteForm = this.formBuilder.group({
       userNote: [null, [Validators.required, Validators.maxLength(100000)]]
     });
+
+    this.filteredControlLocation$ = this.assetForm.get('location')!.valueChanges
+      .pipe(
+        startWith(''),
+        tap(typed => {
+          if (typeof typed === 'string' || typed === null) {
+            this.assetForm.get('location')!.setErrors({guarantee: 'Not selected'});
+          } else {
+            if (typed && typed.name && typed.surname && typed.logon) {
+              this.assetForm.get('location')!.setErrors(null);
+            }
+          }
+        }),
+        map(filterString => this.filtering(filterString))
+      );
+
+  }
+
+  private filtering(name: string): Location[] {
+    console.log(this.locations.values());
+    if (!name) return [];
+    const filterValue = name.toString().toLowerCase();
+    const locationsArr = Array.from(this.locations?.values()?? []) ;
+    return locationsArr.filter(location => (location.name).toLowerCase().includes(filterValue));
   }
 
   ngOnInit(): void {
+
     if (this.asset.id >= 0) {
       this.insertAssetDataIntoDetailForm(this.asset, this.users);
       this.setEditModeTo(false);
@@ -283,5 +307,14 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
   getUsers(): User[] {
     return Array.from(this.users.values());
   }
+
+  showLocation(location: Location | string): any {
+    if (location instanceof Location && location?.name) {
+      return location.name + (location.parent ? ' ('+location.parent.name+') ' : '');
+    }
+    return location
+  }
+
+
 }
 

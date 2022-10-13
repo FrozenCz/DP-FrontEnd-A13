@@ -111,8 +111,6 @@ body {
 }
 
 
-
-
 .contrastMode .ag-theme-alpine {
   @include ag-theme-alpine((
     // COLOURS
@@ -198,7 +196,6 @@ body {
 }
 
 
-
 .nb-theme-default .ag-theme-alpine .ag-cell input {
   //font-family: (-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif);
   //font-size: 13px;
@@ -238,7 +235,6 @@ html, body, app-root, nb-layout {
   max-height: 100%;
   overflow: hidden;
 }
-
 
 
 textarea, select, input, button, li a {
@@ -945,6 +941,7 @@ app-supplier-selection-select-winner app-addressed-supplier-simple-table table t
   *[nbButton] {
     font-weight: 400 !important;
     text-transform: lowercase;
+
     &.text-primary-color {
       border-radius: 0px;
       border-top: 1px solid $border-basic-color-5;
@@ -1107,7 +1104,6 @@ input[nbInput].size-tiny::placeholder {
 }
 
 
-
 .gridUnwrappedText {
   .ag-cell {
     white-space: normal;
@@ -1116,10 +1112,10 @@ input[nbInput].size-tiny::placeholder {
 }
 
 
-
 .disabledLink {
   background: transparent !important;
   cursor: default !important;
+
   &:hover {
     color: inherit !important;
     border-color: inherit !important;
@@ -1263,20 +1259,27 @@ input[nbInput].size-tiny::placeholder {
   position: relative;
   padding-right: 1rem;
   overflow: auto;
+
   &.horizontalResize {
     resize: horizontal;
   }
+
   &.verticalResize {
     resize: vertical;
   }
+
   &.bothResize {
     resize: both;
   }
 }
 
 @keyframes comeToScene {
-  from {opacity: 0}
-  to {opacity: 1}
+  from {
+    opacity: 0
+  }
+  to {
+    opacity: 1
+  }
 }
 
 
@@ -1284,9 +1287,11 @@ input[nbInput].size-tiny::placeholder {
   .ag-header {
     border-bottom: 0px !important;
   }
+
   .ag-cell.rightAligned {
     text-align: right;
   }
+
   .ag-cell {
     white-space: normal !important;
     word-break: keep-all !important;
@@ -1294,7 +1299,7 @@ input[nbInput].size-tiny::placeholder {
 }
 
 .ag-theme-alpine {
-  .ag-cell nb-icon svg{
+  .ag-cell nb-icon svg {
     //background: red !important;
     max-height: 24px !important;
     max-width: 24px !important;
@@ -1337,3 +1342,5 @@ input[nbInput].size-tiny::placeholder {
 //* {
 //  border: 0px !important;
 //}
+
+

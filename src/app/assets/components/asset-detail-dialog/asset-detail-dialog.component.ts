@@ -10,6 +10,8 @@ import {UsersService} from '../../../users/users.service';
 import {TokenService} from '../../../auth/token.service';
 import {Category} from '../../../categories/models/category.model';
 import {CategoriesService} from '../../../categories/categories.service';
+import {LocationService} from '../../../locations/location.service';
+import {Location} from '../../../locations/model/location';
 
 @Component({
   selector: 'app-create-assets-dialog',
@@ -23,15 +25,17 @@ export class AssetDetailDialogComponent implements OnInit {
   asset$!: Observable<Asset>;
   users$!: Observable<Map<number, User>>;
   category$!: Observable<Category>;
+  locations$!: Observable<Map<string, Location>>;
   permissions: AssetDetailPermissions | null = null;
-  dataPrepared$!: Observable<[Asset, Map<number, User>, Category]>;
+  dataPrepared$!: Observable<[Asset, Map<number, User>, Category, Map<string, Location>]>;
 
   constructor(
     private nbWindowRef: NbWindowRef,
     private assetService: AssetsService,
     private usersService: UsersService,
     private tokenService: TokenService,
-    private categoryService: CategoriesService
+    private categoryService: CategoriesService,
+    private locationService: LocationService
   ) {
 
   }
@@ -61,7 +65,9 @@ export class AssetDetailDialogComponent implements OnInit {
       switchMap(asset => this.categoryService.getCategoryById(asset.category_id))
     )
 
-    this.dataPrepared$ = combineLatest([this.asset$, this.users$, this.category$]);
+    this.locations$ = this.locationService.locationStore.getMap$();
+
+    this.dataPrepared$ = combineLatest([this.asset$, this.users$, this.category$, this.locations$]);
 
   }
 

@@ -4,9 +4,6 @@
         style="height: 100%; width: 100%;">
     <nb-card-body fxLayout="row" fxLayoutGap="2em">
       <div fxLayout="column" fxLayoutGap="1em" style="min-width: 75em">
-        <div class="caption">
-          Přiřazení
-        </div>
         <div fxLayout="row" fxLayoutGap="1em">
           <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em" fxFlex="25">
             <label for="quantity">
@@ -30,9 +27,6 @@
           </div>
           <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em" fxFlex="25">
           </div>
-        </div>
-        <div class="caption">
-          Identifikace
         </div>
         <div fxLayout="row" fxLayoutGap="1em" fxLayoutAlign="start center">
           <label for="name">
@@ -87,10 +81,6 @@
         <div fxLayout="row" fxLayoutGap="1em">
 
         </div>
-
-        <div class="caption">
-          Pořizovací informace
-        </div>
         <div fxLayout="row" fxLayoutGap="1em">
           <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em" fxFlex="25">
             <label for="inquiryDate">
@@ -121,17 +111,18 @@
           <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em" fxFlex="25">
           </div>
         </div>
-        <div class="caption">
-          Lokalizace
-        </div>
         <div fxLayout="row" fxLayoutGap="1em">
           <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em" fxFlex="50">
             <label for="location">
               Umístění
             </label>
             <nb-form-field fxFlex>
-              <app-location-list></app-location-list>
-              <input nbInput id="location" formControlName="location" fullWidth>
+              <input nbInput id="location" [nbAutocomplete]="autoControl" formControlName="location" fullWidth>
+              <nb-autocomplete #autoControl [handleDisplayFn]="showLocation">
+                <nb-option [value]="location" *ngFor="let location of filteredControlLocation$ | async">
+                  {{location.name}}
+                </nb-option>
+              </nb-autocomplete>
             </nb-form-field>
           </div>
           <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em" fxFlex="50">
