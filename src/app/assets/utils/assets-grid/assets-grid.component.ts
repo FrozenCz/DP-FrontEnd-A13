@@ -293,6 +293,13 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
               floatingFilter: false,
               suppressMenu: true,
             },
+            {
+              colId: 'location',
+              headerName: 'Umístění',
+              valueGetter: params => {
+                return params.data?.asset?.location?.name
+              }
+            }
           ];
           return columnDefs;
         }

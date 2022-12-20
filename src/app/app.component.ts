@@ -307,7 +307,21 @@ export class AppComponent implements OnInit, AfterViewInit {
     })
     removedAssetsSubSectionA.buttons.push(removedAssetsProtocols)
 
-    this.assetTab.sections.push(assetSection, workingAssetListSection, protocolsSection, massEditSection, assetRemoveSection, removedAssetsSection)
+
+
+
+    const assetScanSection = new NavigationSection('asset_scan', 'Skenování majetku', {
+      name: 'trash-2-outline',
+      iconType: NavigationAcceptedIconsEnum.eva
+    });
+    const assetScanSectionSubSectionA = new NavigationSubSectionButtons();
+    assetScanSection.subSections.push(assetScanSectionSubSectionA);
+    const assetScanList = new NavigationButton(NavButtonsIdsEnum.asset_scan_list,
+      'výsledky skenování',
+      {name: 'list-outline', iconType: NavigationAcceptedIconsEnum.eva})
+    assetScanSectionSubSectionA.buttons.push(assetScanList);
+
+    this.assetTab.sections.push(assetSection, workingAssetListSection, protocolsSection, massEditSection, assetRemoveSection, removedAssetsSection, assetScanSection)
 
     /** lists **/
     this.listsTab.sections.push(workingAssetListSection)

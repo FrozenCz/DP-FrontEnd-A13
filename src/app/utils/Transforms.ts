@@ -16,8 +16,8 @@ export class Transforms {
 
     let locationIn;
 
-    if (asset.location_id) {
-      locationIn = locations.get(asset.location_id);
+    if (asset.location_uuid) {
+      locationIn = locations.get(asset.location_uuid);
     }
 
     if (!category) {

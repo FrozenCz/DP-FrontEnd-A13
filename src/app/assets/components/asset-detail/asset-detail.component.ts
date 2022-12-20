@@ -16,7 +16,6 @@ import {NbToastrService} from '@nebular/theme';
 import {map, take, tap} from 'rxjs/operators';
 import {Category} from '../../../categories/models/category.model';
 import {Location} from '../../../locations/model/location';
-import {LocationWs} from '../../../locations/model/location.ws';
 
 
 enum AssetDetailTabEnum {
@@ -88,7 +87,7 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
       inquiryDate: [new Date()],
       inquiryPrice: [null, [Validators.max(9999999999)]],
       document: [null, [Validators.maxLength(20)]],
-      location: [null, [Validators.maxLength(50)]],
+      location: [null],
       locationEtc: [null, [Validators.maxLength(150)]],
       note: [null, [Validators.maxLength(250)]]
     });
@@ -96,14 +95,15 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
       userNote: [null, [Validators.required, Validators.maxLength(100000)]]
     });
 
+
     this.filteredControlLocation$ = this.assetForm.get('location')!.valueChanges
       .pipe(
         startWith(''),
         tap(typed => {
           if (typeof typed === 'string' || typed === null) {
-            this.assetForm.get('location')!.setErrors({guarantee: 'Not selected'});
+            this.assetForm.get('location')!.setErrors({location: 'Not selected'});
           } else {
-            if (typed && typed.name && typed.surname && typed.logon) {
+            if (typed && typed.name && typed instanceof Location) {
               this.assetForm.get('location')!.setErrors(null);
             }
           }
@@ -114,7 +114,6 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
   }
 
   private filtering(name: string): Location[] {
-    console.log(this.locations.values());
     if (!name) return [];
     const filterValue = name.toString().toLowerCase();
     const locationsArr = Array.from(this.locations?.values()?? []) ;
@@ -124,7 +123,7 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
 
     if (this.asset.id >= 0) {
-      this.insertAssetDataIntoDetailForm(this.asset, this.users);
+      this.insertAssetDataIntoDetailForm(this.asset, this.users, this.locations);
       this.setEditModeTo(false);
       this.categoryTree = this.category.categoryTreeForDetail;
     } else {
@@ -227,12 +226,19 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
     const changesInformation: Partial<AssetsModelDto> = {};
 
     for (const controlsKey in this.assetForm.controls) {
-      if (this.assetForm.controls[controlsKey].dirty && this.assetForm.controls[controlsKey].touched) {
+      const controll = this.assetForm.controls[controlsKey];
+
+      if (controll.dirty && controll.touched) {
         const asChKey = controlsKey as keyof typeof changes;
         const asChIKey = controlsKey as keyof typeof changesInformation;
-        changes[asChKey] = this.assetForm.controls[controlsKey].value;
+        changes[asChKey] = controll.value;
+
         if (!!this.permissions?.rtChangeAssetsInformation && ASSETS_INFORMATION.includes(controlsKey)) {
-          changesInformation[asChIKey] = this.assetForm.controls[controlsKey].value;
+          if (controlsKey === 'location') {
+            changesInformation['location_uuid' as keyof typeof changesInformation] = controll.value.uuid ?? null;
+          } else {
+            changesInformation[asChIKey] = controll.value;
+          }
         }
       }
     }
@@ -262,7 +268,7 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
     this.setEditModeTo(false);
   }
 
-  insertAssetDataIntoDetailForm(asset: Asset, users: Map<number, User>): void {
+  insertAssetDataIntoDetailForm(asset: Asset, users: Map<number, User>, locations: Map<string, Location>): void {
     this.assetForm.patchValue(
       {
         quantity: asset.quantity,
@@ -275,17 +281,33 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
         inquiryDate: asset?.inquiryDate ? new Date(asset.inquiryDate) : new Date(),
         inquiryPrice: asset.inquiryPrice,
         document: asset.document,
-        location: asset.location_id,
+        location: asset.location_uuid ? locations.get(asset.location_uuid) : null,
         locationEtc: asset.locationEtc,
         note: asset.note
       },
     );
+
+    setTimeout(() => {
+      if (asset.location_uuid) {
+        const locat = locations.get(asset.location_uuid);
+        const locationControl = this.assetForm.get('location');
+        if (locationControl) {
+          locationControl.setValue(locat ?? null);
+        }
+
+      }
+    })
+
     const preselectedUserId = this.asset ? this.asset.user_id : this.editorUserId;
     if (preselectedUserId) {
       this.assetForm.patchValue({
         user: users.get(preselectedUserId)
       });
     }
+  }
+
+  showErrors(): any {
+    return this.assetForm.get('location')!.errors ?? [];
   }
 
   ableToEdit(): boolean {

@@ -133,7 +133,7 @@ export class AssetsService {
       new Date(assetModelDTO.inquiryDate),
       assetModelDTO.document,
       assetModelDTO.inquiryPrice,
-      assetModelDTO.location_id,
+      assetModelDTO.location_uuid,
       assetModelDTO.locationEtc,
       assetModelDTO.note,
       assetModelDTO.state)

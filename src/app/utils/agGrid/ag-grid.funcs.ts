@@ -64,7 +64,7 @@ export class AgGridFuncs {
       ensureDomOrder: false,
 
       defaultColDef,
-      rowBuffer: 30,
+      rowBuffer: 100,
       suppressMaxRenderedRowRestriction: true,
       sideBar: {
         toolPanels: [

@@ -16,6 +16,8 @@ export enum NavButtonsIdsEnum {
   asset_remove_from_working_list = 'asset_remove_from_working_list',
   asset_remove_from_selected = 'asset_remove_from_selected',
 
+  asset_scan_list = 'asset_scan_list',
+
   removed_assets_list = 'removed_assets_list',
   removed_assets_protocols = 'removed_assets_protocols',
 

@@ -3,7 +3,7 @@ import {User} from '../../users/model/user.model';
 import {IAssetsExt} from '../assets.service';
 import {Location} from '../../locations/model/location';
 
-export const ASSETS_INFORMATION = ['quantity', 'name', 'serialNumber', 'inventoryNumber', 'evidenceNumber',
+export const ASSETS_INFORMATION = ['quantity', 'name', 'serialNumber', 'inventoryNumber', 'evidenceNumber', 'location',
   'identificationNumber', 'inquiryDate', 'inquiryPrice', 'document', 'note'];
 
 
@@ -20,12 +20,12 @@ export class Asset {
   private _inquiryDate: Date;
   private _document: string;
   private _inquiryPrice: number;
-  private _location_id: string | null;
+  private _location_uuid: string | null;
   private _locationEtc: string;
   private _note: string;
   private _state: AssetState;
 
-  constructor(category_id: number, id?: number, name?: string, quantity?: number, user_id?: number, serialNumber?: string, inventoryNumber?: string, evidenceNumber?: string, identificationNumber?: string, inquiryDate?: Date, document?: string, inquiryPrice?: number, location?: string, locationEtc?: string, note?: string, state?: AssetState) {
+  constructor(category_id: number, id?: number, name?: string, quantity?: number, user_id?: number, serialNumber?: string, inventoryNumber?: string, evidenceNumber?: string, identificationNumber?: string, inquiryDate?: Date, document?: string, inquiryPrice?: number, location?: string | null, locationEtc?: string, note?: string, state?: AssetState) {
     this._category_id = category_id;
     this._id = id ?? -1;
     this._name = name ?? '';
@@ -38,7 +38,7 @@ export class Asset {
     this._inquiryDate = inquiryDate ?? new Date();
     this._document = document ?? '';
     this._inquiryPrice = inquiryPrice ?? -1;
-    this._location_id = location ?? null;
+    this._location_uuid = location ?? null;
     this._locationEtc = locationEtc ?? '';
     this._note = note ?? '';
     this._state = state ?? AssetState.new;
@@ -93,8 +93,8 @@ export class Asset {
     return this._inquiryPrice;
   }
 
-  get location_id(): string | null {
-    return this._location_id;
+  get location_uuid(): string | null {
+    return this._location_uuid;
   }
 
   get locationEtc(): string {
@@ -149,7 +149,7 @@ export interface AssetsModelDto {
   inquiryDate: string;
   document: string;
   inquiryPrice: number;
-  location_id: string;
+  location_uuid: string | null;
   locationEtc: string;
   note: string;
   state: AssetState;
@@ -170,7 +170,7 @@ export interface AssetsChanges {
   inquiryDate: string;
   document: string;
   inquiryPrice: number;
-  location: string;
+  location_uuid: string;
   locationEtc: string;
   note: string;
   state: AssetState;
