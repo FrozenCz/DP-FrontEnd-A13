@@ -1,9 +1,12 @@
 $pageWidth: 18.9cm;
+$a4Width: 210;
+$a4Height: 297;
+$paddingPage: 15;
 
 :host {
   color: black;
   background: white;
-  width: $pageWidth;
+  width: $a4Width - (2 * $paddingPage);
   display: block;
 }
 p{
@@ -17,7 +20,10 @@ p{
 }
 
 .pageWidth {
-  width: $pageWidth;
+  //width: $pageWidth;
+  width: $a4Width - (2 * $paddingPage);
+  margin-left: $paddingPage;
+
 }
 
 table, tr, td, th {

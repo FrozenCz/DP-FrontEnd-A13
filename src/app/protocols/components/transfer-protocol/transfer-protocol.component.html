@@ -1,4 +1,4 @@
-<div class="pageWidth" fxLayout="column" fxLayoutAlign="start center">
+<div class="pageWidth" fxLayout="column" fxLayoutAlign="start center" id="protocolPrint">
   <div fxLayout="row" fxFlexFill fxLayoutAlign="space-between start">
     <div fxFlex></div>
     <div fxFlex contenteditable="true" fxLayout="column" fxLayoutAlign="start end">
@@ -45,5 +45,6 @@
       <div>Přebírající</div>
     </div>
   </div>
-
 </div>
+
+<button (click)="printDocument()">tisk</button>

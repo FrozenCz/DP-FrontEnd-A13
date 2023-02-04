@@ -100,10 +100,12 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
       .pipe(
         startWith(''),
         tap(typed => {
-          if (typeof typed === 'string' || typed === null) {
+          if (typeof typed === 'string') {
             this.assetForm.get('location')!.setErrors({location: 'Not selected'});
           } else {
             if (typed && typed.name && typed instanceof Location) {
+              this.assetForm.get('location')!.setErrors(null);
+            } else if (typed === null) {
               this.assetForm.get('location')!.setErrors(null);
             }
           }

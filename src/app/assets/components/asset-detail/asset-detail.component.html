@@ -155,7 +155,6 @@
     </nb-card-body>
     <nb-card-footer fxLayout="row" fxLayoutAlign="space-between center" style="padding-left:0; padding-right: 0;">
       <div [ngTemplateOutlet]="bottomLeftActions"></div>
-      {{showErrors() | json}}
       <div fxLayout="row" fxLayoutAlign="end center">
         <div *ngIf="!editMode" fxLayoutGap="1em">
           <button nbButton status="basic" outline type="button" (click)="dismiss()">

@@ -4,7 +4,18 @@
  * @university University of Hradec Kralové
  * @bachelor_thesis Assets management in Angular framework
  */
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  Pipe,
+  PipeTransform,
+  SimpleChanges
+} from '@angular/core';
 import {
   CellEditingStoppedEvent,
   CellValueChangedEvent,
@@ -15,7 +26,7 @@ import {
   RowNode
 } from 'ag-grid-community';
 import {BehaviorSubject, combineLatest, Observable, OperatorFunction, Subject, switchMap, tap} from 'rxjs';
-import {AssetsService, IAssetsExt} from '../../assets.service';
+import {AssetsService, IAssetsExt, IAssetsExtPure} from '../../assets.service';
 import {AgGridInstanceService} from '../../../utils/agGrid/ag-grid-instance.service';
 import {AgGridFuncs} from '../../../utils/agGrid/ag-grid.funcs';
 import {CategoriesService} from '../../../categories/categories.service';
@@ -36,7 +47,7 @@ import {AssetState} from '../../models/assets.model';
   templateUrl: './assets-grid.component.html',
   styleUrls: ['./assets-grid.component.scss']
 })
-export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDestroy {
+export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDestroy, OnChanges {
 
   @Input() assets: IAssetsExt[] = [];
   @Input() override gridUid: string = '';
@@ -60,16 +71,16 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
     sortable: true,
     enableRowGroup: true,
     resizable: true,
-    checkboxSelection: AgGridFuncs.ifColumnIsFirst,
+    // checkboxSelection: AgGridFuncs.ifColumnIsFirst,
     headerCheckboxSelection: AgGridFuncs.ifColumnIsFirst,
     headerCheckboxSelectionFilteredOnly: true,
-    cellRenderer: 'filterCellRendererComponent',
+    // cellRenderer: 'filterCellRendererComponent',
 
-    cellRendererParams: {
-      context: {
-        filter: this.quickFilter$
-      }
-    },
+    // cellRendererParams: {
+    //   context: {
+    //     filter: this.quickFilter$
+    //   }
+    // },
   };
   gridOptions: GridOptions = {};
   agGridStates$!: Observable<AgGrid | undefined>;
@@ -82,6 +93,7 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
   private filterString!: string;
   selectedRows: number = 0;
   searchMode: AssetsSearchModeEnum = AssetsSearchModeEnum.inRow;
+  gridApi?: GridApi;
 
 
   constructor(private assetsService: AssetsService,
@@ -92,6 +104,12 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
               private dialogService: DialogService
   ) {
     super();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['assets'].currentValue && this.gridApi) {
+      this.gridApi.setRowData(changes['assets'].currentValue)
+    }
   }
 
   ngOnInit(): void {
@@ -122,7 +140,8 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
       ...this.customGridOptions,
       isExternalFilterPresent: this.isExternalFilterPresent.bind(this),
       doesExternalFilterPass: this.doesExternalFilterPass.bind(this),
-      rowGroupPanelShow: 'always'
+      rowGroupPanelShow: 'always',
+
     };
     this.agGridStates$ = this.agGridInstanceService.getGrid(this.gridUid);
     this.viewsAsButton = this.agGridStates$.pipe(map(grid => grid?.gridViews.filter(view => view.showAsButton)));
@@ -219,6 +238,7 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
         (categoryColumnNames: IColumnName[]) => {
           const columnDefs: ColDef[] = [
             {
+              checkboxSelection: AgGridFuncs.ifColumnIsFirst,
               colId: 'ordNumber',
               headerName: '#', valueGetter: (params) => {
                 return (params.node?.rowIndex ? +params.node.rowIndex : 0) + 1;
@@ -358,6 +378,9 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
         dialogService: this.dialogService,
         self: this
       };
+      this.gridApi = grid.api;
+      this.gridApi.setRowData(this.assets);
+
       const gridInstance = new Grid(grid.api, grid.columnApi);
       this.gridService = this.agGridInstanceService
         .saveGridInstance(this.gridUid, gridInstance, (data: IAssetsExt) => data?.asset?.id);
@@ -599,5 +622,29 @@ export class AssetsGridComponent extends AgGridExtended implements OnInit, OnDes
     return cotam.length > 0;
   }
 
-
+  // public static transform(asset: IAssetsExt): IAssetsExtPure {
+  //   return {
+  //     categories: asset.categories,
+  //     categoryName: asset.asset.category.name,
+  //     locationName: asset.asset.location?.name ?? '',
+  //     userName: asset.asset.user.fullName,
+  //     id: asset.id,
+  //     name: asset.asset.name,
+  //     quantity: asset.asset.quantity,
+  //     serialNumber: asset.asset.serialNumber,
+  //     inventoryNumber: asset.asset.inventoryNumber,
+  //     evidenceNumber: asset.asset.evidenceNumber,
+  //     identificationNumber: asset.asset.identificationNumber,
+  //     inquiryDate: asset.asset.inquiryDate,
+  //     document: asset.asset.document,
+  //     inquiryPrice: asset.asset.inquiryPrice,
+  //     locationEtc: asset.asset.locationEtc,
+  //     note: string;
+  //     categories: string[];
+  //   }
+  // }
 }
+
+
+
+

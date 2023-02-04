@@ -21,7 +21,7 @@ import { AssetsListComponent } from './components/assets-list/assets-list.compon
 import {AgGridModule} from 'ag-grid-angular';
 import { QuickFilterComponent } from './components/quick-filter/quick-filter.component';
 import { ActionButtonsForAgGridComponent } from '../utils/agGrid/action-buttons-for-ag-grid/action-buttons-for-ag-grid.component';
-import { AssetsGridComponent } from './utils/assets-grid/assets-grid.component';
+import {AssetsGridComponent} from './utils/assets-grid/assets-grid.component';
 import {SharedModule} from '../utils/shared.module';
 import { MultiEditAssetDialogComponent } from './components/multi-edit-asset-dialog/multi-edit-asset-dialog.component';
 import { RemoveAssetDialogComponent } from './components/remove-asset-dialog/remove-asset-dialog.component';

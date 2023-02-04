@@ -7,7 +7,7 @@ import {
   AssetState,
   Change,
   ICreateAsset,
-  IRemoveAssetsInformation, AssetsModelDto, Asset
+  IRemoveAssetsInformation, AssetsModelDto, Asset, IAssetCategory
 } from './models/assets.model';
 import {BehaviorSubject, combineLatest, firstValueFrom, noop, Observable, OperatorFunction, throwError} from 'rxjs';
 import {debounceTime, filter, finalize, map, shareReplay, tap} from 'rxjs/operators';
@@ -20,6 +20,7 @@ import {User} from '../users/model/user.model';
 import {UsersService} from '../users/users.service';
 import {Store} from '../store/store';
 import {AssetSource} from '../facade/facade';
+import {Location} from '../locations/model/location';
 
 interface ChangeUserBulk {
   assetId: number;
@@ -55,6 +56,28 @@ export interface IAssetsExt {
   asset: AssetModelExt;
   categories: string[];
 }
+
+export interface IAssetsExtPure {
+  id: number;
+  categoryName: string;
+  name: string;
+  quantity: number;
+  userName: string;
+  serialNumber: string;
+  inventoryNumber: string;
+  evidenceNumber: string;
+  identificationNumber: string;
+  inquiryDate: Date;
+  document: string;
+  inquiryPrice: number;
+  locationName: string;
+  locationEtc: string;
+  note: string;
+  state: AssetState;
+  categories: string[];
+  reachable: boolean;
+}
+
 
 export enum AssetsSourceEnum {
   GRID = 1,
