@@ -1,6 +1,7 @@
-<div style="min-width: 110em">
-  <form [formGroup]="assetForm" (ngSubmit)="submit()" class="editMode"
-        *ngIf="this.showTemplate === 0"
+<div style="min-width: 110em; max-width: 98vw">
+  <form id="asset-detail-tab"
+        [formGroup]="assetForm" (ngSubmit)="submit()" class="editMode"
+        *ngIf="this.showTemplate === AssetDetailTabs.detail"
         style="height: 100%; width: 100%;">
     <nb-card-body fxLayout="row" fxLayoutGap="2em">
       <div fxLayout="column" fxLayoutGap="1em" style="min-width: 75em">
@@ -117,8 +118,9 @@
               Umístění
             </label>
             <nb-form-field fxFlex>
-              <input nbInput id="location" [nbAutocomplete]="autoControl" autocomplete="off" formControlName="location" fullWidth>
-              <nb-autocomplete #autoControl [handleDisplayFn]="showLocation" >
+              <input nbInput id="location" [nbAutocomplete]="autoControl" autocomplete="off" formControlName="location"
+                     fullWidth>
+              <nb-autocomplete #autoControl [handleDisplayFn]="showLocation">
                 <nb-option [value]="location" *ngFor="let location of filteredControlLocation$ | async">
                   {{location.name}}
                 </nb-option>
@@ -144,6 +146,9 @@
         </div>
       </div>
       <div fxLayout="column" style="height: 50%;overflow: auto">
+        <button nbButton (click)="showTemplate=AssetDetailTabs.imageEdit" *ngIf="editMode">
+          <nb-icon icon="edit"></nb-icon>
+        </button>
         <img src="https://www.lg.com/cz/images/monitory/MD06233718/gallery/D02.jpg" style="height: 80%;">
         <div class="smallImages" fxLayout="row wrap" fxFlex="20">
           <img src="https://www.lg.com/cz/images/monitory/MD06233718/gallery/D02.jpg">
@@ -191,7 +196,7 @@
       </div>
     </nb-card-footer>
   </form>
-  <div *ngIf="showTemplate === 1">
+  <div id="asset-detail-notes-tab" *ngIf="showTemplate === AssetDetailTabs.notes">
     <form [formGroup]="noteForm" fxLayout="column" (ngSubmit)="saveNote()">
       <nb-card-body fxLayout="column" fxLayoutGap="1em">
         <nb-list>
@@ -230,7 +235,7 @@
       </nb-card-footer>
     </form>
   </div>
-  <div *ngIf="showTemplate === 2">
+  <div id="asset-detail-history-tab" *ngIf="showTemplate === AssetDetailTabs.history">
     <nb-card-body>
       <app-history-list [assetId]="asset.id" [gridUid]="'assetsDetailHistory'">
       </app-history-list>
@@ -239,6 +244,51 @@
       <div [ngTemplateOutlet]="bottomLeftActions"></div>
     </nb-card-footer>
   </div>
+
+  <ng-container *ngIf="showTemplate === AssetDetailTabs.imageEdit">
+    <div class="caption">Editace obrázků</div>
+    <nb-card-body>
+      <div><input type="file" (change)="fileChangeEvent($event)" #hiddenButton  style="display: none;" >
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <button nbButton outline (click)="hiddenButton.click()">Vyhledat obrázek v PC</button>
+          <button nbButton ghost (click)="imageChangedEvent=null" *ngIf="imageChangedEvent">Zrušit</button>
+        </div>
+
+        <div id="image-cropper-component" fxLayout="row" style="width: 100%; height: 80%" *ngIf="imageChangedEvent">
+          <div fxFlex="50" fxLayout="column" fxLayoutAlign="center center">
+            <image-cropper
+              [imageChangedEvent]="imageChangedEvent"
+              [maintainAspectRatio]="false"
+              [aspectRatio]="4 / 3"
+              format="png"
+              (imageCropped)="imageCropped($event)"
+              (imageLoaded)="imageLoaded($event)"
+              (cropperReady)="cropperReady()"
+              (loadImageFailed)="loadImageFailed()"
+            ></image-cropper>
+            <button nbButton status="primary" (click)="saveImage(croppedImage, asset.id, hiddenButton.files![0].name)">Uložit</button>
+          </div>
+          <div fxFlex="50" fxLayoutAlign="center center">
+            <img [src]="croppedImage" style="max-height: 100%; max-width: 100%"/>
+          </div>
+        </div>
+      </div>
+
+      <ng-container *ngIf="!imageChangedEvent">
+        <div fxLayout="row wrap">
+          <div *ngFor="let image of asset.images">
+            <img [src]="restIp + image.url" style="height: 80px">
+          </div>
+        </div>
+      </ng-container>
+
+
+    </nb-card-body>
+    <nb-card-footer>
+      <div [ngTemplateOutlet]="bottomLeftActions"></div>
+    </nb-card-footer>
+  </ng-container>
+
   <ng-template #bottomLeftActions>
     <div fxLayout="row" fxFlex fxLayoutAlign="start center" fxLayoutGap="1em">
       <button nbButton type="button" status="primary" [ghost]="this.showTemplate!=0" (click)="this.showTemplate=0">
@@ -265,5 +315,4 @@
   </ng-template>
 
 </div>
-
 

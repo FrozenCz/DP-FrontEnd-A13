@@ -3,7 +3,6 @@ import {firstValueFrom, noop, Observable, startWith, Subject} from 'rxjs';
 import {
   Asset,
   ASSETS_INFORMATION, AssetsChanges,
-  AssetsModelDto,
   AssetState,
 } from '../../models/assets.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -16,12 +15,17 @@ import {NbToastrService} from '@nebular/theme';
 import {map, take, tap} from 'rxjs/operators';
 import {Category} from '../../../categories/models/category.model';
 import {Location} from '../../../locations/model/location';
+import {ImageCroppedEvent, LoadedImage} from 'ngx-image-cropper';
+import {Utils} from '../../../utils/Utils';
+import {AssetsModelDto} from '../../models/assets.dto';
+import {restIp} from '../../../../environments/environment';
 
 
 enum AssetDetailTabEnum {
   detail,
   notes,
-  history
+  history,
+  imageEdit
 }
 
 export interface ICategory {
@@ -56,6 +60,9 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
   editMode = false;
   categoryTree = '';
   filteredControlLocation$: Observable<Location[]>;
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+
 
   unsubscribe = new Subject();
   private editorUserId: number | undefined;
@@ -64,9 +71,11 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
 
   noteForm: FormGroup;
   showTemplate: AssetDetailTabEnum = AssetDetailTabEnum.detail;
+  AssetDetailTabs = AssetDetailTabEnum;
   reachToUser = false;
   history!: HistoryModel;
   usersMap: Map<number, User> = new Map<number, User>();
+  restIp = restIp;
 
   constructor(
     private tokenService: TokenService,
@@ -340,5 +349,33 @@ export class AssetDetailComponent implements OnDestroy, OnInit {
   }
 
 
+
+
+  fileChangeEvent(event: any): void {
+    this.imageChangedEvent = event;
+  }
+  imageCropped(event: ImageCroppedEvent) {
+    this.croppedImage = event.base64;
+  }
+  imageLoaded(image: LoadedImage) {
+    console.log(image.original.image);
+    // show cropper
+  }
+  cropperReady() {
+    // cropper ready
+  }
+  loadImageFailed() {
+    // show message
+  }
+
+
+  async saveImage(croppedImage: any, id: number, imageName: string) {
+    firstValueFrom(this.assetsService.saveImageToAsset({base64: croppedImage, filename: imageName}, id)).then(() => {
+      this.toastrService.success('povedlo se');
+      this.imageChangedEvent = null;
+    }, reason => {
+      this.toastrService.danger('selhalo');
+    })
+  }
 }
 

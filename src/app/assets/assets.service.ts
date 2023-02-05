@@ -1,26 +1,26 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {
+  Asset,
   AssetChangeEnum,
   AssetModelExt,
   AssetNote,
   AssetState,
   Change,
   ICreateAsset,
-  IRemoveAssetsInformation, AssetsModelDto, Asset, IAssetCategory
+  IRemoveAssetsInformation
 } from './models/assets.model';
-import {BehaviorSubject, combineLatest, firstValueFrom, noop, Observable, OperatorFunction, throwError} from 'rxjs';
-import {debounceTime, filter, finalize, map, shareReplay, tap} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, firstValueFrom, noop, Observable} from 'rxjs';
+import {debounceTime, filter, finalize, map, shareReplay} from 'rxjs/operators';
 import {TokenService} from '../auth/token.service';
 import {CategoriesService} from '../categories/categories.service';
 import {UnitsService} from '../units/units.service';
 import {Unit} from '../units/models/unit.model';
 import {NbToastrService} from '@nebular/theme';
-import {User} from '../users/model/user.model';
 import {UsersService} from '../users/users.service';
 import {Store} from '../store/store';
 import {AssetSource} from '../facade/facade';
-import {Location} from '../locations/model/location';
+import {AssetsModelDto, SaveImageToAssetDto} from './models/assets.dto';
 
 interface ChangeUserBulk {
   assetId: number;
@@ -159,7 +159,9 @@ export class AssetsService {
       assetModelDTO.location_uuid,
       assetModelDTO.locationEtc,
       assetModelDTO.note,
-      assetModelDTO.state)
+      assetModelDTO.state,
+      assetModelDTO.attachments
+    )
   }
 
   private static transformInformationUpdateBulk(updateInformation: ChangeBulk[]): BackendAcceptableAssetUpdateInformationBulk[] {
@@ -457,5 +459,9 @@ export class AssetsService {
 
   wsAssetsUpdate(changes: AssetsModelDto[]): void {
     this.assetsStore$.update(changes.map(a => AssetsService.transformAssetDTOtoAsset(a))).then(noop);
+  }
+
+  saveImageToAsset(croppedImage: SaveImageToAssetDto, id: number): Observable<void> {
+    return this.http.post<void>('/rest/assets/'+id+'/images', croppedImage);
   }
 }

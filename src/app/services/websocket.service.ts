@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AssetsWs} from '../assets/models/assets.ws.model';
 import {webSocketUrl} from '../../environments/environment';
-import {AssetsModelDto} from '../assets/models/assets.model';
 import {CategoriesWs} from '../categories/models/categories.ws.model';
 import {UsersWs} from '../users/model/users.ws.model';
 import {ICategoryGet} from '../categories/models/category.model';
@@ -16,6 +15,7 @@ import {LocationService} from '../locations/location.service';
 import {LocationDto} from '../locations/dto/in/location.dto';
 import {Transforms} from '../utils/Transforms';
 import {firstValueFrom} from 'rxjs';
+import {AssetsModelDto} from '../assets/models/assets.dto';
 
 
 // create update delete

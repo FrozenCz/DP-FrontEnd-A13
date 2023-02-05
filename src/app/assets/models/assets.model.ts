@@ -2,6 +2,7 @@ import {Unit} from '../../units/models/unit.model';
 import {User} from '../../users/model/user.model';
 import {IAssetsExt} from '../assets.service';
 import {Location} from '../../locations/model/location';
+import {AssetAttachmentType} from './assets.dto';
 
 export const ASSETS_INFORMATION = ['quantity', 'name', 'serialNumber', 'inventoryNumber', 'evidenceNumber', 'location',
   'identificationNumber', 'inquiryDate', 'inquiryPrice', 'document', 'note'];
@@ -24,8 +25,28 @@ export class Asset {
   private _locationEtc: string;
   private _note: string;
   private _state: AssetState;
+  private _attachments: AssetAttachments[];
+  private _mainImageUrl: string | null = null;
 
-  constructor(category_id: number, id?: number, name?: string, quantity?: number, user_id?: number, serialNumber?: string, inventoryNumber?: string, evidenceNumber?: string, identificationNumber?: string, inquiryDate?: Date, document?: string, inquiryPrice?: number, location?: string | null, locationEtc?: string, note?: string, state?: AssetState) {
+  constructor(category_id: number,
+              id?: number,
+              name?: string,
+              quantity?: number,
+              user_id?: number,
+              serialNumber?: string,
+              inventoryNumber?: string,
+              evidenceNumber?: string,
+              identificationNumber?: string,
+              inquiryDate?: Date,
+              document?: string,
+              inquiryPrice?: number,
+              location?: string | null,
+              locationEtc?: string,
+              note?: string,
+              state?: AssetState,
+              attachments?: AssetAttachments[],
+              mainImageUrl?: string
+  ) {
     this._category_id = category_id;
     this._id = id ?? -1;
     this._name = name ?? '';
@@ -42,8 +63,17 @@ export class Asset {
     this._locationEtc = locationEtc ?? '';
     this._note = note ?? '';
     this._state = state ?? AssetState.new;
+    this._attachments = attachments ?? [];
+    this._mainImageUrl = mainImageUrl ?? (attachments?.length ? attachments[0].url : null);
   }
 
+  get mainImageUrl(): string | null {
+    return this._mainImageUrl;
+  }
+
+  get images(): AssetAttachments[] {
+    return this._attachments.filter(attachment => attachment.type === AssetAttachmentType.image)
+  }
 
   get id(): number {
     return this._id;
@@ -108,10 +138,14 @@ export class Asset {
   get state(): AssetState {
     return this._state;
   }
+
+  get attachments(): AssetAttachments[] {
+    return this._attachments;
+  }
 }
 
 export enum AssetState {
-  new=-1,
+  new = -1,
   actual,
   removed,
   both
@@ -134,28 +168,16 @@ export interface AssetModelExt {
   locationEtc: string;
   note: string;
   state: AssetState;
+  attachments: AssetAttachments[];
 }
 
-export interface AssetsModelDto {
-  id: number;
-  category_id: number;
-  name: string;
-  quantity: number;
-  user_id: number;
-  serialNumber: string;
-  inventoryNumber: string;
-  evidenceNumber: string;
-  identificationNumber: string;
-  inquiryDate: string;
-  document: string;
-  inquiryPrice: number;
-  location_uuid: string | null;
-  locationEtc: string;
-  note: string;
-  state: AssetState;
-  removingProtocol_id: number;
-  version: number;
+export interface AssetAttachments {
+  url: string;
+  filename: string;
+  uuid: string;
+  type: AssetAttachmentType;
 }
+
 
 export interface AssetsChanges {
   id: number;
@@ -177,6 +199,7 @@ export interface AssetsChanges {
   removingProtocol_id: number;
   version: number;
 }
+
 
 export interface IRemovingProtocolInAsset {
   id: number;

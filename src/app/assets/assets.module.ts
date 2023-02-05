@@ -31,6 +31,7 @@ import { AssetDetailComponent } from './components/asset-detail/asset-detail.com
 import { AssetDetailSinglePageWrapperComponent } from './components/asset-detail-single-page-wrapper/asset-detail-single-page-wrapper.component';
 import { AssetsDashboardComponent } from './dashboards/assets-dashboard/assets-dashboard.component';
 import {LocationsModule} from '../locations/locations.module';
+import {ImageCropperModule} from 'ngx-image-cropper';
 
 @NgModule({
   declarations: [AssetsComponent, AssetDetailDialogComponent, AssetsListComponent, QuickFilterComponent, ActionButtonsForAgGridComponent,
@@ -65,6 +66,7 @@ import {LocationsModule} from '../locations/locations.module';
     HistoryModule,
     LocationsModule,
     NbAutocompleteModule,
+    ImageCropperModule,
   ],
     exports: [
         AssetsListComponent,

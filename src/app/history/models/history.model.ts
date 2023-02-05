@@ -1,6 +1,6 @@
 import {HistoryRelatedTo} from './history.enum';
-import {AssetsModelDto} from '../../assets/models/assets.model';
 import {User} from '../../users/model/user.model';
+import {AssetsModelDto} from '../../assets/models/assets.dto';
 
 export interface IHistoryInList {
   id: number;

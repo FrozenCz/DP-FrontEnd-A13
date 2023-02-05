@@ -6,7 +6,7 @@ import {Location} from '../locations/model/location';
 import {LocationDto} from '../locations/dto/in/location.dto';
 import {NotFoundError} from 'rxjs';
 
-export class Transforms {
+export abstract class Transforms {
 
   private constructor() {}
 
@@ -51,6 +51,7 @@ export class Transforms {
         locationEtc: asset.locationEtc,
         note: asset.note,
         state: asset.state,
+        attachments: asset.attachments
       }
     }
   }

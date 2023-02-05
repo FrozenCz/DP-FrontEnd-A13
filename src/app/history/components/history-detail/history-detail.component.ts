@@ -1,7 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {ChangeType, HistoryService} from '../../history.service';
 import {HistoryModel, SimpleUser} from '../../models/history.model';
-import {AssetsModelDto} from '../../../assets/models/assets.model';
 import {HumanReadableAssetsChange} from '../../models/history.humanReadable';
 import {HistoryRelatedTo} from '../../models/history.enum';
 import {User} from '../../../users/model/user.model';
@@ -9,6 +8,7 @@ import {NbWindowService, NbWindowState} from '@nebular/theme';
 import {AssetDetailDialogComponent} from '../../../assets/components/asset-detail-dialog/asset-detail-dialog.component';
 import {UsersService} from '../../../users/users.service';
 import {firstValueFrom} from 'rxjs';
+import {AssetsModelDto} from '../../../assets/models/assets.dto';
 
 interface ChangeHumanReadableForm {
   propertyName: string;

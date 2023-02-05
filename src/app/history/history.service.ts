@@ -3,9 +3,9 @@ import {HistoryDto, HistoryModel} from './models/history.model';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {HistoryRelatedTo} from './models/history.enum';
-import {AssetsModelDto} from '../assets/models/assets.model';
 import {HumanReadableAssetsChange} from './models/history.humanReadable';
 import {tap} from 'rxjs/operators';
+import {AssetsModelDto} from '../assets/models/assets.dto';
 
 export interface ChangeType {
   name: string;
