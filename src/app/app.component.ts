@@ -308,8 +308,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     removedAssetsSubSectionA.buttons.push(removedAssetsProtocols)
 
 
-
-
     const assetScanSection = new NavigationSection('asset_scan', 'Skenování majetku', {
       name: 'trash-2-outline',
       iconType: NavigationAcceptedIconsEnum.eva
@@ -321,7 +319,32 @@ export class AppComponent implements OnInit, AfterViewInit {
       {name: 'list-outline', iconType: NavigationAcceptedIconsEnum.eva})
     assetScanSectionSubSectionA.buttons.push(assetScanList);
 
-    this.assetTab.sections.push(assetSection, workingAssetListSection, protocolsSection, massEditSection, assetRemoveSection, removedAssetsSection, assetScanSection)
+    const assetTransferSection = new NavigationSection('asset_transfer', 'Převod majetku', {
+      name: 'flip-2-outline',
+      iconType: NavigationAcceptedIconsEnum.eva
+    });
+    const assetTransferSectionSubSectionA = new NavigationSubSectionButtons();
+    assetTransferSection.subSections.push(assetTransferSectionSubSectionA);
+    const assetTransferList = new NavigationButton(NavButtonsIdsEnum.asset_transfer_list,
+      'přehled převodů',
+      {name: 'list-outline', iconType: NavigationAcceptedIconsEnum.eva})
+    assetTransferSectionSubSectionA.buttons.push(assetTransferList);
+
+
+    const showTransferFromWorkingList = new NavigationButton(NavButtonsIdsEnum.asset_transfer_from_working_list,
+      'z pracovní sestavy',
+      {name: 'share-outline', iconType: NavigationAcceptedIconsEnum.eva})
+    assetTransferSectionSubSectionA.buttons.push(showTransferFromWorkingList);
+    const showTransfersFromSelected = new NavigationButton(NavButtonsIdsEnum.asset_transfer_from_selected, 'z vybraných', {
+      name: 'checkmark-square-outline',
+      iconType: NavigationAcceptedIconsEnum.eva
+    })
+    assetTransferSectionSubSectionA.buttons.push(showTransfersFromSelected)
+    showTransferFromWorkingList.badge = {status: 'success', text: '0'};
+    showTransfersFromSelected.badge = {status: 'primary', text: '0'};
+
+    this.assetTab.sections.push(assetSection, workingAssetListSection, protocolsSection, massEditSection, assetRemoveSection, removedAssetsSection, assetScanSection, assetTransferSection)
+
 
     /** lists **/
     this.listsTab.sections.push(workingAssetListSection)
@@ -376,12 +399,14 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.categoryTab.sections.push(categoryColumnSection)
 
     /** lokace */
-    const lokSecA = new NavigationSection('lok_sec_a', 'lokace', {name: 'paper-plane-outline', iconType: NavigationAcceptedIconsEnum.eva});
+    const lokSecA = new NavigationSection('lok_sec_a', 'lokace', {
+      name: 'paper-plane-outline',
+      iconType: NavigationAcceptedIconsEnum.eva
+    });
     const subSecA = new NavigationSubSectionButtons();
     LocationNav.sections.push(lokSecA);
     lokSecA.subSections.push(subSecA);
     subSecA.buttons.push(LocationListButton);
-
 
 
     /* handling changes */
@@ -393,12 +418,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       showProtocolsFromWorkingList.setBadgeText(size);
       massEditFromWorkingList.setBadgeText(size);
       assetRemoveFromWorkingList.setBadgeText(size);
+      showTransferFromWorkingList.setBadgeText(size);
     });
     this.assetsService.getAssetsSelectedInGridList$().subscribe(selectedAssets => {
       const size = selectedAssets.size;
       showProtocolsFromSelected.setBadgeText(size);
-      massEditFromSelected.setBadgeText(size)
-      assetRemoveFromSelected.setBadgeText(size)
+      massEditFromSelected.setBadgeText(size);
+      assetRemoveFromSelected.setBadgeText(size);
+      showTransfersFromSelected.setBadgeText(size);
     })
   }
 }

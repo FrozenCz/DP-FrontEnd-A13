@@ -18,6 +18,10 @@ export enum NavButtonsIdsEnum {
 
   asset_scan_list = 'asset_scan_list',
 
+  asset_transfer_list = 'asset_transfer_list',
+  asset_transfer_from_working_list = 'asset_transfer_from_working_list',
+  asset_transfer_from_selected = 'asset_transfer_from_selected',
+
   removed_assets_list = 'removed_assets_list',
   removed_assets_protocols = 'removed_assets_protocols',
 
@@ -30,5 +34,8 @@ export enum NavButtonsIdsEnum {
   category_column_edit='category_column_edit',
 
   locations_list='locations_list',
-  locations_create_new='locations_create_new'
+  locations_create_new='locations_create_new',
+
+
+
 }
