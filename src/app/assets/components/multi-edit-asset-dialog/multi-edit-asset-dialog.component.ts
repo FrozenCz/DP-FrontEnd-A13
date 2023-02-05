@@ -185,6 +185,7 @@ export class MultiEditAssetDialogComponent implements OnInit, OnDestroy {
       throw new Error('user must be defined');
     }
 
+    console.log(selectedUser);
     const changed = this.assetsChangedList$.getValue().map(asset => {
       if (!this.gridService.getSelectedIds().includes(asset.asset.id)) {
         return asset;
@@ -193,6 +194,8 @@ export class MultiEditAssetDialogComponent implements OnInit, OnDestroy {
       asset.changes = [{type: AssetChangeEnum.assetUser, newValue: selectedUser}];
       return asset;
     });
+
+    console.log(changed);
 
     this.assetsChangedList$.next(changed);
     this.gridService.refreshCells();

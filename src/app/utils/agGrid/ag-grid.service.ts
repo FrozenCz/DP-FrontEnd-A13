@@ -124,20 +124,7 @@ export class AgGridService {
 
 
   public getSelectedIds(): (number)[] {
-
-    const isNumber = (item: string | undefined): item is string => {
-      return !!item;
-    }
-
-    // todo: nevim jak
-    return [];
-
-    // return [...this.grid.api.getSelectedNodes()
-    //   .map(({id}) => {
-    //     if (id) {
-    //       return +id.toString();
-    //     }
-    // })]
+    return this.grid.api.getSelectedNodes().map((node) => node.data.id);
   }
 
   setRowData(data: any[]): void {
