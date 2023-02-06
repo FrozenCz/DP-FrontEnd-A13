@@ -1,10 +1,24 @@
-<div fxLayout="column" fxFlex >
-  <div class="caption">Převod majetku</div>
-  <div fxLayout="row">
-    <div class="caption">Na správce</div>
-  </div>
-  <div fxFlex>
-    <app-assets-list fxFlex [assets]="assets" *ngIf="assets$ | async as assets"></app-assets-list>
-  </div>
+<div fxLayout="column" fxFlex fxLayoutGap="1rem" *ngIf="caretaker$ | async as currentUser">
+  <ng-container *ngIf="assets$ | async as assets">
+    <div class="h6">Převod majetku</div>
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem">
+      <div class="caption">Na správce</div>
+      <nb-select [(ngModel)]="toCaretaker">
+        <nb-option *ngFor="let caretaker of caretakers$ | async" [value]="caretaker">
+          {{caretaker.name}}
+          {{caretaker.surname}}
+        </nb-option>
+      </nb-select>
+    </div>
+    <div fxFlex>
+      <app-assets-list fxFlex [assets]="assets"></app-assets-list>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1rem">
+      <textarea rows="3" nbInput fullWidth placeholder="Doplňující zpráva" #message></textarea>
+      <button nbButton status="primary" [disabled]="!toCaretaker" (click)="sendRequestForTransfer(currentUser.id, toCaretaker!.id, assets, message.value)">
+        Požádat o převod
+      </button>
+    </div>
+  </ng-container>
 </div>
 

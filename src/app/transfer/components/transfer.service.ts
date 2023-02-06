@@ -1,9 +1,11 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {AssetService} from './abstract/asset.service';
+import {TransferDataProvider} from './abstract/transferDataProvider';
 import {map} from 'rxjs/operators';
 import {AssetSource} from '../../facade/facade';
 import {IAssetsExt} from '../../assets/assets.service';
+import {User} from '../../users/model/user.model';
+import {Caretaker} from '../../users/model/caretaker.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,7 @@ import {IAssetsExt} from '../../assets/assets.service';
 export class TransferService {
   private assetsIdForTransfer$: BehaviorSubject<Set<number>> = new BehaviorSubject<Set<number>>(new Set<number>());
 
-  constructor(private assetService: AssetService) {
+  constructor(private dataProvider: TransferDataProvider) {
   }
 
   clearList(): void {
@@ -29,11 +31,22 @@ export class TransferService {
   }
 
   getAssetsForTransfer$(): Observable<IAssetsExt[]> {
-    return combineLatest([this.assetService.getAssetExt(AssetSource.STORE), this.assetsIdForTransfer$]).pipe(
+    return combineLatest([this.dataProvider.getAssetExt(AssetSource.STORE), this.assetsIdForTransfer$]).pipe(
       map(([assets, assetIdsForTransfer]) => assets.filter(asset => assetIdsForTransfer.has(asset.id)))
     )
   }
 
+  getCaretakers$(): Observable<Caretaker[]> {
+    return this.dataProvider.getCaretakers$();
+  }
+
+  getCaretaker$(): Observable<Caretaker> {
+    return this.dataProvider.getCaretaker$();
+  }
+
+  sendRequestForAssetTransfer(fromUser: number, toUser: number, assetIds: number[], message: string) {
+    return this.dataProvider.sendRequestForAssetTransfer(fromUser, toUser, assetIds, message);
+  }
 }
 
 

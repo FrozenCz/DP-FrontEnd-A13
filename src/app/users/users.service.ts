@@ -8,7 +8,7 @@ import {map, take, tap, withLatestFrom} from 'rxjs/operators';
 import {Unit} from '../units/models/unit.model';
 import {UnitsService} from '../units/units.service';
 import {Store} from '../store/store';
-import {UserDto} from './dto/user.dto';
+import {CaretakerDto, UserDto} from './dto/user.dto';
 
 export interface IRightsGet {
   id: number;
@@ -86,7 +86,7 @@ export class UsersService {
 
 
   private createUserFromDTO(userDTO: UserDto): User {
-    return new User(userDTO.id, userDTO.name, userDTO.name, userDTO.surname, userDTO.unit_id, userDTO.reachable)
+    return new User(userDTO.id, userDTO.username, userDTO.name, userDTO.surname, userDTO.unit_id, userDTO.reachable)
   }
 
   getUser(id: number): Observable<User> {
@@ -182,4 +182,10 @@ export class UsersService {
   wsUsersDelete(users: UserDto[]): void {
     this.usersStore$.remove(users).then(noop);
   }
+
+  getCaretakers$(): Observable<CaretakerDto[]> {
+    return this.httpClient.get<CaretakerDto[]>('/rest/users/caretakers');
+  }
+
+
 }

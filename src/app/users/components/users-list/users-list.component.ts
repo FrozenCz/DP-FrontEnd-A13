@@ -39,6 +39,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
     // {field: 'username', filter: 'agSetColumnFilter'},
     {field: 'name', headerName: 'Jméno'},
     {field: 'surname', headerName: 'Příjmení'},
+    {field: 'username', headerName: 'Uživatelské jméno'},
     {
       field: 'unit', headerName: 'Jednotka',
       cellRenderer: 'selectUnitCellRendererComponent',

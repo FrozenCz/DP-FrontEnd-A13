@@ -8,8 +8,6 @@ export class User {
   private _unit_id: number;
   private _reachable: boolean;
 
-
-
   constructor(id: number, username: string, name: string, surname: string, unit_id: number, reachable: boolean) {
     this._id = id;
     this._username = username;
@@ -63,6 +61,7 @@ export class User {
   get reachable(): boolean {
     return this._reachable;
   }
+
 }
 
 export interface IUserWithRights extends User {
