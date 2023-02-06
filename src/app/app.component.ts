@@ -3,7 +3,7 @@ import {UsersService} from './users/users.service';
 import {UnitsService} from './units/units.service';
 import {ActivatedRoute, Router, RoutesRecognized} from '@angular/router';
 import {DialogService} from './services/dialog.service';
-import {noop} from 'rxjs';
+import {firstValueFrom, noop} from 'rxjs';
 import {AgGridInstanceService} from './utils/agGrid/ag-grid-instance.service';
 import {WebsocketService} from './services/websocket.service';
 import {TokenService} from './auth/token.service';
@@ -19,6 +19,7 @@ import {AssetsService} from './assets/assets.service';
 import {take} from 'rxjs/operators';
 import {LocationListButton, LocationNav} from './locations/model/locations.navigation';
 import {AssetSource} from './facade/facade';
+import {TransferService} from './transfer/components/transfer.service';
 
 @Component({
   selector: 'app-root',
@@ -61,7 +62,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private unitsService: UnitsService,
     private assetsService: AssetsService,
     private agGridService: AgGridInstanceService,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private transferService: TransferService
   ) {
     this.ribbon = !!this.tokenService.getSetting('mat-ribbon');
     this.createNavigation();
@@ -180,6 +182,20 @@ export class AppComponent implements OnInit, AfterViewInit {
         break;
       case NavButtonsIdsEnum.category_column_edit:
         this.dialogService.showEditCategoryColumnsDialog();
+        break;
+      case NavButtonsIdsEnum.asset_transfer_from_working_list:
+        firstValueFrom(this.assetsService.getAssetsWorkingList$()).then((assets) => {
+          this.transferService.clearList();
+          this.transferService.addToTransferList(Array.from(assets.keys()));
+          this.router.navigate(['/transfer', 'asset'], {});
+        })
+        break;
+      case NavButtonsIdsEnum.asset_transfer_from_selected:
+        firstValueFrom(this.assetsService.getAssetsSelectedInGridList$()).then((assets) => {
+          this.transferService.clearList();
+          this.transferService.addToTransferList(Array.from(assets.keys()));
+          this.router.navigate(['/transfer', 'asset'], {});
+        })
         break;
       default:
         alert(`action ${actionId} is not defined in navButtonsID`);

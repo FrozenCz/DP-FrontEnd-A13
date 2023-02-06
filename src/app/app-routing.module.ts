@@ -38,6 +38,11 @@ const routes: Routes = [
     data: {protocols: true},
     loadChildren: () => import('./protocols/protocols.module').then(m => m.ProtocolsModule)
   },
+  {
+    path: 'transfer',
+    loadChildren: () => import('./transfer/transfer.module').then(m => m.TransferModule)
+  },
+
   {path: '**', component: PageNotFoundComponent}
 ];
 @NgModule({

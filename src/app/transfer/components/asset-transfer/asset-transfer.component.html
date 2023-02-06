@@ -1,0 +1,10 @@
+<div fxLayout="column" fxFlex >
+  <div class="caption">Převod majetku</div>
+  <div fxLayout="row">
+    <div class="caption">Na správce</div>
+  </div>
+  <div fxFlex>
+    <app-assets-list fxFlex [assets]="assets" *ngIf="assets$ | async as assets"></app-assets-list>
+  </div>
+</div>
+
