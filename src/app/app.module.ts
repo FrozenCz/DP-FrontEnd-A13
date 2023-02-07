@@ -41,7 +41,6 @@ import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {environment} from '../environments/environment';
 import {NavigationModule} from './utils/navigation/navigation.module';
-import {TransferModule} from './transfer/transfer.module';
 
 
 registerLocaleData(localeCs, 'cs');
@@ -94,8 +93,7 @@ registerLocaleData(localeCs, 'cs');
     StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
     NbToggleModule,
     NbSelectModule,
-    NavigationModule,
-    TransferModule
+    NavigationModule
   ],
   providers: [
     {

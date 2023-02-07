@@ -19,7 +19,7 @@ import {AssetsService} from './assets/assets.service';
 import {take} from 'rxjs/operators';
 import {LocationListButton, LocationNav} from './locations/model/locations.navigation';
 import {AssetSource} from './facade/facade';
-import {TransferService} from './transfer/transfer.service';
+import {TransferService} from './assets/transfer.service';
 
 @Component({
   selector: 'app-root',
@@ -187,15 +187,18 @@ export class AppComponent implements OnInit, AfterViewInit {
         firstValueFrom(this.assetsService.getAssetsWorkingList$()).then((assets) => {
           this.transferService.clearList();
           this.transferService.addToTransferList(Array.from(assets.keys()));
-          this.router.navigate(['/transfer', 'asset'], {});
+          this.router.navigate(['/assets', 'transfers', 'request'], {});
         })
         break;
       case NavButtonsIdsEnum.asset_transfer_from_selected:
         firstValueFrom(this.assetsService.getAssetsSelectedInGridList$()).then((assets) => {
           this.transferService.clearList();
           this.transferService.addToTransferList(Array.from(assets.keys()));
-          this.router.navigate(['/transfer', 'asset'], {});
+          this.router.navigate(['/assets', 'transfers', 'request'], {});
         })
+        break;
+      case NavButtonsIdsEnum.asset_transfer_list:
+        this.router.navigate(['/assets', 'transfers'])
         break;
       default:
         alert(`action ${actionId} is not defined in navButtonsID`);

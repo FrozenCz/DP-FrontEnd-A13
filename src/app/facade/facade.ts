@@ -8,11 +8,11 @@ import {Transforms} from '../utils/Transforms';
 import {Asset} from '../assets/models/assets.model';
 import {LocationService} from '../locations/location.service';
 import {UnitsService} from '../units/units.service';
-import {TransferDataProvider} from '../transfer/components/abstract/transferDataProvider';
+
 import {Caretaker} from '../users/model/caretaker.model';
 import {TokenService} from '../auth/token.service';
 import {HttpClient} from '@angular/common/http';
-import {restIp} from '../../environments/environment';
+import {TransferDataProvider} from '../assets/components/abstract/transferDataProvider';
 
 
 @Injectable({

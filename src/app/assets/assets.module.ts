@@ -32,11 +32,15 @@ import { AssetDetailSinglePageWrapperComponent } from './components/asset-detail
 import { AssetsDashboardComponent } from './dashboards/assets-dashboard/assets-dashboard.component';
 import {LocationsModule} from '../locations/locations.module';
 import {ImageCropperModule} from 'ngx-image-cropper';
-import {TransferModule} from '../transfer/transfer.module';
+import {Facade} from '../facade/facade';
+import {TransferDataProvider} from './components/abstract/transferDataProvider';
+import { AssetTransfersListComponent } from './components/asset-transfers-list/asset-transfers-list.component';
+import {AssetTransferComponent} from './components/asset-transfer/asset-transfer.component';
 
 @NgModule({
   declarations: [AssetsComponent, AssetDetailDialogComponent, AssetsListComponent, QuickFilterComponent, ActionButtonsForAgGridComponent,
-    AssetsGridComponent, MultiEditAssetDialogComponent, RemoveAssetDialogComponent, RemovedAssetsListComponent, AssetDetailComponent, AssetDetailSinglePageWrapperComponent, AssetsDashboardComponent],
+    AssetTransfersListComponent, AssetTransferComponent,
+    AssetsGridComponent, MultiEditAssetDialogComponent, RemoveAssetDialogComponent, RemovedAssetsListComponent, AssetDetailComponent, AssetDetailSinglePageWrapperComponent, AssetsDashboardComponent, AssetTransfersListComponent],
   imports: [
     AssetsRoutingModule,
     CommonModule,
@@ -68,6 +72,8 @@ import {TransferModule} from '../transfer/transfer.module';
     LocationsModule,
     NbAutocompleteModule,
     ImageCropperModule,
+  ],
+  providers: [    {provide: TransferDataProvider, useExisting: Facade}
   ],
     exports: [
         AssetsListComponent,
