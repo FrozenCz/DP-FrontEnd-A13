@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {TransferDataProvider} from './abstract/transferDataProvider';
+import {TransferDataProvider} from './components/abstract/transferDataProvider';
+import {IAssetsExt} from '../assets/assets.service';
+import {AssetSource} from '../facade/facade';
+import {Caretaker} from '../users/model/caretaker.model';
 import {map} from 'rxjs/operators';
-import {AssetSource} from '../../facade/facade';
-import {IAssetsExt} from '../../assets/assets.service';
-import {User} from '../../users/model/user.model';
-import {Caretaker} from '../../users/model/caretaker.model';
+
 
 @Injectable({
   providedIn: 'root'

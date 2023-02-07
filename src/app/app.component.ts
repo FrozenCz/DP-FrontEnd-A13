@@ -19,7 +19,7 @@ import {AssetsService} from './assets/assets.service';
 import {take} from 'rxjs/operators';
 import {LocationListButton, LocationNav} from './locations/model/locations.navigation';
 import {AssetSource} from './facade/facade';
-import {TransferService} from './transfer/components/transfer.service';
+import {TransferService} from './transfer/transfer.service';
 
 @Component({
   selector: 'app-root',

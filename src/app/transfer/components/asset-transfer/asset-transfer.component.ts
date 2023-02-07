@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {TransferService} from '../transfer.service';
 import {combineLatest, firstValueFrom, Observable} from 'rxjs';
 import {IAssetsExt} from '../../../assets/assets.service';
 import {Caretaker} from '../../../users/model/caretaker.model';
 import {map} from 'rxjs/operators';
 import {NbToastrService} from '@nebular/theme';
+import {TransferService} from '../../transfer.service';
 
 @Component({
   selector: 'app-asset-transfer',

@@ -32,6 +32,7 @@ import { AssetDetailSinglePageWrapperComponent } from './components/asset-detail
 import { AssetsDashboardComponent } from './dashboards/assets-dashboard/assets-dashboard.component';
 import {LocationsModule} from '../locations/locations.module';
 import {ImageCropperModule} from 'ngx-image-cropper';
+import {TransferModule} from '../transfer/transfer.module';
 
 @NgModule({
   declarations: [AssetsComponent, AssetDetailDialogComponent, AssetsListComponent, QuickFilterComponent, ActionButtonsForAgGridComponent,
