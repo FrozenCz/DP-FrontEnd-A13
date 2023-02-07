@@ -7,6 +7,7 @@ import {
 import {AssetsDashboardComponent} from './dashboards/assets-dashboard/assets-dashboard.component';
 import {AssetTransferComponent} from './components/asset-transfer/asset-transfer.component';
 import {AssetTransfersListComponent} from './components/asset-transfers-list/asset-transfers-list.component';
+import {AssetTransferDetailComponent} from './components/asset-transfer-detail/asset-transfer-detail.component';
 
 const routes: Routes = [
   {
@@ -16,7 +17,8 @@ const routes: Routes = [
     ]
   },
   {path: 'transfers', component: AssetTransfersListComponent},
-  {path: 'transfers/request', component: AssetTransferComponent}
+  {path: 'transfers/request', component: AssetTransferComponent},
+  {path: 'transfers/:uuid', component: AssetTransferDetailComponent}
 ];
 
 @NgModule({

@@ -36,11 +36,12 @@ import {Facade} from '../facade/facade';
 import {TransferDataProvider} from './components/abstract/transferDataProvider';
 import { AssetTransfersListComponent } from './components/asset-transfers-list/asset-transfers-list.component';
 import {AssetTransferComponent} from './components/asset-transfer/asset-transfer.component';
+import { AssetTransferDetailComponent } from './components/asset-transfer-detail/asset-transfer-detail.component';
 
 @NgModule({
   declarations: [AssetsComponent, AssetDetailDialogComponent, AssetsListComponent, QuickFilterComponent, ActionButtonsForAgGridComponent,
     AssetTransfersListComponent, AssetTransferComponent,
-    AssetsGridComponent, MultiEditAssetDialogComponent, RemoveAssetDialogComponent, RemovedAssetsListComponent, AssetDetailComponent, AssetDetailSinglePageWrapperComponent, AssetsDashboardComponent, AssetTransfersListComponent],
+    AssetsGridComponent, MultiEditAssetDialogComponent, RemoveAssetDialogComponent, RemovedAssetsListComponent, AssetDetailComponent, AssetDetailSinglePageWrapperComponent, AssetsDashboardComponent, AssetTransfersListComponent, AssetTransferDetailComponent],
   imports: [
     AssetsRoutingModule,
     CommonModule,
