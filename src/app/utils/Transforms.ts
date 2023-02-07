@@ -5,10 +5,12 @@ import {IAssetsExt} from '../assets/assets.service';
 import {Location} from '../locations/model/location';
 import {LocationDto} from '../locations/dto/in/location.dto';
 import {NotFoundError} from 'rxjs';
+import {AssetTransfer, AssetTransferDto} from '../assets/models/asset-transfer.model';
 
 export abstract class Transforms {
 
-  private constructor() {}
+  private constructor() {
+  }
 
   public static getAssetModelExt(asset: Asset, users: Map<number, User>, categories: Map<number, Category>, locations: Map<string, Location>): IAssetsExt {
     const category = categories.get(asset.category_id);
@@ -60,11 +62,25 @@ export abstract class Transforms {
   public static getLocationFromDto(locationDto: LocationDto, locations: Map<string, Location>): Location {
     let parent = null;
     if (locationDto.parent_uuid) {
-        parent = locations.get(locationDto.parent_uuid);
-        if (!parent) {
-          throw new NotFoundError('Parent not found ' + locationDto.parent_uuid);
-        }
+      parent = locations.get(locationDto.parent_uuid);
+      if (!parent) {
+        throw new NotFoundError('Parent not found ' + locationDto.parent_uuid);
+      }
     }
     return new Location(locationDto.uuid, locationDto.name, parent);
+  }
+
+  static assetsTransferDto(assetsTransferDto: AssetTransferDto): AssetTransfer {
+    const {assets, caretakerFrom, caretakerTo, uuid, createdAt, rejectedAt, revertedAt, acceptedAt} = assetsTransferDto;
+    return {
+      assets,
+      caretakerFrom,
+      caretakerTo,
+      uuid,
+      createdAt: new Date(createdAt),
+      rejectedAt: rejectedAt ? new Date(rejectedAt) : null,
+      revertedAt: revertedAt ? new Date(revertedAt) : null,
+      acceptedAt: acceptedAt ? new Date(acceptedAt) : null
+    };
   }
 }

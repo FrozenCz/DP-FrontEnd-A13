@@ -13,6 +13,7 @@ import {Caretaker} from '../users/model/caretaker.model';
 import {TokenService} from '../auth/token.service';
 import {HttpClient} from '@angular/common/http';
 import {TransferDataProvider} from '../assets/components/abstract/transferDataProvider';
+import {AssetTransfer, AssetTransferDto} from '../assets/models/asset-transfer.model';
 
 
 @Injectable({
@@ -30,6 +31,7 @@ export class Facade implements TransferDataProvider {
     private httpClient: HttpClient
   ) {
   }
+
 
   getAssetExt(source: AssetSource): Observable<IAssetsExt[]> {
     let obs: Observable<Asset[]> = this.assetsService.assetsStore$.getAll$();
@@ -76,6 +78,10 @@ export class Facade implements TransferDataProvider {
 
   sendRequestForAssetTransfer(fromUser: number, toUser: number, assetIds: number[], message: string): Observable<void> {
     return this.httpClient.post<void>('/rest/assets/transfers', {fromUser, toUser, assetIds, message});
+  }
+
+  public getAssetTransfers$(): Observable<AssetTransfer[]> {
+    return this.httpClient.get<AssetTransferDto[]>('/rest/assets/transfers').pipe(map(assetsTransferDto => assetsTransferDto.map(assetDto => Transforms.assetsTransferDto(assetDto))));
   }
 
 
