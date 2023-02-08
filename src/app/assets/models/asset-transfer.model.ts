@@ -7,6 +7,7 @@ export interface AssetTransferDto {
   revertedAt: string | null;
   rejectedAt: string | null;
   acceptedAt: string | null;
+  message: string | null
 }
 
 
@@ -19,6 +20,7 @@ export interface AssetTransfer {
   revertedAt: Date | null;
   rejectedAt: Date | null;
   acceptedAt: Date | null;
+  message: string | null;
 }
 
 export interface Caretaker {

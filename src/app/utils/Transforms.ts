@@ -71,8 +71,9 @@ export abstract class Transforms {
   }
 
   static assetsTransferDto(assetsTransferDto: AssetTransferDto): AssetTransfer {
-    const {assets, caretakerFrom, caretakerTo, uuid, createdAt, rejectedAt, revertedAt, acceptedAt} = assetsTransferDto;
+    const {assets, caretakerFrom, caretakerTo, uuid, createdAt, rejectedAt, revertedAt, acceptedAt, message} = assetsTransferDto;
     return {
+      message,
       assets,
       caretakerFrom,
       caretakerTo,

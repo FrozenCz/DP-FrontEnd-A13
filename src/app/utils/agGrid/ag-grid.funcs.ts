@@ -11,9 +11,10 @@ import {AG_GRID_LOCALE_CS} from './locale.cs';
 
 export enum DateTimeFormatterType {
   JUST_DAYS,
-  WITH_HOURS
+  WITH_HOURS,
+  WITH_HOURS_AND_LEADING_ZEROS,
+  JUST_YEAR
 }
-
 export class AgGridFuncs {
   static ifFilterActive(params: any): string {
     return 'aG-filterActive';
@@ -115,12 +116,26 @@ export class AgGridFuncs {
   public static dateTimeFormatter(value: string, type: DateTimeFormatterType = 0): string {
     let humanReadableDate = '';
     switch (type) {
+      case DateTimeFormatterType.JUST_YEAR:
+        humanReadableDate = new Date(value).getFullYear().toString();
+        break;
       case DateTimeFormatterType.JUST_DAYS:
         humanReadableDate = new Date(value).toLocaleDateString();
         break;
       case DateTimeFormatterType.WITH_HOURS:
         humanReadableDate = new Date(value).toLocaleString();
         break;
+      case DateTimeFormatterType.WITH_HOURS_AND_LEADING_ZEROS:
+        humanReadableDate = new Date(value).toLocaleString('cs-CZ',{
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+          hour: '2-digit'
+        });
+        break;
+
     }
     return humanReadableDate;
   }

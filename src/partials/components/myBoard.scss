@@ -92,10 +92,6 @@
   }
 
   &__body {
-    .caption {
-      min-width: 5rem;
-    }
-
     display: flex;
     flex: 1;
     overflow: auto;

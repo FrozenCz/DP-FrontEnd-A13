@@ -1,0 +1,39 @@
+<div class="myBoard" [nbSpinner]="!fetchDone" [nbSpinnerMessage]="'Nahrávám data...'">
+  <ng-container *ngIf="assetsTransfer$ | async as transfer; else notFound;">
+  <div class="myBoard__header" fxLayout="row" fxLayoutAlign="start center">Detail převodu</div>
+  <div class="myBoard__body" fxLayout="column" fxLayoutGap="1rem">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+        <div class="caption">Od</div>
+        <div>
+          {{transfer.caretakerFrom.name}} {{transfer.caretakerFrom.surname}}
+          ({{transfer.caretakerFrom.unit_name}})
+        </div>
+
+        <div class="caption u-ml-3">Pro</div>
+        <div>
+          {{transfer.caretakerTo.name}} {{transfer.caretakerTo.surname}}
+          ({{transfer.caretakerTo.unit_name}})
+        </div>
+    </div>
+    <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign="start start">
+      <div class="caption">
+        Doplňující zpráva
+      </div>
+      <div>{{transfer.message}}</div>
+    </div>
+    <div>
+      <div class="caption">
+        Soupis majetku
+      </div>
+      <app-assets-list [assets]="transfer.assets"></app-assets-list>
+    </div>
+  </div>
+  </ng-container>
+</div>
+
+
+<ng-template #notFound>
+  <div *ngIf="fetchDone">
+    Provided id not found
+  </div>
+</ng-template>

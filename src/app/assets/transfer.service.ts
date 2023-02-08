@@ -31,8 +31,8 @@ export class TransferService {
   }
 
   getAssetsForTransfer$(): Observable<IAssetsExt[]> {
-    return combineLatest([this.dataProvider.getAssetExt(AssetSource.STORE), this.assetsIdForTransfer$]).pipe(
-      map(([assets, assetIdsForTransfer]) => assets.filter(asset => assetIdsForTransfer.has(asset.id)))
+    return combineLatest([this.dataProvider.getAssetExtMap$(AssetSource.STORE), this.assetsIdForTransfer$]).pipe(
+      map(([assets, assetIdsForTransfer]) => Array.from(assetIdsForTransfer).map(asset => assets.get(asset)) as IAssetsExt[])
     )
   }
 

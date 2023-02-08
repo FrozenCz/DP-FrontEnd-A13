@@ -32,6 +32,14 @@ export class Facade implements TransferDataProvider {
   ) {
   }
 
+  public getAssetExtMap$(source: AssetSource): Observable<Map<number, IAssetsExt>> {
+       return this.getAssetExt(source).pipe(map(assets => {
+         const map: Map<number, IAssetsExt> = new Map();
+         assets.forEach(a => map.set(a.id, a))
+         return map;
+       }))
+    }
+
 
   getAssetExt(source: AssetSource): Observable<IAssetsExt[]> {
     let obs: Observable<Asset[]> = this.assetsService.assetsStore$.getAll$();
@@ -82,6 +90,14 @@ export class Facade implements TransferDataProvider {
 
   public getAssetTransfers$(): Observable<AssetTransfer[]> {
     return this.httpClient.get<AssetTransferDto[]>('/rest/assets/transfers').pipe(map(assetsTransferDto => assetsTransferDto.map(assetDto => Transforms.assetsTransferDto(assetDto))));
+  }
+
+  public getAssetTransfer$(uuid: string): Observable<AssetTransfer> {
+    return this.httpClient.get<AssetTransferDto>('/rest/assets/transfers/' + uuid).pipe(map((assetTransferDto => Transforms.assetsTransferDto(assetTransferDto))))
+  }
+
+  getAssetsMap$(): Observable<Map<number, Asset>> {
+    return this.assetsService.assetsStore$.getMap$()
   }
 
 

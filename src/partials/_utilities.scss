@@ -1,3 +1,19 @@
+@for $i from 1 through 5 {
+  .u-ml-#{$i} {
+    margin-left: #{$i}rem;
+  }
+  .u-mr-#{$i} {
+    margin-right: #{$i}rem;
+  }
+}
+
+.u-ml-05 {
+  margin-left: .5rem;
+}
+.u-mr-05 {
+  margin-right: .5rem;
+}
+
 .u-text-line-through {
   text-decoration: line-through;
 }
