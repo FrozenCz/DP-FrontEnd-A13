@@ -21,11 +21,11 @@
       </div>
       <div>{{transfer.message}}</div>
     </div>
-    <div>
+    <div fxFlex fxLayout="column">
       <div class="caption">
         Soupis majetku
       </div>
-      <app-assets-list [assets]="transfer.assets"></app-assets-list>
+      <app-assets-list fxFlex [assets]="transfer.assets"></app-assets-list>
     </div>
   </div>
   </ng-container>

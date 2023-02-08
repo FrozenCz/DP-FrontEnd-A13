@@ -5,7 +5,7 @@ import {TransferDataProvider} from '../abstract/transferDataProvider';
 import {ActivatedRoute} from '@angular/router';
 import {IAssetsExt} from '../../assets.service';
 import {map} from 'rxjs/operators';
-import {Asset} from '../../models/assets.model';
+import {AssetSource} from '../../../facade/facade';
 
 @Component({
   selector: 'app-asset-transfer-detail',
@@ -21,23 +21,26 @@ export class AssetTransferDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.assetsTransfer$ = this.route.paramMap.pipe(
-    //   switchMap(paramMap => combineLatest([
-    //     this.dataProvider.getAssetTransfer$(paramMap.get('uuid') as string),
-    //     this.dataProvider.getAssetsMap$()])
-    //   ),
-    //   map(([transfer, assetsMap]) => )
-    //   tap(() => this.fetchDone = true)
-    // )
+    this.assetsTransfer$ = this.route.paramMap.pipe(
+      switchMap(paramMap => combineLatest([
+        this.dataProvider.getAssetTransfer$(paramMap.get('uuid') as string),
+        this.dataProvider.getAssetExtMap$(AssetSource.STORE).pipe(tap(console.log))])
+      ),
+      map(([transfer, assetsMap]) => this.transform(transfer, assetsMap)),
+      tap(() => this.fetchDone = true)
+    )
   }
 
-  // private transform(transfer: AssetTransfer, assetsMap: Map<number, Asset>): AssetTransferDetail {
-  //   return {
-  //     ...transfer,
-  //     assets: transfer.assets.map(asset => assetsMap.get(asset.id))
-  //   }
-  // }
+  private transform(transfer: AssetTransfer, assetsMap: Map<number, IAssetsExt>): AssetTransferDetail {
+    return {
+      ...transfer,
+      assets: this.getIAssetsExts(transfer, assetsMap)
+    }
+  }
 
+  private getIAssetsExts(transfer: AssetTransfer, assetsMap: Map<number, IAssetsExt>) {
+    return transfer.assets.map(asset => assetsMap.get(asset.id)) as IAssetsExt[];
+  }
 }
 
 export interface AssetTransferDetail {
