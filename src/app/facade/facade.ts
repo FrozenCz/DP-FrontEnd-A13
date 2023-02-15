@@ -100,6 +100,18 @@ export class Facade implements TransferDataProvider {
     return this.assetsService.assetsStore$.getMap$()
   }
 
+  approveTransfer(uuid: string): Observable<void> {
+    return this.httpClient.post<void>('/rest/assets/transfers/' + uuid + '/actions/approve', {});
+  }
+
+  rejectTransfer(uuid: string): Observable<void> {
+    return this.httpClient.post<void>('/rest/assets/transfers/' + uuid + '/actions/reject', {});
+  }
+
+  revertTransfer(uuid: string): Observable<void> {
+    return this.httpClient.post<void>('/rest/assets/transfers/' + uuid + '/actions/revert', {});
+  }
+
 
 }
 

@@ -27,7 +27,13 @@
       </div>
       <app-assets-list fxFlex [assets]="transfer.assets"></app-assets-list>
     </div>
+    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1rem" style="padding: 0 1rem .5rem 0">
+      <button nbButton status="warning" ghost (click)="revert(transfer.uuid)">Vrátit</button>
+      <button nbButton status="danger" ghost (click)="reject(transfer.uuid)">Zrušit</button>
+      <button nbButton status="primary" (click)="approve(transfer.uuid)">Potvrdit</button>
+    </div>
   </div>
+
   </ng-container>
 </div>
 

@@ -22,4 +22,10 @@ export abstract class TransferDataProvider {
 
   public abstract sendRequestForAssetTransfer(fromUser: number, toUser: number, assetIds: number[], message: string): Observable<void>
 
+  public abstract approveTransfer(uuid: string): Observable<void>
+
+  public abstract rejectTransfer(uuid: string): Observable<void>
+
+  public abstract revertTransfer(uuid: string): Observable<void>
+
 }
