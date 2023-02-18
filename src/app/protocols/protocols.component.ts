@@ -4,6 +4,7 @@ import {AssetsService, IAssetsExt} from '../assets/assets.service';
 import {ProtocolEmitEnum} from './protocols.service';
 import {takeUntil, tap} from 'rxjs/operators';
 import {Subject} from 'rxjs';
+import {Barcode} from '../qrCodes/components/qr-codes/qrCode.model';
 
 
 @Component({
@@ -12,9 +13,11 @@ import {Subject} from 'rxjs';
   styleUrls: ['./protocols.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ProtocolsComponent implements OnInit, OnDestroy{
+export class ProtocolsComponent implements OnInit, OnDestroy {
   public protocolType: ProtocolEmitEnum;
+  public protocolTypes = ProtocolEmitEnum;
   public source: IAssetsExt[] = [];
+  public qrCodes: Barcode[] = [];
   private unsubscribe = new Subject();
 
 
@@ -38,7 +41,8 @@ export class ProtocolsComponent implements OnInit, OnDestroy{
           this.assetsService.getAssets({userId}).pipe(takeUntil(this.unsubscribe)).pipe(tap(console.log))
             .subscribe(assets => this.source = assets);
         }
-
+        break;
+      case ProtocolEmitEnum.QR_CODES:
         break;
     }
   }

@@ -2,21 +2,31 @@ export class Location {
   private _uuid: string | null;
   private _name: string;
   private _parent: Location | null;
+  private _nfcId: string | null;
 
 
-  constructor(uuid?: string | null, name?: string, parent?: Location | null) {
+  constructor(uuid?: string | null, name?: string, parent?: Location | null, nfcId?: string | null) {
     this._uuid = uuid ?? null;
     this._name = name ?? '';
     this._parent = parent ?? null;
+    this._nfcId = nfcId ?? null;
   }
 
+
+  get nfcId(): string | null {
+    return this._nfcId;
+  }
+
+  set nfcId(value: string | null) {
+    this._nfcId = value;
+  }
 
   set uuid(value: string | null) {
     this._uuid = value;
   }
 
-  get uuid(): string | null {
-    return this._uuid;
+  get uuid(): string {
+    return this._uuid ?? '';
   }
 
   get name(): string {
