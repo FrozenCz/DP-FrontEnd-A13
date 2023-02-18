@@ -5,7 +5,8 @@ import {firstValueFrom} from 'rxjs';
 export enum ProtocolEmitEnum {
   TRANSFER_PROTOCOL = 1,
   DELETE_LIST,
-  USERS_ASSETS_PROTOCOL
+  USERS_ASSETS_PROTOCOL,
+  QR_CODES
 }
 
 export interface ProtocolEnumWithAssetsSource {
