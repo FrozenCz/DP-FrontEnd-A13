@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
-import {Barcode} from './qrCode.model';
 import {Observable} from 'rxjs';
-import {QrService} from '../../qr.service';
+import {QrCodeAdapter} from './qrCode.adapter';
+import {Barcode} from './qrCode.model';
 
 @Component({
   selector: 'app-qr-codes',
@@ -9,10 +9,14 @@ import {QrService} from '../../qr.service';
   styleUrls: ['./qr-codes.component.scss']
 })
 export class QrCodesComponent {
-  barcodes$: Observable<Map<number, Barcode>>
+  barcodes$: Observable<Barcode[]>
 
-  constructor(private qrService: QrService) {
+  constructor(private qrService: QrCodeAdapter) {
     this.barcodes$ = qrService.getBarcodes$();
+  }
+
+  codeShowingJSOn(barcode: Barcode): string {
+    return JSON.stringify({id: barcode.id});
   }
 
 }

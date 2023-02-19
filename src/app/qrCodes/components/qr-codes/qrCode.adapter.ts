@@ -1,10 +1,11 @@
-import {Barcode} from './qrCode.model';
 import {Observable} from 'rxjs';
 import {IAssetsExt} from '../../../assets/assets.service';
+import {Barcode} from './qrCode.model';
 
-export abstract class QrCodeBridge {
 
-  public abstract getBarcodes$(): Observable<Map<number, Barcode>>
+export abstract class QrCodeAdapter {
+
+  public abstract getBarcodes$(): Observable<Barcode[]>
 
   public static transform(asset: IAssetsExt): Barcode {
     return {

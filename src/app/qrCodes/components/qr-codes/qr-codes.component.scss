@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+
+@page {
+  size: A4 landscape;
+}
+.qr-print {
+  width: 100%;
+  display: flex; flex-direction: row;
+  flex-wrap: wrap;
+  div {width: 6cm; height:6cm; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid black}
+}

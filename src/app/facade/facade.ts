@@ -15,7 +15,6 @@ import {HttpClient} from '@angular/common/http';
 import {TransferDataProvider} from '../assets/components/abstract/transferDataProvider';
 import {AssetTransfer, AssetTransferDto} from '../assets/models/asset-transfer.model';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -28,17 +27,17 @@ export class Facade implements TransferDataProvider {
     private locationService: LocationService,
     private unitService: UnitsService,
     private tokenService: TokenService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
   ) {
   }
 
   public getAssetExtMap$(source: AssetSource): Observable<Map<number, IAssetsExt>> {
-       return this.getAssetExt(source).pipe(map(assets => {
-         const map: Map<number, IAssetsExt> = new Map();
-         assets.forEach(a => map.set(a.id, a))
-         return map;
-       }))
-    }
+    return this.getAssetExt(source).pipe(map(assets => {
+      const map: Map<number, IAssetsExt> = new Map();
+      assets.forEach(a => map.set(a.id, a))
+      return map;
+    }))
+  }
 
 
   getAssetExt(source: AssetSource): Observable<IAssetsExt[]> {

@@ -1,12 +1,9 @@
-<!--<div class="qr-print" fxFlex>-->
-<!--  <div *ngFor="let barcode of barcodes">-->
-<!--    <span>{{barcode.name}}</span>-->
-<!--    <qrcode [qrdata]="codeShowingJSOn(barcode)"-->
-<!--            [errorCorrectionLevel]="'high'" [width]="1"></qrcode>-->
-<!--  </div>-->
-<!--  <div style="clear: both"></div>-->
-<!--</div>-->
-
-<div *ngIf="barcodes$ | async as barcodes">
-  {{barcodes | keyvalue | json}}
+<div class="qr-print" fxFlex *ngIf="barcodes$ | async as barcodes">
+  <div *ngFor="let barcode of barcodes">
+    <span>{{barcode.name}}</span>
+    <qrcode [qrdata]="codeShowingJSOn(barcode)"
+            [errorCorrectionLevel]="'high'" [width]="1"></qrcode>
+  </div>
+  <div style="clear: both"></div>
 </div>
+

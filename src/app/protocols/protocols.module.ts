@@ -11,7 +11,7 @@ import {TransferProtocolComponent} from './components/transfer-protocol/transfer
 import {RemovingProtocolsListComponent} from './components/removing-protocols-list/removing-protocols-list.component';
 import {UsersAssetsProtocolComponent} from './components/users-assets-protocol/users-assets-protocol.component';
 import {QrCodesModule} from '../qrCodes/qr-codes.module';
-import {QrCodeBridge} from '../qrCodes/components/qr-codes/qrCode.bridge';
+import {QrCodeAdapter} from '../qrCodes/components/qr-codes/qrCode.adapter';
 import {ProtocolsService} from './protocols.service';
 
 
@@ -27,7 +27,7 @@ import {ProtocolsService} from './protocols.service';
     QrCodesModule
   ],
   providers: [
-    {provide: QrCodeBridge, useExisting: ProtocolsService}
+    {provide: QrCodeAdapter, useExisting: ProtocolsService}
   ]
 })
 export class ProtocolsModule {
