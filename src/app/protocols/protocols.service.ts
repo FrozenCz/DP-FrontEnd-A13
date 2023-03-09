@@ -60,7 +60,7 @@ export class ProtocolsService implements QrCodeAdapter {
 
 
   }
-
+ 
   getBarcodes$(): Observable<Barcode[]> {
     return this.facade.getAssetExt(AssetSource.STORE).pipe(
       map(assets => this.filter(assets)),
