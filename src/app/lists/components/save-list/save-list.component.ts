@@ -57,11 +57,9 @@ export class SaveListComponent implements OnInit, OnDestroy {
   }
 
   async submit(listForm: FormGroup): Promise<void> {
-    if (!this.editedListId) {
-      throw new Error('id musí být vyplněno');
-    }
+
     const assetsList: IAssetsListForCreateUpdate = {
-      id: this.editedListId,
+      id: this.editedListId ?? undefined,
       name: listForm.value.listName,
       category: listForm.value.category,
       connected: listForm.value.connected,
@@ -72,7 +70,19 @@ export class SaveListComponent implements OnInit, OnDestroy {
 
     if (this.editedListId) {
       this.listsService.updateAssetsList(assetsList).pipe(take(1))
-        .subscribe();
+        .subscribe({
+          next: () => {
+            this.nbToastrService.success('úspěšně uložena', 'Sestava', {icon: 'link-outline', duration: 2000})
+          },
+          error: err => {
+            if (err.status === 401) {
+              this.nbToastrService.danger('nepřihlášený uživatel si nemůže uložit sestavu', 'Nepřihlášen',
+                {icon: 'person-outline', duration: 10000});
+            } else {
+              this.nbToastrService.danger('došlo k chybě', 'Neúspěch', {duration: 10000, icon: 'alert-triangle-outline'})
+            }
+          }
+        });
     } else {
       this.listsService.createAssetsList(assetsList).pipe(take(1))
         .subscribe({

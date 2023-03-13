@@ -7,7 +7,7 @@ import {Asset} from '../assets/models/assets.model';
 import {AssetSource, Facade} from '../facade/facade';
 
 interface AssetsListGeneral {
-  id: number;
+  id: number | undefined;
   name: string;
   category: string;
   connected: boolean;
@@ -21,7 +21,7 @@ export interface IAssetsList extends AssetsListGeneral {
   updated: Date;
 }
 
-export interface IAssetsListForCreateUpdate extends AssetsListGeneral{
+export interface IAssetsListForCreateUpdate extends AssetsListGeneral {
   assets: Asset[];
 }
 
@@ -84,15 +84,22 @@ export class ListsService {
   }
 
   private transformAssetsList(assetsListFromNest: IAssetsListFromNest, assets: IAssetsExt[]): IAssetsList {
-    const updatedAssets = assetsListFromNest.assets.map(assetNest => {
-      return assets.find(asset => asset.asset.id === assetNest.id);
-    });
-    // todo:.... nejde undefined
+    const updatedAssets = this.getUpdatedAssets(assetsListFromNest, assets);
     return {
       ...assetsListFromNest,
-      assets: []
+      assets: updatedAssets
     };
   }
+
+  private getUpdatedAssets(assetsListFromNest: IAssetsListFromNest, assets: IAssetsExt[]): IAssetsExt[] {
+    return assetsListFromNest.assets.map(assetNest => {
+      const found = assets.find(asset => asset.asset.id === assetNest.id);
+      if (!found) {
+        throw new Error(`Asset with ID ${assetNest.id} not found`)
+      }
+      return found;
+    });
+  };
 
   private fetchAssetsLists(): Observable<IAssetsListFromNest[]> {
     return this.http.get<IAssetsListFromNest[]>('rest/lists');
