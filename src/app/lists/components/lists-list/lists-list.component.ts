@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {combineLatest, Subject, Subscription} from 'rxjs';
+import {combineLatest, Observable, Subject, Subscription, tap} from 'rxjs';
 import {IAssetsList, ListsService} from '../../lists.service';
 import {AgGridInstanceService} from '../../../utils/agGrid/ag-grid-instance.service';
 import {ColDef, GridOptions, GridReadyEvent, RowNode} from 'ag-grid-community';
@@ -21,7 +21,7 @@ import {Grid} from '../../../utils/agGrid/models/grid.model';
 })
 export class ListsListComponent extends AgGridExtended implements OnInit, OnDestroy {
 
-
+  rowData$: Observable<IAssetsList[]>;
   columnDefs: ColDef[] = [];
   defaultColDef: ColDef = {
     checkboxSelection: AgGridFuncs.ifColumnIsFirst,
@@ -44,7 +44,7 @@ export class ListsListComponent extends AgGridExtended implements OnInit, OnDest
     protected override agGridInstanceService: AgGridInstanceService) {
     super();
     this.gridUid = 'listsList';
-
+    this.rowData$ = this.listsService.getAssetsLists();
   }
 
   /**
@@ -86,6 +86,8 @@ export class ListsListComponent extends AgGridExtended implements OnInit, OnDest
 
 
   ngOnInit(): void {
+
+
     this.agGridInstanceService.getGridInstance(this.gridUid)
       .pipe(filter(e => !!e), take(1)).subscribe(instance => {
         if (instance) {
@@ -109,15 +111,6 @@ export class ListsListComponent extends AgGridExtended implements OnInit, OnDest
     this.gridReady$.pipe(takeUntil(this.unsubscribe)).subscribe(() => {
       this.gridService.setColDef(ListsListComponent.getColDefs());
     });
-
-    combineLatest([this.listsService.getAssetsLists(), this.gridReady$])
-      .pipe(takeUntil(this.unsubscribe))
-      .pipe(
-        filter(([lists, gridReady]) => !!gridReady && !!lists)
-      )
-      .subscribe(([lists, g]) => {
-        this.gridService.setRowData(lists);
-      });
   }
 
   onGridReady(grid: GridReadyEvent): void {
