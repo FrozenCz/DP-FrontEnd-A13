@@ -8,6 +8,9 @@ import {AssetsDashboardComponent} from './dashboards/assets-dashboard/assets-das
 import {AssetTransferComponent} from './components/asset-transfer/asset-transfer.component';
 import {AssetTransfersListComponent} from './components/asset-transfers-list/asset-transfers-list.component';
 import {AssetTransferDetailComponent} from './components/asset-transfer-detail/asset-transfer-detail.component';
+import {StockTakingNewComponent} from './components/stock-taking-new/stock-taking-new.component';
+import {StockTakingDetailComponent} from './components/stock-taking-detail/stock-taking-detail.component';
+import {StockTakingListComponent} from './components/stock-taking-list/stock-taking-list.component';
 
 const routes: Routes = [
   {
@@ -18,7 +21,12 @@ const routes: Routes = [
   },
   {path: 'transfers', component: AssetTransfersListComponent},
   {path: 'transfers/request', component: AssetTransferComponent},
-  {path: 'transfers/:uuid', component: AssetTransferDetailComponent}
+  {path: 'transfers/:uuid', component: AssetTransferDetailComponent},
+
+  {path: 'stock-taking/new', component: StockTakingNewComponent},
+  {path: 'stock-taking/list', component: StockTakingListComponent},
+  {path: 'stock-taking/:uuid', component: StockTakingDetailComponent},
+
 ];
 
 @NgModule({

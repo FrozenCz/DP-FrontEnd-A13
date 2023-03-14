@@ -47,6 +47,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     name: 'person',
     iconType: NavigationAcceptedIconsEnum.eva
   })
+  // stockTakingTab: NavigationTab = new
   usersSubSectionA: NavigationSubSectionButtons = new NavigationSubSectionButtons();
   newUserButton: NavigationButton = new NavigationButton(NavButtonsIdsEnum.add_new_user, 'nový', {
     name: 'plus-outline',
@@ -362,7 +363,37 @@ export class AppComponent implements OnInit, AfterViewInit {
     showTransferFromWorkingList.badge = {status: 'success', text: '0'};
     showTransfersFromSelected.badge = {status: 'primary', text: '0'};
 
-    this.assetTab.sections.push(assetSection, workingAssetListSection, protocolsSection, massEditSection, assetRemoveSection, removedAssetsSection, assetScanSection, assetTransferSection)
+    const stockTakingSection = new NavigationSection('stock-taking', 'Inventury', {
+      name: 'archive-outline',
+      iconType: NavigationAcceptedIconsEnum.eva
+    });
+
+    const stockTakingSubSection = new NavigationSubSectionButtons();
+    stockTakingSubSection.buttons.push(
+      new NavigationButton(NavButtonsIdsEnum.stock_taking_new, 'Nová inventura', {
+        name: 'plus-outline',
+        iconType: NavigationAcceptedIconsEnum.eva
+      }, ['assets', 'stock-taking', 'new']
+    ),
+      new NavigationButton(NavButtonsIdsEnum.stock_taking_new, 'Inventury', {
+          name: 'list-outline',
+          iconType: NavigationAcceptedIconsEnum.eva
+        }, ['assets', 'stock-taking', 'list']
+      )
+      )
+    stockTakingSection.subSections.push(stockTakingSubSection)
+
+    this.assetTab.sections.push(
+      assetSection,
+      workingAssetListSection,
+      protocolsSection,
+      massEditSection,
+      assetRemoveSection,
+      removedAssetsSection,
+      assetScanSection,
+      assetTransferSection,
+      stockTakingSection
+    )
 
 
     /** lists **/

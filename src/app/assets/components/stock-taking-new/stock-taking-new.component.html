@@ -1,0 +1,20 @@
+<ng-container *ngIf="ableToCreateInventory && stockTakingNewForm">
+  <form fxLayout="column" fxLayoutAlign="start start" fxLayoutGap=".5rem" [formGroup]="stockTakingNewForm" (ngSubmit)="createNewStockTaking()">
+
+    <div>
+      <div class="label" >Název inventury</div>
+      <input nbInput formControlName="name">
+    </div>
+
+    <div>
+      <div class="label">Provádí</div>
+      <nb-select formControlName="solver">
+        <nb-option *ngFor="let solver of solvers$ | async" [value]="solver">{{solver.fullName}}</nb-option>
+      </nb-select>
+    </div>
+
+    <button nbButton [disabled]="!stockTakingNewForm.valid">Vytvořit</button>
+
+  </form>
+
+</ng-container>

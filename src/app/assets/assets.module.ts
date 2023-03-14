@@ -37,11 +37,15 @@ import {TransferDataProvider} from './components/abstract/transferDataProvider';
 import { AssetTransfersListComponent } from './components/asset-transfers-list/asset-transfers-list.component';
 import {AssetTransferComponent} from './components/asset-transfer/asset-transfer.component';
 import { AssetTransferDetailComponent } from './components/asset-transfer-detail/asset-transfer-detail.component';
+import { StockTakingListComponent } from './components/stock-taking-list/stock-taking-list.component';
+import { StockTakingDetailComponent } from './components/stock-taking-detail/stock-taking-detail.component';
+import { StockTakingNewComponent } from './components/stock-taking-new/stock-taking-new.component';
+import {StockTakingListProvider} from './components/stock-taking-list/stockTakingListProvider';
 
 @NgModule({
   declarations: [AssetsComponent, AssetDetailDialogComponent, AssetsListComponent, QuickFilterComponent, ActionButtonsForAgGridComponent,
     AssetTransfersListComponent, AssetTransferComponent,
-    AssetsGridComponent, MultiEditAssetDialogComponent, RemoveAssetDialogComponent, RemovedAssetsListComponent, AssetDetailComponent, AssetDetailSinglePageWrapperComponent, AssetsDashboardComponent, AssetTransfersListComponent, AssetTransferDetailComponent],
+    AssetsGridComponent, MultiEditAssetDialogComponent, RemoveAssetDialogComponent, RemovedAssetsListComponent, AssetDetailComponent, AssetDetailSinglePageWrapperComponent, AssetsDashboardComponent, AssetTransfersListComponent, AssetTransferDetailComponent, StockTakingListComponent, StockTakingDetailComponent, StockTakingNewComponent],
   imports: [
     AssetsRoutingModule,
     CommonModule,
@@ -74,7 +78,9 @@ import { AssetTransferDetailComponent } from './components/asset-transfer-detail
     NbAutocompleteModule,
     ImageCropperModule,
   ],
-  providers: [    {provide: TransferDataProvider, useExisting: Facade}
+  providers: [
+    {provide: TransferDataProvider, useExisting: Facade},
+    {provide: StockTakingListProvider, useExisting: Facade}
   ],
     exports: [
         AssetsListComponent,

@@ -36,6 +36,9 @@ export enum NavButtonsIdsEnum {
   locations_list='locations_list',
   locations_create_new='locations_create_new',
 
+  stock_taking_list = 'stock_taking_list',
+  stock_taking_new = 'stock_taking_new',
+
 
 
 }

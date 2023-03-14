@@ -464,4 +464,8 @@ export class AssetsService {
   saveImageToAsset(croppedImage: SaveImageToAssetDto, id: number): Observable<void> {
     return this.http.post<void>('/rest/assets/'+id+'/images', croppedImage);
   }
+
+  createStockTaking(param: {name: string; solverId: number}): Observable<string> {
+    return this.http.post<string>('/rest/assets/stock-taking', {...param})
+  }
 }

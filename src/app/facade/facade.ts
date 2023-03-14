@@ -14,11 +14,12 @@ import {TokenService} from '../auth/token.service';
 import {HttpClient} from '@angular/common/http';
 import {TransferDataProvider} from '../assets/components/abstract/transferDataProvider';
 import {AssetTransfer, AssetTransferDto} from '../assets/models/asset-transfer.model';
+import {StockTakingList, StockTakingListProvider} from '../assets/components/stock-taking-list/stockTakingListProvider';
 
 @Injectable({
   providedIn: 'root'
 })
-export class Facade implements TransferDataProvider {
+export class Facade implements TransferDataProvider, StockTakingListProvider {
 
   constructor(
     private assetsService: AssetsService,
@@ -109,6 +110,12 @@ export class Facade implements TransferDataProvider {
 
   revertTransfer(uuid: string): Observable<void> {
     return this.httpClient.post<void>('/rest/assets/transfers/' + uuid + '/actions/revert', {});
+  }
+
+  getStockTakingList$(): Observable<StockTakingList[]> {
+    const assets = this.assetsService.getAssets();
+    const stockTakings = this.
+    return undefined;
   }
 
 
