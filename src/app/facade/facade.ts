@@ -14,7 +14,9 @@ import {TokenService} from '../auth/token.service';
 import {HttpClient} from '@angular/common/http';
 import {TransferDataProvider} from '../assets/components/abstract/transferDataProvider';
 import {AssetTransfer, AssetTransferDto} from '../assets/models/asset-transfer.model';
-import {StockTakingList, StockTakingListProvider} from '../assets/components/stock-taking-list/stockTakingListProvider';
+import {StockTakingForList, StockTakingListProvider} from '../assets/components/stock-taking-list/stockTakingListProvider';
+import {StockTakingService} from '../assets/stock-taking.service';
+import {Utils} from '../utils/Utils';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +31,7 @@ export class Facade implements TransferDataProvider, StockTakingListProvider {
     private unitService: UnitsService,
     private tokenService: TokenService,
     private httpClient: HttpClient,
+    private stockTakingService: StockTakingService
   ) {
   }
 
@@ -112,10 +115,17 @@ export class Facade implements TransferDataProvider, StockTakingListProvider {
     return this.httpClient.post<void>('/rest/assets/transfers/' + uuid + '/actions/revert', {});
   }
 
-  getStockTakingList$(): Observable<StockTakingList[]> {
-    const assets = this.assetsService.getAssets();
-    const stockTakings = this.
-    return undefined;
+  getStockTakingList$(): Observable<StockTakingForList[]> {
+    const assets$ = this.assetsService.getAssetsMap$();
+    const stockTakings$ = this.stockTakingService.fetchStockTakings$();
+    const users$ = this.usersService.getUsersMap$();
+    return combineLatest([stockTakings$, assets$, users$])
+      .pipe(
+        map(([stockTakings, assetsMap, usersMap]) => Transforms.getStockTakingsForList({
+          stockTakings,
+          assetsMap,
+          usersMap
+        })))
   }
 
 

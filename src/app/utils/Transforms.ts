@@ -6,6 +6,9 @@ import {Location} from '../locations/model/location';
 import {LocationDto} from '../locations/dto/in/location.dto';
 import {NotFoundError} from 'rxjs';
 import {AssetTransfer, AssetTransferDto} from '../assets/models/asset-transfer.model';
+import {StockTaking, StockTakingItem} from '../assets/stock-taking.service';
+import {StockTakingForList} from '../assets/components/stock-taking-list/stockTakingListProvider';
+import {map} from 'rxjs/operators';
 
 export abstract class Transforms {
 
@@ -71,7 +74,17 @@ export abstract class Transforms {
   }
 
   static assetsTransferDto(assetsTransferDto: AssetTransferDto): AssetTransfer {
-    const {assets, caretakerFrom, caretakerTo, uuid, createdAt, rejectedAt, revertedAt, acceptedAt, message} = assetsTransferDto;
+    const {
+      assets,
+      caretakerFrom,
+      caretakerTo,
+      uuid,
+      createdAt,
+      rejectedAt,
+      revertedAt,
+      acceptedAt,
+      message
+    } = assetsTransferDto;
     return {
       message,
       assets,
@@ -84,4 +97,60 @@ export abstract class Transforms {
       acceptedAt: acceptedAt ? new Date(acceptedAt) : null
     };
   }
+
+  public static getStockTakingsForList(
+    params: {
+      stockTakings: StockTaking[],
+      usersMap: Map<number, User>,
+      assetsMap: Map<number, Asset>
+    }): StockTakingForList[] {
+    const {stockTakings, usersMap, assetsMap} = params;
+    return stockTakings.map(stockTaking => this.getStockTakingForList({stockTaking, usersMap, assetsMap}));
+  }
+
+  private static getStockTakingForList(param: { stockTaking: StockTaking; assetsMap: Map<number, Asset>; usersMap: Map<number, User> }): StockTakingForList {
+    const {stockTaking, usersMap, assetsMap} = param;
+    const author = usersMap.get(stockTaking.authorId);
+    const solver = usersMap.get(stockTaking.solverId);
+
+    if (!author || !solver) {
+      throw new Error('Solver or Author not found');
+    }
+
+    const foundPercentage = this.getFoundPercentage(stockTaking);
+
+    return {
+      ...stockTaking,
+      items: stockTaking.items.length,
+      lastUpdateAt: null,
+      authorName: author.fullName,
+      solverName: solver.fullName,
+      foundPercentage
+    }
+  }
+
+  private static getFoundPercentage(stockTaking: StockTaking) {
+    return stockTaking.items.length ? (stockTaking.items.filter(item => item.foundAt).length / stockTaking.items.length) : 0;
+  }
+
+  // private static getStockTakingItems(params: { items: StockTakingItem[], assetsMap: Map<number, Asset> }): StockTakingListItem[] {
+  //   const {items, assetsMap} = params;
+  //   return items.map(item => this.getStockTakingItem(assetsMap, item));
+  // }
+
+
+  // private static getStockTakingItem(assetsMap: Map<number, Asset>, item: StockTakingItem) {
+  //   const found = assetsMap.get(item.assetId);
+  //   if (!found) {
+  //     throw new Error('Asset not found');
+  //   }
+  //
+  //   return {
+  //     name: found.name,
+  //     uuid: item.uuid,
+  //     ec: found.evidenceNumber,
+  //     ic: found.inventoryNumber,
+  //     assetId: item.assetId
+  //   }
+  // }
 }

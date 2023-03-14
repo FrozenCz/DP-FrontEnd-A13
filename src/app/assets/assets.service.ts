@@ -21,6 +21,7 @@ import {UsersService} from '../users/users.service';
 import {Store} from '../store/store';
 import {AssetSource} from '../facade/facade';
 import {AssetsModelDto, SaveImageToAssetDto} from './models/assets.dto';
+import {Utils} from '../utils/Utils';
 
 interface ChangeUserBulk {
   assetId: number;
@@ -304,6 +305,10 @@ export class AssetsService {
       }
     }
     return this.assetsStore$.getAll$();
+  }
+
+  getAssetsMap$(): Observable<Map<number, Asset>> {
+    return this.getAssets().pipe(map(assets => Utils.createMap<number, Asset>({array: assets, propertyName: 'id'})))
   }
 
   getAssetsWorkingList$(): Observable<Map<number, Asset>> {

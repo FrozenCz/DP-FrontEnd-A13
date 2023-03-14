@@ -1,0 +1,9 @@
+<ag-grid-angular
+  fxFlex
+  class="ag-theme-alpine"
+  [gridOptions]="gridOptions"
+  [columnDefs]="colDef"
+  [defaultColDef]="defaultColDef"
+  [rowData]="stockTakingList$ | async"
+></ag-grid-angular>
+

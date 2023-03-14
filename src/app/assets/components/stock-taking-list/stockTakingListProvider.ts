@@ -2,27 +2,21 @@ import {Observable} from 'rxjs';
 
 export abstract class StockTakingListProvider {
 
-  abstract getStockTakingList$(): Observable<StockTakingList[]>
+  abstract getStockTakingList$(): Observable<StockTakingForList[]>
 
 }
 
-export interface StockTakingList {
-
-  uuid: string;
-  authorName: string;
-  solverName: string;
-  createdAt: Date;
-  closedAt: Date;
-  items: StockTakingItem[];
-  lastUpdateAt: Date;
-
-}
-
-export interface StockTakingItem {
+export interface StockTakingForList {
 
   uuid: string;
   name: string;
-  ec: string;
-  ic: string;
+  authorName: string;
+  solverName: string;
+  createdAt: Date;
+  closedAt: Date | null;
+  items: number;
+  foundPercentage: number;
+  lastUpdateAt: Date | null;
 
 }
+
