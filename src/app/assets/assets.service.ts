@@ -22,6 +22,7 @@ import {Store} from '../store/store';
 import {AssetSource} from '../facade/facade';
 import {AssetsModelDto, SaveImageToAssetDto} from './models/assets.dto';
 import {Utils} from '../utils/Utils';
+import {restIp} from '../../environments/environment';
 
 interface ChangeUserBulk {
   assetId: number;
@@ -213,7 +214,7 @@ export class AssetsService {
   }
 
   private fetchAssets(): Observable<Asset[]> {
-    return this.http.get<AssetsModelDto[]>('/rest/assets')
+    return this.http.get<AssetsModelDto[]>(restIp + '/assets')
       .pipe(
         map((assets) => {
             return assets.map(asset => AssetsService.transformAssetDTOtoAsset(asset));
@@ -241,12 +242,12 @@ export class AssetsService {
 
 
   changeAssetUser(assetId: number, user_id: number): Observable<void> {
-    return this.http.patch<void>('/rest/assets/' + assetId + '/changeUser', {userId: user_id})
+    return this.http.patch<void>(restIp + '/assets/' + assetId + '/changeUser', {userId: user_id})
   }
 
   //todo:  change subsrcibers
   changeAssetInformation(assetId: number, changes: Partial<AssetsModelDto>): Observable<void> {
-    return this.http.patch<void>('/rest/assets/' + assetId + '/information', {...changes})
+    return this.http.patch<void>(restIp + '/assets/' + assetId + '/information', {...changes})
     // .pipe(map(asset => AssetsService.extendAssetModel(asset, this.allUnits, this.reachableUnitsIds)))
     // .pipe(tap(updatedAsset => this.updateAssetsStore(updatedAsset)));
   }
@@ -358,7 +359,7 @@ export class AssetsService {
 
 
   createAsset(asset: ICreateAsset): Observable<AssetsModelDto> {
-    return this.http.post<AssetsModelDto>('/rest/assets', asset);
+    return this.http.post<AssetsModelDto>(restIp + '/assets', asset);
   }
 
   getRawAsset(assetId: number): Observable<Asset> {
@@ -366,7 +367,7 @@ export class AssetsService {
   }
 
   updateAsset(changes: Partial<AssetModelExt>, assetId: number): Observable<AssetModelExt> {
-    return this.http.patch<AssetModelExt>('/rest/assets/' + assetId, {changes})
+    return this.http.patch<AssetModelExt>(restIp + '/assets/' + assetId, {changes})
   }
 
   addAssetsIdToWorkingList(ids: number[]): void {
@@ -443,11 +444,11 @@ export class AssetsService {
 
 
   private changeAssetUserBulk(switchUser: ChangeUserBulk[]): Observable<void> {
-    return this.http.patch<void>('/rest/assets/changeAssetUserBulk', switchUser)
+    return this.http.patch<void>(restIp + '/assets/changeAssetUserBulk', switchUser)
   }
 
   private changeAssetInformationBulk(updateInformation: BackendAcceptableAssetUpdateInformationBulk[]): Observable<void> {
-    return this.http.patch<void>('/rest/assets/changeAssetInformationBulk', updateInformation)
+    return this.http.patch<void>(restIp + '/assets/changeAssetInformationBulk', updateInformation)
   }
 
   removeAssets(removingInformation: IRemoveAssetsInformation, removedAssetsIds: IAssetsExt[]): Observable<void> {
@@ -455,11 +456,11 @@ export class AssetsService {
       ...removingInformation,
       assetsIds: removedAssetsIds.map(asset => asset.asset.id)
     };
-    return this.http.request<void>('delete', '/rest/assets', {body: removeAssetsDto})
+    return this.http.request<void>('delete', restIp + '/assets', {body: removeAssetsDto})
   }
 
   createAssetNote(assetId: number, note: string): Observable<AssetNote> {
-    return this.http.post<AssetNote>('/rest/assets/' + assetId + '/note', {note});
+    return this.http.post<AssetNote>(restIp + '/assets/' + assetId + '/note', {note});
   }
 
   wsAssetsUpdate(changes: AssetsModelDto[]): void {
@@ -467,10 +468,10 @@ export class AssetsService {
   }
 
   saveImageToAsset(croppedImage: SaveImageToAssetDto, id: number): Observable<void> {
-    return this.http.post<void>('/rest/assets/'+id+'/images', croppedImage);
+    return this.http.post<void>(restIp + '/assets/'+id+'/images', croppedImage);
   }
 
   createStockTaking(param: {name: string; solverId: number}): Observable<string> {
-    return this.http.post<string>('/rest/assets/stock-taking', {...param})
+    return this.http.post<string>(restIp + '/assets/stock-taking', {...param})
   }
 }

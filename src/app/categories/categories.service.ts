@@ -6,6 +6,7 @@ import {TokenService} from '../auth/token.service';
 import {catchError, map, take, tap} from 'rxjs/operators';
 import {ColDef} from 'ag-grid-community';
 import {Store} from '../store/store';
+import {restIp} from '../../environments/environment';
 
 export enum CategorySettingsEnum {
   categoryColumnNames = 'categoryColumnNames'
@@ -88,7 +89,7 @@ export class CategoriesService {
 
 
   private fetchCategories(): Observable<Category[]> {
-    return this.httpClient.get<CategoryGetDTO[]>('/rest/categories').pipe(
+    return this.httpClient.get<CategoryGetDTO[]>(restIp + '/categories').pipe(
       map((rawCategories) => {
         let categories: Category[] = [];
 
@@ -164,7 +165,7 @@ export class CategoriesService {
   }
 
   public createCategory(name: string, code: string, parent: number | null): Observable<ICategoryGet> {
-    return this.httpClient.post<ICategoryGet>('/rest/categories', {name, code, parent});
+    return this.httpClient.post<ICategoryGet>(restIp + '/categories', {name, code, parent});
   }
 
   public getCategories(): Observable<Category[]> {
@@ -172,7 +173,7 @@ export class CategoriesService {
   }
 
   public saveColumnSettings(columnSettings: IColumnSettings): Observable<void> {
-    return this.httpClient.put<void>('/rest/categories/settings', {...columnSettings})
+    return this.httpClient.put<void>(restIp + '/categories/settings', {...columnSettings})
       .pipe(
         catchError(err => {
           return throwError(err);
@@ -184,7 +185,7 @@ export class CategoriesService {
   }
 
   public getColumnSettings(categorySettingsEnum: CategorySettingsEnum): Observable<IColumnSettings> {
-    return this.httpClient.get<IColumnSettings>('/rest/categories/settings/' + categorySettingsEnum);
+    return this.httpClient.get<IColumnSettings>(restIp + '/categories/settings/' + categorySettingsEnum);
   }
 
   public getCatSettings(): Observable<IColumnSettings> {
@@ -232,11 +233,11 @@ export class CategoriesService {
   }
 
   getDescendants(categoryId: number): Observable<Category[]> {
-    return this.httpClient.get<Category[]>('rest/categories/' + categoryId + '/descendants');
+    return this.httpClient.get<Category[]>(restIp + '/categories/' + categoryId + '/descendants');
   }
 
   isAbleToDelete(deletedCategoryId: number): Observable<boolean> {
-    return this.httpClient.get<boolean>('rest/categories/' + deletedCategoryId + '/isAbleToDelete');
+    return this.httpClient.get<boolean>(restIp + '/categories/' + deletedCategoryId + '/isAbleToDelete');
   }
 
   /**
@@ -244,11 +245,11 @@ export class CategoriesService {
    * @param deletedCategoryId Id of category to be deleted
    */
   deleteCategory(deletedCategoryId: number): any {
-    return this.httpClient.delete<void>('rest/categories/' + deletedCategoryId);
+    return this.httpClient.delete<void>(restIp +'/categories/' + deletedCategoryId);
   }
 
   updateCategory(name: string, code: string, categoryId: number): Observable<ICategoryGet> {
-    return this.httpClient.patch<ICategoryGet>('rest/categories/' + categoryId, {name, code});
+    return this.httpClient.patch<ICategoryGet>(restIp+'/categories/' + categoryId, {name, code});
   }
 
   wsCategoryUpdate(changes: ICategoryGet): void {

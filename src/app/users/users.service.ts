@@ -9,6 +9,7 @@ import {Unit} from '../units/models/unit.model';
 import {UnitsService} from '../units/units.service';
 import {Store} from '../store/store';
 import {CaretakerDto, UserDto} from './dto/user.dto';
+import {restIp} from '../../environments/environment';
 
 export interface IRightsGet {
   id: number;
@@ -60,11 +61,11 @@ export class UsersService {
 
 
   createUser(newUser: ICreateUser): Observable<void> {
-    return this.httpClient.post<void>('/rest/users', newUser);
+    return this.httpClient.post<void>(restIp+'/users', newUser);
   }
 
   private fetchUsers(): Observable<UserDto[]> {
-    return this.httpClient.get<UserDto[]>('/rest/users');
+    return this.httpClient.get<UserDto[]>(restIp+'/users');
   }
 
   async loadUsers(): Promise<void> {
@@ -94,11 +95,11 @@ export class UsersService {
   }
 
   getUserWithRights(userId: number): Observable<IUserWithRights> {
-    return this.httpClient.get<IUserWithRights>('/rest/users/' + userId);
+    return this.httpClient.get<IUserWithRights>(restIp+'/users/' + userId);
   }
 
   updateUser(userId: number, user: IUserChanges): Observable<void> {
-    return this.httpClient.patch<void>('/rest/users/' + userId, {...user});
+    return this.httpClient.patch<void>(restIp+'/users/' + userId, {...user});
   }
 
   addUserToSelected(userId: number): void {
@@ -112,7 +113,7 @@ export class UsersService {
   }
 
   deleteUser(userId: number): Observable<void> {
-    return this.httpClient.delete<void>('/rest/users/' + userId);
+    return this.httpClient.delete<void>(restIp+'/users/' + userId);
   }
 
   deleteUsers(users: User[]): Observable<any> {
@@ -132,11 +133,11 @@ export class UsersService {
   }
 
   getRights(): Observable<IRightsGet[]> {
-    return this.httpClient.get<IRightsGet[]>('/rest/rights');
+    return this.httpClient.get<IRightsGet[]>(restIp+'/rights');
   }
 
   saveUsersRights(userId: number, rightsToAdd: number[], rightsToRemove: number[]): Observable<IRightsGet[]> {
-    return this.httpClient.patch<IRightsGet[]>('/rest/users/' + userId + '/rights', {
+    return this.httpClient.patch<IRightsGet[]>(restIp+'/users/' + userId + '/rights', {
       addRights: rightsToAdd,
       removeRights: rightsToRemove
     });
@@ -160,7 +161,7 @@ export class UsersService {
   }
 
   updateUsers(changes: IUserMultipleChanges[]): Observable<void> {
-    return this.httpClient.put<void>('/rest/users', {changes});
+    return this.httpClient.put<void>(restIp + '/users', {changes});
   }
 
   public getUsers$(): Observable<User[]> {
@@ -184,7 +185,7 @@ export class UsersService {
   }
 
   getCaretakers$(): Observable<CaretakerDto[]> {
-    return this.httpClient.get<CaretakerDto[]>('/rest/users/caretakers');
+    return this.httpClient.get<CaretakerDto[]>(restIp+'/users/caretakers');
   }
 
 

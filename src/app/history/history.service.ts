@@ -6,6 +6,7 @@ import {HistoryRelatedTo} from './models/history.enum';
 import {HumanReadableAssetsChange} from './models/history.humanReadable';
 import {tap} from 'rxjs/operators';
 import {AssetsModelDto} from '../assets/models/assets.dto';
+import {restIp} from '../../environments/environment';
 
 export interface ChangeType {
   name: string;
@@ -66,7 +67,7 @@ export class HistoryService {
   }
 
   getHistoryList(): Observable<HistoryModel[]> {
-    return this.httpClient.get<HistoryDto[]>('/rest/history').pipe(tap(history => {
+    return this.httpClient.get<HistoryDto[]>(restIp+'/history').pipe(tap(history => {
       this.history$.next(history);
     }));
   }
@@ -80,6 +81,6 @@ export class HistoryService {
   }
 
   getHistoryListForAsset(id: number): Observable<HistoryModel[]> {
-    return this.httpClient.get<HistoryDto[]>('/rest/history/assets/' + id);
+    return this.httpClient.get<HistoryDto[]>(restIp+'/history/assets/' + id);
   }
 }

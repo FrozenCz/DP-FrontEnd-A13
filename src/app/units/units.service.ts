@@ -5,6 +5,7 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, forkJoin, Observable, throwError} from 'rxjs';
 import {catchError, map, tap} from 'rxjs/operators';
 import {TokenService} from '../auth/token.service';
+import {restIp} from '../../environments/environment';
 
 
 @Injectable({
@@ -31,7 +32,7 @@ export class UnitsService {
   }
 
   createUnit(name: string, parent: number): Observable<IUnitGet> {
-    return this.httpClient.post<IUnitGet>('/rest/units', {name, parent}).pipe(
+    return this.httpClient.post<IUnitGet>(restIp+'/units', {name, parent}).pipe(
       tap((newUnit) => {
         const nUnit: Unit = {...newUnit, parent: newUnit.parent?.id, tree: [], children: []};
         const updatedUnits = [...this.units$.getValue()];
@@ -50,8 +51,8 @@ export class UnitsService {
   }
 
   init(): Observable<[Unit[], Unit[]]> {
-    return forkJoin([this.httpClient.get<UnitsGetObject[] | UnitsGetObject>('/rest/units'),
-      this.httpClient.get<UnitsGetObject[] | UnitsGetObject>('/rest/units/getAllUnits')])
+    return forkJoin([this.httpClient.get<UnitsGetObject[] | UnitsGetObject>(restIp+'/units'),
+      this.httpClient.get<UnitsGetObject[] | UnitsGetObject>(restIp+'/units/getAllUnits')])
       .pipe(map(([source, source2]) => {
         let units: Unit[] = [];
         let allUnits: Unit[] = [];
@@ -127,7 +128,7 @@ export class UnitsService {
 
 
   updateUnit(unitId: number, value: any): Observable<UnitUpdate> {
-    return this.httpClient.put<UnitUpdate>('/rest/units/' + unitId, {name: value})
+    return this.httpClient.put<UnitUpdate>(restIp+'/units/' + unitId, {name: value})
       .pipe(
         tap((updatedUnit) => {
           const updatedUnits: Unit[] = [...this.units$.getValue()];
@@ -159,13 +160,13 @@ export class UnitsService {
   }
 
   deleteUnit(unitId: number): Observable<void> {
-    return this.httpClient.delete<void>('rest/units/' + unitId).pipe(tap(() => {
+    return this.httpClient.delete<void>(restIp+'/units/' + unitId).pipe(tap(() => {
       this.loadUnits();
     }));
   }
 
   getDescendants(unitId: number): Observable<Unit[]> {
-    return this.httpClient.get<Unit[]>('rest/units/' + unitId + '/descendants');
+    return this.httpClient.get<Unit[]>(restIp+'/units/' + unitId + '/descendants');
   }
 
   getAllUnits(): Observable<Unit[]> {
@@ -173,6 +174,6 @@ export class UnitsService {
   }
 
   ableToDelete(unitId: number): Observable<boolean> {
-    return this.httpClient.get<boolean>('rest/units/' + unitId + '/ableToDelete');
+    return this.httpClient.get<boolean>(restIp+'/units/' + unitId + '/ableToDelete');
   }
 }

@@ -5,6 +5,7 @@ import {HttpClient} from '@angular/common/http';
 import {filter, map, tap, withLatestFrom} from 'rxjs/operators';
 import {Asset} from '../assets/models/assets.model';
 import {AssetSource, Facade} from '../facade/facade';
+import {restIp} from '../../environments/environment';
 
 interface AssetsListGeneral {
   id: number | undefined;
@@ -102,7 +103,7 @@ export class ListsService {
   };
 
   private fetchAssetsLists(): Observable<IAssetsListFromNest[]> {
-    return this.http.get<IAssetsListFromNest[]>('rest/lists');
+    return this.http.get<IAssetsListFromNest[]>(restIp+'/lists');
   }
 
   getAssetsLists(): Observable<IAssetsList[]> {
@@ -116,7 +117,7 @@ export class ListsService {
    */
   createAssetsList(assetsList: IAssetsListForCreateUpdate): Observable<IAssetsList> {
     const assetsListForNest: IAssetsListForNest = {...assetsList, assetsIds: assetsList.assets.map(asset => asset.id)};
-    return this.http.post<IAssetsListFromNest>('rest/lists', assetsListForNest)
+    return this.http.post<IAssetsListFromNest>(restIp+'/lists', assetsListForNest)
       .pipe(
         withLatestFrom(this.facade.getAssetExt(AssetSource.STORE)),
         map(([assetList, assets]) => this.transformAssetsList(assetList, assets)),
@@ -131,7 +132,7 @@ export class ListsService {
 
   updateAssetsList(assetsList: IAssetsListForCreateUpdate): Observable<IAssetsList> {
     const assetsListForNest: IAssetsListForNest = {...assetsList, assetsIds: assetsList.assets.map(asset => asset.id)};
-    return this.http.put<IAssetsListFromNest>('rest/lists/' + assetsList.id, assetsListForNest)
+    return this.http.put<IAssetsListFromNest>(restIp+'/lists/' + assetsList.id, assetsListForNest)
       .pipe(
         withLatestFrom(this.facade.getAssetExt(AssetSource.STORE)),
         map(([assetList, assets]) => this.transformAssetsList(assetList, assets)),
@@ -144,7 +145,7 @@ export class ListsService {
   }
 
   deleteAssetsList(assetsListId: number): Observable<any> {
-    return this.http.delete('rest/lists/' + assetsListId)
+    return this.http.delete(restIp+'/lists/' + assetsListId)
       .pipe(
         tap(() => {
           const assetsListsFiltered = this.assetsListStore.getValue().filter(al => al.id !== assetsListId);
