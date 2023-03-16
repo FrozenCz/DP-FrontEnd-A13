@@ -4,5 +4,5 @@ export const environment = {
 
 // export const webSocketUrl = 'wss://46.36.39.68:3000';
 // export const webSocketUrl = 'wss://bp.milanknop.cz/rest/';
-export const webSocketUrl = 'https://bp.milanknop.cz/rest/';
-export const restIp = '/rest';
+export const webSocketUrl = 'wss://dp-rest.milanknop.cz';
+export const restIp = 'https://dp-rest.milanknop.cz';
