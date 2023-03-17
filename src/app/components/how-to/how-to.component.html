@@ -8,9 +8,9 @@
       </nb-card-header>
       <nb-card-body>
         <vg-player style="height: 100%;width: 100%">
-<!--          <video [vgMedia]="media" #media preload="auto" controls>-->
-<!--            <source src="{{tutorial.movie}}" type="video/mp4">-->
-<!--          </video>-->
+          <video [vgMedia]="$any(media)" #media preload="auto" controls style="width: 100%">
+            <source src="{{tutorial.movie}}" type="video/mp4">
+          </video>
         </vg-player>
       </nb-card-body>
     </nb-card>
