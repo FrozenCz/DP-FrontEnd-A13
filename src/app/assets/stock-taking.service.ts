@@ -13,15 +13,18 @@ export class StockTakingService {
   constructor(private httpClient: HttpClient) {
   }
 
-  private static transform(stockTakingDTO: Observable<StockTakingDTO[]>): Observable<StockTaking[]> {
-    return stockTakingDTO.pipe(map(stockTakingDTOs => stockTakingDTOs.map(stockTakingDTO => {
-      return {
-        ...stockTakingDTO,
-        closedAt: this.getDate(stockTakingDTO.createdAt),
-        createdAt: new Date(stockTakingDTO.createdAt),
-        items: this.transformItems(stockTakingDTO)
-      }
-    })))
+  private static transformStockTakingsDTO(stockTakingDTO: Observable<StockTakingDTO[]>): Observable<StockTaking[]> {
+    return stockTakingDTO.pipe(map(stockTakingDTOs => stockTakingDTOs.map(stockTakingDTO => this.transformStockTakingDTO(stockTakingDTO))))
+  }
+
+  private static transformStockTakingDTO(stockTakingDTO: StockTakingDTO): StockTaking {
+    console.log(stockTakingDTO.createdAt);
+    return {
+      ...stockTakingDTO,
+      closedAt: this.getDate(stockTakingDTO.createdAt),
+      createdAt: new Date(stockTakingDTO.createdAt),
+      items: this.transformItems(stockTakingDTO)
+    }
   }
 
   private static getDate(dateString: string | null) {
@@ -38,8 +41,12 @@ export class StockTakingService {
     });
   }
 
+  getStockTaking$(uuid: string): Observable<StockTaking> {
+    return this.httpClient.get<StockTakingDTO>(restIp + '/assets/stock-taking/' + uuid).pipe(map(stockTaking => StockTakingService.transformStockTakingDTO(stockTaking)))
+  }
+
   fetchStockTakings$(): Observable<StockTaking[]> {
-    return StockTakingService.transform(this.httpClient.get<StockTakingDTO[]>(restIp + '/assets/stock-taking'));
+    return StockTakingService.transformStockTakingsDTO(this.httpClient.get<StockTakingDTO[]>(restIp + '/assets/stock-taking'));
   }
 
 

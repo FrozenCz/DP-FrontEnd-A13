@@ -23,6 +23,7 @@ import {AssetSource} from '../facade/facade';
 import {AssetsModelDto, SaveImageToAssetDto} from './models/assets.dto';
 import {Utils} from '../utils/Utils';
 import {restIp} from '../../environments/environment';
+import {StockTakingDTO} from './stock-taking.service';
 
 interface ChangeUserBulk {
   assetId: number;
@@ -314,7 +315,7 @@ export class AssetsService {
 
   getAssetsWorkingList$(): Observable<Map<number, Asset>> {
     return combineLatest([this.assetsWorkingList$, this.assetsStore$.getMap$()]).pipe(
-     map(([inGrid, assets]) => {
+      map(([inGrid, assets]) => {
         const selectedInGrid: Map<number, Asset> = new Map<number, Asset>();
         for (const assetId of inGrid) {
           const found = assets.get(assetId);
@@ -468,10 +469,10 @@ export class AssetsService {
   }
 
   saveImageToAsset(croppedImage: SaveImageToAssetDto, id: number): Observable<void> {
-    return this.http.post<void>(restIp + '/assets/'+id+'/images', croppedImage);
+    return this.http.post<void>(restIp + '/assets/' + id + '/images', croppedImage);
   }
 
-  createStockTaking(param: {name: string; solverId: number}): Observable<string> {
-    return this.http.post<string>(restIp + '/assets/stock-taking', {...param})
+  createStockTaking(param: { name: string; solverId: number }): Observable<string> {
+    return this.http.post<StockTakingDTO>(restIp + '/assets/stock-taking', {...param}).pipe(map(stockTaking => stockTaking.uuid))
   }
 }

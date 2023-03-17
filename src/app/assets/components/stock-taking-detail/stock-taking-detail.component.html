@@ -1,1 +1,13 @@
-<p>stock-taking-detail works!</p>
+<div *ngIf="stockTaking$ | async as stockTaking">
+  <div fxLayout="column">
+    <div class="caption">
+      Inventura - {{stockTaking.name}}
+    </div>
+    <div class="caption">{{stockTaking.createdAt | date:'dd.mm.YYYY'}}</div>
+    <div style="margin-top: 1rem" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem">
+      <div class="caption">Řešitel</div>
+      <div>{{stockTaking.solverId}}</div>
+    </div>
+  </div>
+
+</div>

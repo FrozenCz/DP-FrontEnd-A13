@@ -8,7 +8,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {User} from '../../../users/model/user.model';
 import {AssetsService} from '../../assets.service';
 import {NbToastrService} from '@nebular/theme';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-stock-taking-new',
@@ -25,7 +25,8 @@ export class StockTakingNewComponent implements OnInit {
               private fb: FormBuilder,
               private assetService: AssetsService,
               private toasterService: NbToastrService,
-              private router: Router
+              private router: Router,
+              private route: ActivatedRoute
   ) {
     const careTakers = this.userService.getCaretakers$();
     const token = this.tokenService.getToken();
@@ -53,7 +54,7 @@ export class StockTakingNewComponent implements OnInit {
       solverId: this.stockTakingNewForm.value.solver.id,
       name: this.stockTakingNewForm.value.name
     })).then(uuid => {
-      this.router.navigate([uuid]);
+      this.router.navigate(['../', uuid], {relativeTo: this.route});
       this.toasterService.success('vytvoreno')
     }, reason => {
       this.toasterService.danger('chyba')
