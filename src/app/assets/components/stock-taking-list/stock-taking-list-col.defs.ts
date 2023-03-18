@@ -16,7 +16,8 @@ export const stockTakingListColDefs: ColDef[] = [
     valueFormatter: (params) => params.value ? AgGridFuncs.dateTimeFormatter(params.value, DateTimeFormatterType.WITH_HOURS) : ''
   },
   {field: 'items', headerName: 'Počet položek'},
-  {field: 'foundPercentage', headerName: 'Nalezeno'},
+  {field: 'itemsFound', headerName: 'Počet nalezených'},
+  {field: 'foundPercentage', headerName: 'Nalezeno', valueFormatter: params => params.value?.toPrecision(2)},
   {
     field: 'closedAt',
     headerName: 'Ukončena',

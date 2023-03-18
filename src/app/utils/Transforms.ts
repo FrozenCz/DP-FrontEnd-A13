@@ -117,11 +117,13 @@ export abstract class Transforms {
       throw new Error('Solver or Author not found');
     }
 
-    const foundPercentage = this.getFoundPercentage(stockTaking);
+    const found = this.getFoundedItems(stockTaking)?.length ?? 0;
+    const foundPercentage = (found / stockTaking.items.length);
 
     return {
       ...stockTaking,
       items: stockTaking.items.length,
+      itemsFound: found,
       lastUpdateAt: null,
       authorName: author.fullName,
       solverName: solver.fullName,
@@ -129,28 +131,8 @@ export abstract class Transforms {
     }
   }
 
-  private static getFoundPercentage(stockTaking: StockTaking) {
-    return stockTaking.items.length ? (stockTaking.items.filter(item => item.foundAt).length / stockTaking.items.length) : 0;
+  private static getFoundedItems(stockTaking: StockTaking) {
+    return stockTaking.items.filter(item => item.foundAt);
   }
 
-  // private static getStockTakingItems(params: { items: StockTakingItem[], assetsMap: Map<number, Asset> }): StockTakingListItem[] {
-  //   const {items, assetsMap} = params;
-  //   return items.map(item => this.getStockTakingItem(assetsMap, item));
-  // }
-
-
-  // private static getStockTakingItem(assetsMap: Map<number, Asset>, item: StockTakingItem) {
-  //   const found = assetsMap.get(item.assetId);
-  //   if (!found) {
-  //     throw new Error('Asset not found');
-  //   }
-  //
-  //   return {
-  //     name: found.name,
-  //     uuid: item.uuid,
-  //     ec: found.evidenceNumber,
-  //     ic: found.inventoryNumber,
-  //     assetId: item.assetId
-  //   }
-  // }
 }

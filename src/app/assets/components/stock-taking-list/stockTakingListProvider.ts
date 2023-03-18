@@ -15,6 +15,7 @@ export interface StockTakingForList {
   createdAt: Date;
   closedAt: Date | null;
   items: number;
+  itemsFound: number;
   foundPercentage: number;
   lastUpdateAt: Date | null;
 
