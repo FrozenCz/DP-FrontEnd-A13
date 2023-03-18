@@ -4,6 +4,7 @@ export enum NavButtonsIdsEnum {
   add_new_user = 'add_new_user',
 
   add_new_asset = 'add_new_asset',
+  asset_list = 'asset_list',
   show_working_list = 'show_working_list',
   drop_working_list = 'drop_working_list',
 

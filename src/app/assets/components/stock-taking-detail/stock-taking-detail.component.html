@@ -1,13 +1,36 @@
-<div *ngIf="stockTaking$ | async as stockTaking">
-  <div fxLayout="column">
+<div *ngIf="stockTaking$ | async as stockTaking" fxFlex fxLayout="column">
+  <div>
+    <button nbButton (click)="goBack()" ghost>
+      <nb-icon icon="arrowhead-left-outline"></nb-icon>
+    </button>
+  </div>
+  <div fxLayout="column" fxLayoutGap="1rem" fxFlex>
     <div class="caption">
-      Inventura - {{stockTaking.name}}
+      <div>Inventura - {{stockTaking.name}}</div>
+      <div class="caption">{{stockTaking.createdAt | date:'dd.mm.YYYY'}}</div>
     </div>
-    <div class="caption">{{stockTaking.createdAt | date:'dd.mm.YYYY'}}</div>
-    <div style="margin-top: 1rem" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem">
+
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem">
       <div class="caption">Řešitel</div>
-      <div>{{stockTaking.solverId}}</div>
+      <div>{{stockTaking.solver.name}} {{stockTaking.solver.surname}}</div>
     </div>
+    <div fxFlex fxLayout="column">
+      <div class="caption">Soupis majetku</div>
+      <div fxFlex>
+        <ag-grid-angular
+          fxFlex
+          class="ag-theme-alpine"
+          [gridOptions]="gridOptions"
+          [columnDefs]="colDefs"
+          [defaultColDef]="defaultColDef"
+          [rowData]="stockTaking.items"
+        ></ag-grid-angular>
+      </div>
+    </div>
+    <div fxLayout="row">
+      <button nbButton status="primary" [nbSpinner]="actionPerformed" [disabled]="actionPerformed" (click)="close(stockTaking)" *ngIf="ableToClose$ | async">Uzavřít inventuru</button>
+    </div>
+
   </div>
 
 </div>

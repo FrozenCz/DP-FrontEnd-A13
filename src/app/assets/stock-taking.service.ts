@@ -18,10 +18,9 @@ export class StockTakingService {
   }
 
   private static transformStockTakingDTO(stockTakingDTO: StockTakingDTO): StockTaking {
-    console.log(stockTakingDTO.createdAt);
     return {
       ...stockTakingDTO,
-      closedAt: this.getDate(stockTakingDTO.createdAt),
+      closedAt: this.getDate(stockTakingDTO.closedAt),
       createdAt: new Date(stockTakingDTO.createdAt),
       items: this.transformItems(stockTakingDTO)
     }
@@ -50,6 +49,9 @@ export class StockTakingService {
   }
 
 
+  closeStockTaking(uuid: string): Observable<void> {
+    return this.httpClient.post<void>(restIp + '/assets/stock-taking/' + uuid + '/close', {})
+  }
 }
 
 

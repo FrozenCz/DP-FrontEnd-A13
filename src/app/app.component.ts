@@ -20,6 +20,7 @@ import {take} from 'rxjs/operators';
 import {LocationListButton, LocationNav} from './locations/model/locations.navigation';
 import {AssetSource} from './facade/facade';
 import {TransferService} from './assets/transfer.service';
+import {RightsTag} from './shared/rights.list';
 
 @Component({
   selector: 'app-root',
@@ -191,6 +192,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.router.navigate(['/assets', 'transfers', 'request'], {});
         })
         break;
+      case NavButtonsIdsEnum.asset_list:
+        this.router.navigate(['/assets'])
+        break;
       case NavButtonsIdsEnum.asset_transfer_from_selected:
         firstValueFrom(this.assetsService.getAssetsSelectedInGridList$()).then((assets) => {
           this.transferService.clearList();
@@ -235,8 +239,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       iconType: NavigationAcceptedIconsEnum.eva
     });
     const assetSubSection: NavigationSubSectionButtons = new NavigationSubSectionButtons();
-    assetSubSection.buttons.push(new NavigationButton(NavButtonsIdsEnum.add_new_asset, 'nový', {
-      name: 'plus-outline',
+    if (this.tokenService.getPermission(RightsTag.createAssets)) {
+      assetSubSection.buttons.push(new NavigationButton(NavButtonsIdsEnum.add_new_asset, 'nový', {
+        name: 'plus-outline',
+        iconType: NavigationAcceptedIconsEnum.eva
+      }));
+    }
+    assetSubSection.buttons.push(new NavigationButton(NavButtonsIdsEnum.asset_list, 'seznam', {
+      name: 'list-outline',
       iconType: NavigationAcceptedIconsEnum.eva
     }));
     assetSection.subSections.push(assetSubSection)
@@ -369,18 +379,20 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
 
     const stockTakingSubSection = new NavigationSubSectionButtons();
+    if (this.tokenService.getPermission(RightsTag.createAssets)) {
+      stockTakingSubSection.buttons.push(new NavigationButton(NavButtonsIdsEnum.stock_taking_new, 'Nová inventura', {
+          name: 'plus-outline',
+          iconType: NavigationAcceptedIconsEnum.eva
+        }, ['assets', 'stock-taking', 'new']
+      ),)
+    }
     stockTakingSubSection.buttons.push(
-      new NavigationButton(NavButtonsIdsEnum.stock_taking_new, 'Nová inventura', {
-        name: 'plus-outline',
-        iconType: NavigationAcceptedIconsEnum.eva
-      }, ['assets', 'stock-taking', 'new']
-    ),
       new NavigationButton(NavButtonsIdsEnum.stock_taking_new, 'Inventury', {
           name: 'list-outline',
           iconType: NavigationAcceptedIconsEnum.eva
         }, ['assets', 'stock-taking', 'list']
       )
-      )
+    )
     stockTakingSection.subSections.push(stockTakingSubSection)
 
     this.assetTab.sections.push(

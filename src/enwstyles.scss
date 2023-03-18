@@ -1344,3 +1344,9 @@ input[nbInput].size-tiny::placeholder {
 //}
 
 
+.ag-theme-alpine .ag-row-odd.stock-item-found {
+  background-color: $color-success-transparent-400 ;
+}
+.ag-theme-alpine .stock-item-found {
+  background-color: $color-success-transparent-300 ;
+}

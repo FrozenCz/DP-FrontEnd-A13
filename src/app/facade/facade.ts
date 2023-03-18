@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {combineLatest, Observable, switchMap} from 'rxjs';
+import {combineLatest, Observable, switchMap, throwError} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AssetsService, IAssetsExt} from '../assets/assets.service';
 import {UsersService} from '../users/users.service';
@@ -14,14 +14,22 @@ import {TokenService} from '../auth/token.service';
 import {HttpClient} from '@angular/common/http';
 import {TransferDataProvider} from '../assets/components/abstract/transferDataProvider';
 import {AssetTransfer, AssetTransferDto} from '../assets/models/asset-transfer.model';
-import {StockTakingForList, StockTakingListProvider} from '../assets/components/stock-taking-list/stockTakingListProvider';
-import {StockTakingService} from '../assets/stock-taking.service';
-import {Utils} from '../utils/Utils';
+import {
+  StockTakingForList,
+  StockTakingListProvider
+} from '../assets/components/stock-taking-list/stockTakingListProvider';
+import {StockTaking, StockTakingItem, StockTakingService} from '../assets/stock-taking.service';
+import {
+  StockTakingDetail, StockTakingDetailItem,
+  StockTakingDetailProvider
+} from '../assets/components/stock-taking-detail/stockTakingDetail.provider';
+import {User} from '../users/model/user.model';
+import {RightsTag} from '../shared/rights.list';
 
 @Injectable({
   providedIn: 'root'
 })
-export class Facade implements TransferDataProvider, StockTakingListProvider {
+export class Facade implements TransferDataProvider, StockTakingListProvider, StockTakingDetailProvider {
 
   constructor(
     private assetsService: AssetsService,
@@ -128,7 +136,79 @@ export class Facade implements TransferDataProvider, StockTakingListProvider {
         })))
   }
 
+  getStockTakingDetail$(uuid: string): Observable<StockTakingDetail> {
+    return combineLatest([this.usersService.getUsersMap$(), this.assetsService.getAssetsMap$(), this.stockTakingService.getStockTaking$(uuid)])
+      .pipe(
+        map(([usersMap, assetsMap, stockTaking]) => {
+            return Facade.transformStockTakingDetail({
+              usersMap,
+              assetsMap,
+              stockTaking
+            })
+          }
+        ));
+  }
 
+
+
+
+  private static transformStockTakingDetail(param: { stockTaking: StockTaking; assetsMap: Map<number, Asset>; usersMap: Map<number, User> }): StockTakingDetail {
+    const {assetsMap, usersMap, stockTaking} = param;
+    const author = usersMap.get(stockTaking.authorId);
+    const solver = usersMap.get(stockTaking.solverId);
+
+    if (!author) {
+      throw new Error(`author id ${stockTaking.authorId} not found!`);
+    }
+    if (!solver) {
+      throw new Error(`solver id ${stockTaking.solverId} not found!`);
+    }
+
+    const items: StockTakingDetailItem[] = Facade.transformStockTakingDetailItems({
+      stockTakingItems: stockTaking.items,
+      assetsMap: assetsMap
+    });
+
+    return {
+      author,
+      solver,
+      items,
+      closedAt: stockTaking.closedAt,
+      uuid: stockTaking.uuid,
+      createdAt: stockTaking.createdAt,
+      name: stockTaking.name
+    };
+  }
+
+  private static transformStockTakingDetailItems(param: { assetsMap: Map<number, Asset>; stockTakingItems: StockTakingItem[] }): StockTakingDetailItem[] {
+    const {stockTakingItems, assetsMap} = param;
+    return stockTakingItems.map(item => Facade.transformStockTakingDetailItem({item, assetsMap}));
+  }
+
+  private static transformStockTakingDetailItem(param: { item: StockTakingItem; assetsMap: Map<number, Asset> }): StockTakingDetailItem {
+    const {assetsMap, item} = param;
+    const asset = assetsMap.get(item.assetId);
+
+    if (!asset) {
+      throw new Error(`Asset id ${item.assetId} not found in stockTakingUuid ${item.stockTakingUuid} `);
+    }
+
+    return {
+      uuid: item.uuid,
+      assetName: asset.name,
+      serialNumber: asset.serialNumber,
+      note: item.note,
+      foundAt: Math.random() > 0.5 ? new Date() : null
+    };
+  }
+
+  isUserAbleToCloseStockTaking$(uuid: string): Observable<boolean> {
+    const user$ = this.tokenService.getToken();
+    const stockTaking$ = this.stockTakingService.getStockTaking$(uuid);
+    return combineLatest([user$, stockTaking$]).pipe(map(([user, stockTaking]) => {
+      return !!(user?.rights.includes(RightsTag.createAssets) && stockTaking.authorId === user.userId && !stockTaking.closedAt)
+    }));
+  }
 }
 
 

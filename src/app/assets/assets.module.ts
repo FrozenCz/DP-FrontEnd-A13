@@ -41,6 +41,7 @@ import { StockTakingListComponent } from './components/stock-taking-list/stock-t
 import { StockTakingDetailComponent } from './components/stock-taking-detail/stock-taking-detail.component';
 import { StockTakingNewComponent } from './components/stock-taking-new/stock-taking-new.component';
 import {StockTakingListProvider} from './components/stock-taking-list/stockTakingListProvider';
+import {StockTakingDetailProvider} from './components/stock-taking-detail/stockTakingDetail.provider';
 
 @NgModule({
   declarations: [AssetsComponent, AssetDetailDialogComponent, AssetsListComponent, QuickFilterComponent, ActionButtonsForAgGridComponent,
@@ -80,7 +81,8 @@ import {StockTakingListProvider} from './components/stock-taking-list/stockTakin
   ],
   providers: [
     {provide: TransferDataProvider, useExisting: Facade},
-    {provide: StockTakingListProvider, useExisting: Facade}
+    {provide: StockTakingListProvider, useExisting: Facade},
+    {provide: StockTakingDetailProvider, useExisting: Facade},
   ],
     exports: [
         AssetsListComponent,
