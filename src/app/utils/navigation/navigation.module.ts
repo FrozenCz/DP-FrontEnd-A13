@@ -12,7 +12,7 @@ import {
     NbIconModule,
     NbInputModule,
     NbSelectModule, NbTabsetModule,
-    NbToggleModule
+    NbToggleModule, NbTooltipModule
 } from '@nebular/theme';
 import {RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
@@ -38,7 +38,8 @@ import {ThemeSelectorComponent} from './components/theme-selector/theme-selector
         RouterModule,
         AuthModule,
         NbTabsetModule,
-        NbFormFieldModule
+        NbFormFieldModule,
+        NbTooltipModule
     ],
   providers: []
 })

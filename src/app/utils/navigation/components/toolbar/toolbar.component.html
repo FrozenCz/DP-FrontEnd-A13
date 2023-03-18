@@ -17,7 +17,7 @@
     <div fxFlex></div>
 
     <div class="login" style="position: relative;height: auto" fxLayout="row" fxLayoutGap="1em" fxLayoutAlign="end center">
-      <i class="fas fa-bug" style="cursor: pointer" (click)="actionEmitted.emit({id: navButtonsIds.showBugDialog})"></i>
+      <a href="assets/androidApp.apk" nbTooltip="Stažení aplikace pro Android zařízení" style="text-decoration: none; display: block" fxLayoutAlign="center center"><img src="assets/icons8-android-20.png"></a>
       <nb-icon style="cursor: pointer" icon="swap-outline" (click)="actionEmitted.emit({id: navButtonsIds.switchNav})"></nb-icon>
       <app-theme-selector></app-theme-selector>
       <app-auth></app-auth>
