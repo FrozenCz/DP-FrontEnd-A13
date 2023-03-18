@@ -198,7 +198,7 @@ export class Facade implements TransferDataProvider, StockTakingListProvider, St
       assetName: asset.name,
       serialNumber: asset.serialNumber,
       note: item.note,
-      foundAt: Math.random() > 0.5 ? new Date() : null
+      foundAt: item.foundAt
     };
   }
 
