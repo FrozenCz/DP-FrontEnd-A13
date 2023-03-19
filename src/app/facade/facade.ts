@@ -25,6 +25,7 @@ import {
 } from '../assets/components/stock-taking-detail/stockTakingDetail.provider';
 import {User} from '../users/model/user.model';
 import {RightsTag} from '../shared/rights.list';
+import {restIp} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -96,15 +97,15 @@ export class Facade implements TransferDataProvider, StockTakingListProvider, St
   }
 
   sendRequestForAssetTransfer(fromUser: number, toUser: number, assetIds: number[], message: string): Observable<void> {
-    return this.httpClient.post<void>('/rest/assets/transfers', {fromUser, toUser, assetIds, message});
+    return this.httpClient.post<void>(restIp + '/assets/transfers', {fromUser, toUser, assetIds, message});
   }
 
   public getAssetTransfers$(): Observable<AssetTransfer[]> {
-    return this.httpClient.get<AssetTransferDto[]>('/rest/assets/transfers').pipe(map(assetsTransferDto => assetsTransferDto.map(assetDto => Transforms.assetsTransferDto(assetDto))));
+    return this.httpClient.get<AssetTransferDto[]>(restIp + '/assets/transfers').pipe(map(assetsTransferDto => assetsTransferDto.map(assetDto => Transforms.assetsTransferDto(assetDto))));
   }
 
   public getAssetTransfer$(uuid: string): Observable<AssetTransfer> {
-    return this.httpClient.get<AssetTransferDto>('/rest/assets/transfers/' + uuid).pipe(map((assetTransferDto => Transforms.assetsTransferDto(assetTransferDto))))
+    return this.httpClient.get<AssetTransferDto>(restIp + '/assets/transfers/' + uuid).pipe(map((assetTransferDto => Transforms.assetsTransferDto(assetTransferDto))))
   }
 
   getAssetsMap$(): Observable<Map<number, Asset>> {
@@ -112,15 +113,15 @@ export class Facade implements TransferDataProvider, StockTakingListProvider, St
   }
 
   approveTransfer(uuid: string): Observable<void> {
-    return this.httpClient.post<void>('/rest/assets/transfers/' + uuid + '/actions/approve', {});
+    return this.httpClient.post<void>(restIp + '/assets/transfers/' + uuid + '/actions/approve', {});
   }
 
   rejectTransfer(uuid: string): Observable<void> {
-    return this.httpClient.post<void>('/rest/assets/transfers/' + uuid + '/actions/reject', {});
+    return this.httpClient.post<void>(restIp + '/assets/transfers/' + uuid + '/actions/reject', {});
   }
 
   revertTransfer(uuid: string): Observable<void> {
-    return this.httpClient.post<void>('/rest/assets/transfers/' + uuid + '/actions/revert', {});
+    return this.httpClient.post<void>(restIp + '/assets/transfers/' + uuid + '/actions/revert', {});
   }
 
   getStockTakingList$(): Observable<StockTakingForList[]> {

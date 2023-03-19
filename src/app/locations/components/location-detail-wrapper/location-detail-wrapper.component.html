@@ -1,8 +1,8 @@
 <div fxFlex fxLayout="column" fxLayoutGap=".5rem" *ngIf="locations$ | async as locations">
-  <ng-container *ngIf="location$ | async as loc">
+  <ng-container *ngIf="location$ | async as location">
     <app-location-detail
-      *ngIf="loc.uuid"
-      [location]="loc"
+      *ngIf="location.uuid"
+      [location]="location"
       [locations]="locations"
       (saveEmit)="onSaveEmit($event)"
     ></app-location-detail>
